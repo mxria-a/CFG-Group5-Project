@@ -24,6 +24,27 @@
   color: white;
 }
 
+.Introductions-header {
+  text-decoration: underline;
+}
+
+.Teammate-name {
+  margin-bottom: 0;
+}
+
+.App-header p {
+  margin-bottom: 0;
+  font-size: 18px;
+}
+
+.divider {
+  height: 2px;             /* Thickness */
+  background-color: #ffffff; /* Line color */
+  margin: 40px 0;         /* Space around it */
+  width: 500px;             /* Full width */
+}
+
+
 .App-link {
   color: #61dafb;
 }
