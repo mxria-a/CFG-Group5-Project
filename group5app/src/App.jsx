@@ -53,6 +53,15 @@ function App() {
         </p>
         <div className="divider"></div>
 
+
+        <h2 className="Teammate-name">Ellie</h2>
+        <p>
+          <b>Favourite hobby:</b> Anything active
+        </p>
+        <p>
+          I love going on long solo walks and listening to a good audio book.
+        </p>
+
       </header>
     </div>
   );
