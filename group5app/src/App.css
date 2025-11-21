@@ -38,10 +38,10 @@
 }
 
 .divider {
-  height: 2px;             /* Thickness */
-  background-color: #ffffff; /* Line color */
-  margin: 40px 0;         /* Space around it */
-  width: 500px;             /* Full width */
+  height: 2px;
+  background-color: #ffffff;
+  margin: 40px 0;
+  width: 500px;
 }
 
 
