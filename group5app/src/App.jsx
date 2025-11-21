@@ -44,6 +44,15 @@ function App() {
         </p>
         <div className="divider"></div>
 
+        <h2 className="Teammate-name">Temi</h2>
+        <p>
+          <b>Favourite hobby:</b> Gym & Pilates 
+        </p>
+        <p>
+           I love being active, i'm a massive foodie and reality TV is my guilty pleasure!  &#127952; 
+        </p>
+        <div className="divider"></div>
+
       </header>
     </div>
   );
