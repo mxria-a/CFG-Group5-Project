@@ -33,6 +33,17 @@ function App() {
           watching trash TV on the sofa.
         </p>
         <div className="divider"></div>
+
+
+        <h2 className="Teammate-name">Chantelle</h2>
+        <p>
+          <b>Favourite hobby:</b> Sports and activities
+        </p>
+        <p>
+          &#127952; I play and coach netball and love being active! &#127952; 
+        </p>
+        <div className="divider"></div>
+
       </header>
     </div>
   );
