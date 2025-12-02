@@ -10,7 +10,9 @@ CREATE TABLE restaurants(
     addressLine1 VARCHAR(100),
     city VARCHAR(100),
     postcode VARCHAR(10) NOT NULL,
-    deliveryTime INT DEFAULT 30  
+    deliveryTime INT DEFAULT 30,  
+    longitude DECIMAL (10,8),
+    latitude DECIMAL (11,8)
 );
 
 -- ITEMS
@@ -62,14 +64,15 @@ CREATE TABLE item_allergens(
     FOREIGN KEY (allergenID) REFERENCES allergens(allergenID)
 );
 
-/* 
+
 USE food_ordering_app;
 
 -- 1. Restaurants
-INSERT INTO restaurants (restaurantName, postcode, deliveryTime) VALUES 
-('Burger King', 'W1 1AA', 35),      
-('Five Guys', 'W2 2BB', 25),        
-('Shake Shack', 'WC2 3CC', 40);     
+INSERT INTO restaurants (restaurantName, postcode, deliveryTime, longitude, latitude) VALUES 
+('Burger King', 'N1 1XR', 35, -0.081463, 51.504845),      
+('Five Guys', 'SE1 2BY', 25, -0.103612, 51.544332),        
+('Shake Shack', 'W1F 7HZ', 40, -0.139578, 51.513658),   
+('McDonalds', 'NN6 7UZ', 35, -1.123064, 52.307442);  
 
 -- 2. Items 
 INSERT INTO items (itemName, restaurantID, price, avRating, calories, description, ingredients, isVegan) VALUES 
