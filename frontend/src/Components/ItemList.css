@@ -1,6 +1,6 @@
 /* src/Components/ItemList.css */
 
-/* --- CONTAINER --- */
+/*CONTAINER*/
 .item-list-container {
   display: flex;
   flex-direction: column; /* Forces one below other */
@@ -10,7 +10,7 @@
   box-sizing: border-box;
 }
 
-/* --- CARD BASE STYLES --- */
+/*CARD BASE STYLES*/
 .item-card {
   display: flex;
   justify-content: space-between; /* Pushes text left, checkbox right */
@@ -25,8 +25,8 @@
   
   /* RESPONSIVE WIDTH LOGIC */
   width: 100%; 
-  max-width: 600px; /* On desktop, don't get wider than this */
-  margin: 0 auto;   /* On desktop, center the stack in the middle */
+  max-width: 600px; /* On desktop don't get wider than this */
+  margin: 0 auto;   /* On desktop center the stack in the middle */
 }
 
 /* HOVER EFFECT */
@@ -38,12 +38,12 @@
 
 /* SELECTED STATE */
 .item-card.selected {
-  border-color: #28a745; /* Green border */
+  border-color: #bae11c; 
   background-color: #e8f5e9; /* Very light green bg */
-  box-shadow: 0 4px 10px rgba(40, 167, 69, 0.2);
+  box-shadow: 0 4px 10px rgba(186, 225, 28, 0.2);
 }
 
-/* --- TEXT CONTENT (Left Side) --- */
+/* TEXT CONTENT (Left Side) */
 .card-content {
   display: flex;
   flex-direction: column;
@@ -76,7 +76,7 @@
   font-style: italic;
 }
 
-/* --- CHECKBOX (Right Side) --- */
+/* CHECKBOX (Right Side) */
 .custom-checkbox {
   width: 28px;
   height: 28px;
@@ -103,7 +103,7 @@
   transform: translate(-50%, -50%);
 }
 
-/* --- MEDIA QUERIES (Mobile Adjustments) --- */
+/* MEDIA QUERIES (Mobile Adjustments) */
 @media (max-width: 600px) {
   .item-card {
     padding: 15px; /* Slightly less padding on phones */
