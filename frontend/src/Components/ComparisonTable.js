@@ -11,7 +11,7 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
       
       <div className="comparison-scroll-wrapper">
         
-        {/* --- Header Row --- */}
+        {/* Header Row*/}
         <div className="table-row header-row">
           <div className="col-label">Feature</div>
           {items.map((item, index) => (
@@ -22,7 +22,7 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
           ))}
         </div>
 
-        {/* --- Price --- */}
+        {/*Price*/}
         <div className="table-row">
           <div className="col-label">Price</div>
           {items.map((item) => (
@@ -32,7 +32,7 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
           ))}
         </div>
 
-        {/* --- Delivery --- */}
+        {/*Delivery*/}
         <div className="table-row">
           <div className="col-label">Delivery</div>
           {items.map((item) => (
@@ -42,7 +42,7 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
           ))}
         </div>
 
-        {/* --- Restaurant --- */}
+        {/*Restaurant*/}
         <div className="table-row">
           <div className="col-label">Restaurant</div>
           {items.map((item) => (
@@ -52,12 +52,12 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
           ))}
         </div>
 
-        {/* --- NEW: Rating --- */}
+        {/*Rating*/}
         <div className="table-row">
           <div className="col-label">Rating</div>
           {items.map((item) => (
             <div key={item.itemID} className="col-item">
-               {/* Display rating or 'N/A' if missing */}
+               {/* Display rating if it's available or  'N/A' if missing */}
                <span style={{fontWeight: 'bold', color: '#f39c12'}}>
                  {item.avRating ? `★ ${item.avRating}` : "N/A"}
                </span>
@@ -65,7 +65,7 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
           ))}
         </div>
 
-        {/* --- NEW: Calories --- */}
+        {/*Calories*/}
         <div className="table-row">
           <div className="col-label">Calories</div>
           {items.map((item) => (
@@ -75,18 +75,18 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
           ))}
         </div>
 
-        {/* --- NEW: Allergens --- */}
+        {/*Allergens*/}
         <div className="table-row">
           <div className="col-label">Allergens</div>
           {items.map((item) => (
             <div key={item.itemID} className="col-item" style={{color: '#d9534f', fontSize: '0.85rem'}}>
-              {/* Check if allergens exist, otherwise show 'None' */}
+              {/* checks if allergens exist otherwise show 'None' */}
               {item.allergens ? item.allergens : "None"}
             </div>
           ))}
         </div>
 
-        {/* --- Vegan Status --- */}
+        {/*Vegan Status*/}
         <div className="table-row">
           <div className="col-label">Vegan?</div>
           {items.map((item) => (
@@ -98,7 +98,7 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
           ))}
         </div>
 
-         {/* --- Ingredients --- */}
+         {/* Ingredients */}
          <div className="table-row">
           <div className="col-label">Ingredients</div>
           {items.map((item) => (
@@ -108,7 +108,7 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
           ))}
         </div>
 
-        {/* --- Action Buttons --- */}
+        {/* Action Buttons */}
         <div className="table-row">
           <div className="col-label"></div>
           {items.map((item) => (
