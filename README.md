@@ -9,7 +9,9 @@ npm install express mysql2 cors dotenv
 # Install MUI library by running,
 npm install @mui/material @emotion/react @emotion/styled
 
-(or)
+
+
+
 ## Notes when contributing this project (to be deleted before submission)
 
 # When working in backend:
