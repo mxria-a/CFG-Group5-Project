@@ -1,9 +1,11 @@
 // import logo from './logo.svg';
 import "./App.css";
+import FoodComparisonPage from './Components/FoodComparisonPage.js';
 
 function App() {
   return (
     <div className="App">
+      <FoodComparisonPage />
       <header className="App-header">
         <h1 className="Introductions-header">Team Introductions</h1>
         <h2 className="Teammate-name">Maria</h2>
