@@ -20,4 +20,4 @@ function deg2rad(deg) {
   return deg * (Math.PI / 180);
 }
 
-console.log(getDistance(-0.081463, 51.504845, -1.123064, 52.307442));
+module.exports = { getDistance };

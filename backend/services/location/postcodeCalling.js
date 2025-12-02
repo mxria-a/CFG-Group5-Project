@@ -32,4 +32,4 @@ async function getLocation(postcode) {
   }
 }
 
-getLocation("NN6 7UZ");
+module.exports = { getLocation };
