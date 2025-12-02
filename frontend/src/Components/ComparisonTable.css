@@ -82,17 +82,20 @@
 .badge.yes { background-color: #28a745; }
 .badge.no { background-color: #dc3545; }
 
-/* Select Button */
-.select-btn {
-  background-color: #007bff;
+
+.add-to-cart-btn {
+  background-color: #28a745; /* Green color */
   color: white;
   border: none;
-  padding: 8px 20px;
-  border-radius: 4px;
+  padding: 10px 20px;
+  border-radius: 6px;
   cursor: pointer;
+  font-weight: bold;
+  font-size: 0.9rem;
   transition: background 0.2s;
+  white-space: nowrap; /* Keeps text on one line */
 }
 
-.select-btn:hover {
-  background-color: #0056b3;
+.add-to-cart-btn:hover {
+  background-color: #218838; /* Darker green on hover */
 }

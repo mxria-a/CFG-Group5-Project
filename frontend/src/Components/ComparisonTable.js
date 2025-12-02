@@ -1,9 +1,31 @@
 import React from 'react';
 import './ComparisonTable.css'; 
+import  { useState } from 'react';
+import { Snackbar, Alert } from '@mui/material';
 
 const ComparisonTable = ({ items, onSelectWinner }) => {
 
+    const [showNotification, setShowNotification] = useState(false); // Notification state for adding to basket
+
   if (!items || items.length === 0) return <div>No items selected</div>;
+
+  // handler to close the popup
+  const handleCloseNotification = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setShowNotification(false);
+  };
+
+  // handler for the "Add to Cart" button click
+  const handleAddToCartClick = (item) => {
+    //  call the parent prop just in case it's needed later
+    if (onSelectWinner) {
+      onSelectWinner(item);
+    }
+    // to show the "Added to Cart" popup
+    setShowNotification(true);
+  };
 
   return (
     <div className="compare-container">
@@ -109,21 +131,39 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
         </div>
 
         {/* Action Buttons */}
+        
         <div className="table-row">
           <div className="col-label"></div>
           {items.map((item) => (
             <div key={item.itemID} className="col-item">
               <button 
-                className="select-btn"
-                onClick={() => onSelectWinner(item)}
+                className="add-to-cart-btn" 
+                onClick={() => handleAddToCartClick(item)} /* click handler */
               >
-                Select
+                Add to Cart &#128722;
+        
               </button>
             </div>
           ))}
         </div>
 
       </div>
+      {/* MUI Snackbar popup */}
+      <Snackbar 
+        open={showNotification} 
+        autoHideDuration={3000} 
+        onClose={handleCloseNotification}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert 
+          onClose={handleCloseNotification} 
+          severity="success" 
+          sx={{ width: '100%' }}
+          variant="filled"
+        >
+          Item added to cart!
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

@@ -63,7 +63,7 @@ const FoodComparisonPage = () => {
     // teammates part
     // for now i am just logging the selection to confirm the UI works
     console.log("user selected:", item.itemName);
-    alert(`You chose ${item.itemName}! (Order API pending)`);
+   
   };
   
   // add to basket function placeholder
