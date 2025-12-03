@@ -11,16 +11,21 @@ const FoodComparisonPage = () => {
 
   const [view, setView] = useState('selection'); // 'selection' or 'comparison'
 
-  const [loading, setLoading] = useState(true); // Loading state for data fetch
+  const [loading, setLoading] = useState(true); // loading state for data fetch
 
   
-  const [showNotification, setShowNotification] = useState(false); // Notification state for adding to basket
+ 
+  const [notification, setNotification] = useState({
+    open: false,
+    message: '',
+    severity: 'success' // setting sucess as default
+  });
 
 
   //fetch items from api on component mount
   useEffect(() => {
     
-    // Later we may move this to a custom hook if the app grows
+    // later we may move this to a custom hook if the app grows
     fetch('http://localhost:3001/comparison-table-items')
       .then(res => {
         if (!res.ok) throw new Error("Failed to fetch items");
@@ -43,10 +48,20 @@ const FoodComparisonPage = () => {
     const isAlreadySelected = selectedItems.some(i => i.itemID === item.itemID);
 
     if (isAlreadySelected) {
-        //(filter it out)remove item from selected list
+        //remove item from selected list
       setSelectedItems(prev => prev.filter(i => i.itemID !== item.itemID));
       
     } else {
+      //only allow up to 3 items can be selected
+       if (selectedItems.length >= 3) {
+        setNotification({
+          open: true,
+          message: "You can only compare up to 3 items at a time.",
+          severity: 'error' // this error makes MUI alert turn red
+        });
+        return;
+      }
+      
         //add item to selected list
       setSelectedItems(prev => [...prev, item]);
     }
@@ -69,16 +84,23 @@ const FoodComparisonPage = () => {
   // add to basket function placeholder
  // this function shows the popup when clicked
   const handleAddToBasket = () => {
-    setShowNotification(true);
+    
+    //triggers green alert notification
+    setNotification({
+      open: true,
+      message: "Items successfully added to cart!",
+      severity: 'success' 
+    });
   };
 
   // this function closes the popup
   const handleCloseNotification = (event, reason) => {
     if (reason === 'clickaway') {
-      return; // doesn't close if user just clicks somewhere else on screen
+      return; // doesn't close unless user just clicks somewhere else on screen
     }
-    setShowNotification(false);
+      setNotification(prev => ({ ...prev, open: false }));
   };
+    
 
   if (loading) return <div className="loading-state">Loading options...</div>;
 
@@ -90,7 +112,7 @@ const FoodComparisonPage = () => {
           <header className="page-header">
             <h2>Select items to compare</h2>
             
-        {/* Action bar with select all and compare button */}
+        {/* action bar with select all and compare button */}
             <div className="action-bar">
               <button className="secondary-btn" onClick={handleSelectAll}>
                 {selectedItems.length === allItems.length ? "Deselect All" : "Select All"}
@@ -133,21 +155,21 @@ const FoodComparisonPage = () => {
       )}
 
       {/* popup component */}
-       <Snackbar 
-        open={showNotification} 
-        autoHideDuration={3000} // disappears after 3 seconds
+       <Snackbar
+        open={notification.open} 
+        autoHideDuration={3000}
         onClose={handleCloseNotification}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }} // position at bottom center
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert 
-          onClose={handleCloseNotification} 
-          severity="success" // makes it GREEN
+        <Alert
+          onClose={handleCloseNotification}
+          severity={notification.severity} // reads 'error' or 'success'
           sx={{ width: '100%' }}
-          variant="filled" // makes it filled style
+          variant="filled"
         >
-          Items successfully added to cart!
+          {notification.message} {/* reads the custom message */}
         </Alert>
-      </Snackbar> 
+      </Snackbar>
     </div>
   );
 };
