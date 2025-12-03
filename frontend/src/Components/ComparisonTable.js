@@ -6,6 +6,7 @@ import { Snackbar, Alert } from '@mui/material';
 const ComparisonTable = ({ items, onSelectWinner }) => {
 
     const [showNotification, setShowNotification] = useState(false); // Notification state for adding to basket
+    const [expandedIngredients, setExpandedIngredients] = useState({});
 
   if (!items || items.length === 0) return <div>No items selected</div>;
 
@@ -25,6 +26,13 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
     }
     // to show the "Added to Cart" popup
     setShowNotification(true);
+  };
+  //Toggle function for read more/less
+  const toggleIngredient = (id) => {
+    setExpandedIngredients(prev => ({
+      ...prev,
+      [id]: !prev[id] // toggle the boolean for this specific ID
+    }));
   };
 
   return (
@@ -92,7 +100,8 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
           <div className="col-label">Calories</div>
           {items.map((item) => (
             <div key={item.itemID} className="col-item">
-              {item.calories} kcal
+              {/* check if calories exist before rendering */}
+              {item.calories ? `${item.calories} kcal` : "N/A"}
             </div>
           ))}
         </div>
@@ -123,11 +132,33 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
          {/* Ingredients */}
          <div className="table-row">
           <div className="col-label">Ingredients</div>
-          {items.map((item) => (
-            <div key={item.itemID} className="col-item" style={{fontSize: '0.8rem', fontStyle: 'italic'}}>
-              {item.ingredients ? item.ingredients.substring(0, 50) + "..." : "View details"}
-            </div>
-          ))}
+          {items.map((item) => {
+            // logic variables
+            const fullText = item.ingredients || "View details";
+            const isExpanded = expandedIngredients[item.itemID];
+            const textLimit = 50;
+            const shouldTruncate = fullText.length > textLimit;
+
+            return (
+              <div key={item.itemID} className="col-item ingredients-cell">
+                <span style={{ fontStyle: 'italic' }}>
+                  {isExpanded || !shouldTruncate 
+                    ? fullText 
+                    : `${fullText.substring(0, textLimit)}...`}
+                </span>
+                
+                {/* only show button if text is long enough */}
+                {shouldTruncate && (
+                  <button 
+                    className="view-more-link"
+                    onClick={() => toggleIngredient(item.itemID)}
+                  >
+                    {isExpanded ? "View Less" : "View More"}
+                  </button>
+                )}
+              </div>
+            );
+          })}
         </div>
 
         {/* Action Buttons */}

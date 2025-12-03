@@ -14,14 +14,14 @@
 .comparison-scroll-wrapper {
   display: flex;
   flex-direction: column;
-  overflow-x: auto; /* Allows horizontal scroll on mobile */
+  overflow-x: auto; /* allows horizontal scroll on mobile */
   width: 100%;
 }
 
 .table-row {
   display: flex;
   border-bottom: 1px solid #eee;
-  min-width: max-content; /* Keeps rows from squishing */
+  min-width: max-content; /* keeps rows from squishing */
 }
 
 .header-row {
@@ -31,11 +31,13 @@
 }
 
 .col-label {
-  flex: 0 0 150px; /* Fixed width for the first column */
+  flex: 0 0 150px; /* fixed width for the first column */
   padding: 15px;
   background-color: #fff;
-  position: sticky; /* Keeps "Feature" column visible while scrolling */
+  position: sticky; /* Keeps feature column visible while scrolling */
   left: 0;
+  z-index: 10; /*ensures label stays on top while scrolling*/
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1); /* adds a shadow to separate header from content */
   border-right: 1px solid #eee;
   display: flex;
   align-items: center;
@@ -44,7 +46,7 @@
 }
 
 .col-item {
-  flex: 0 0 180px; /* Fixed width for item columns */
+  flex: 0 0 180px; /* fixed width for item columns */
   padding: 15px;
   text-align: center;
   display: flex;
@@ -97,5 +99,32 @@
 }
 
 .add-to-cart-btn:hover {
-  background-color: #218838; /* Darker green on hover */
+  background-color: #218838; /* darker green on hover */
+}
+
+
+
+.ingredients-cell {
+  font-size: 0.8rem;
+  display: flex;
+  flex-direction: column; /* stacks text and button vertically */
+  align-items: center;
+  justify-content: center;
+}
+
+.view-more-link {
+  background: none;
+  border: none;
+  color: #007bff; /* blue link */
+  cursor: pointer;
+  font-size: 0.75rem;
+  text-decoration: underline;
+  margin-top: 4px;
+  padding: 0;
+  font-family: inherit;
+}
+
+.view-more-link:hover {
+  color: #0056b3; /* darker blue on hover */
+  text-decoration: none;
 }
