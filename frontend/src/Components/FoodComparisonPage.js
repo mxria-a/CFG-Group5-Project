@@ -13,6 +13,8 @@ const FoodComparisonPage = () => {
 
   const [loading, setLoading] = useState(true); // loading state for data fetch
 
+ 
+
   
  
   const [notification, setNotification] = useState({
@@ -66,6 +68,20 @@ const FoodComparisonPage = () => {
       setSelectedItems(prev => [...prev, item]);
     }
   };
+  // handler to handle comparison count
+  const handleCompareClick = () => {
+    if (selectedItems.length < 2) {
+      setNotification({
+        open: true,
+        message: "Please select at least 2 items to compare.",
+        severity: 'warning' // Orange color (or use 'error' for Red)
+      });
+      return; // Stop here, do not change view
+    }
+    
+    // If we have 2 or 3 items, proceed
+    setView('comparison');
+  };
 
   const handleSelectAll = () => {
     //a shortcut button.
@@ -76,11 +92,15 @@ const FoodComparisonPage = () => {
 
   const handleOrder = (item) => {
     // teammates part
-    // for now i am just logging the selection to confirm the UI works
-    console.log("user selected:", item.itemName);
-   
-  };
+    // for now just building a layout will change later
+    
+    console.log("Ordering item:", item);
   
+  };
+
+  
+  
+
   // add to basket function placeholder
  // this function shows the popup when clicked
   const handleAddToBasket = () => {
@@ -110,7 +130,7 @@ const FoodComparisonPage = () => {
       {view === 'selection' ? (
         <div className="selection-wrapper">
           <header className="page-header">
-            <h2>Select items to compare</h2>
+            <h2>Select Items to Compare</h2>
             
         {/* action bar with select all and compare button */}
             <div className="action-bar">
@@ -121,9 +141,9 @@ const FoodComparisonPage = () => {
               
               {selectedItems.length > 0 && (
                 <> 
-                  <button className="primary-btn" onClick={() => setView('comparison')}>
-                    Compare {selectedItems.length} Options &rarr;
-                  </button>
+                  <button className="primary-btn" onClick={handleCompareClick}>
+                     Compare {selectedItems.length} Options &rarr;
+                    </button>
                   {/* add to basket button */}
                   <button className="basket-btn" onClick={handleAddToBasket}>
                     Add to Basket &#128722;
@@ -153,6 +173,7 @@ const FoodComparisonPage = () => {
           />
         </div>
       )}
+      
 
       {/* popup component */}
        <Snackbar
@@ -163,11 +184,11 @@ const FoodComparisonPage = () => {
       >
         <Alert
           onClose={handleCloseNotification}
-          severity={notification.severity} // reads 'error' or 'success'
+          severity={notification.severity} 
           sx={{ width: '100%' }}
           variant="filled"
         >
-          {notification.message} {/* reads the custom message */}
+          {notification.message} 
         </Alert>
       </Snackbar>
     </div>
