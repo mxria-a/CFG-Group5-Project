@@ -1,6 +1,7 @@
 // import logo from './logo.svg';
 import "./App.css";
 import FoodComparisonPage from './Components/FoodComparisonPage.js';
+import Home from "./Pages/Homepage";
 
 function App() {
   return (
@@ -65,6 +66,7 @@ function App() {
         </p>
 
       </header>
+      <Home />
     </div>
   );
 }
