@@ -6,6 +6,7 @@ import Home from "./Pages/Homepage";
 function App() {
   return (
     <div className="App">
+      <Home />
       <FoodComparisonPage />
       <header className="App-header">
         <h1 className="Introductions-header">Team Introductions</h1>
@@ -66,7 +67,7 @@ function App() {
         </p>
 
       </header>
-      <Home />
+      
     </div>
   );
 }

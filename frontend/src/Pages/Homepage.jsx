@@ -1,6 +1,6 @@
 import { useState } from "react";
-import GetItem from "../Components/FoodItem_Input";
-import Postcode_Input from "../Components/PostCode_Input";
+import GetItem from "../Components/FoodItemInput";
+import PostCodeInput from "../Components/PostCodeInput";
 import SubmitButton from "../Components/SubmitButton";
 
 function Home() {
@@ -18,7 +18,7 @@ function Home() {
     <>
       <h1>What are you hungry for today?</h1>
       <GetItem setItem={setItem} />
-      <Postcode_Input setPostcode={setPostcode} />
+      <PostCodeInput setPostcode={setPostcode} />
       <SubmitButton onClick={Search} />
       <p>{text}</p>
       <div>{results}</div>
