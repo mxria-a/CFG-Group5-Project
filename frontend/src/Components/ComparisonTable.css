@@ -1,130 +1,171 @@
+/* --- 1. Main Card Container --- */
 .compare-container {
   background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-  padding: 20px;
+  border-radius: 16px; /* Soft rounded corners */
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08); /* Deep, soft shadow */
+  padding: 30px;
+  margin: 20px auto;
+  max-width: 1000px;
+  overflow: hidden; /* Keeps content inside the rounded corners */
+  border: 1px solid #f0f0f0;
 }
 
 .table-title {
   text-align: center;
-  margin-bottom: 20px;
-  color: #333;
+  margin-bottom: 30px;
+  color: #2c3e50;
+  font-size: 1.8rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
 }
 
+/* --- 2. The Scrollable Area --- */
 .comparison-scroll-wrapper {
   display: flex;
   flex-direction: column;
-  overflow-x: auto; /* allows horizontal scroll on mobile */
-  width: 100%;
+  overflow-x: auto; /* Allows scrolling on small screens */
+  padding-bottom: 10px; /* Space for scrollbar */
 }
 
+/* --- 3. Row Styling --- */
 .table-row {
   display: flex;
-  border-bottom: 1px solid #eee;
-  min-width: max-content; /* keeps rows from squishing */
+  border-bottom: 1px solid #f1f1f1;
+  transition: background-color 0.2s;
 }
 
+.table-row:last-child {
+  border-bottom: none;
+}
+
+/* Hover effect on rows for readability */
+.table-row:hover:not(.header-row) {
+  background-color: #fafbfc;
+}
+
+/* --- 4. The Header Row (Top) --- */
 .header-row {
   background-color: #f8f9fa;
-  font-weight: bold;
-  border-top: 2px solid #eee;
+  border-top: none;
+  border-bottom: 2px solid #e9ecef;
 }
 
+/* --- 5. Column Styling --- */
+
+/* The "Feature" Label Column (Leftmost) */
 .col-label {
-  flex: 0 0 150px; /* fixed width for the first column */
-  padding: 15px;
-  background-color: #fff;
-  position: sticky; /* Keeps feature column visible while scrolling */
-  left: 0;
-  z-index: 10; /*ensures label stays on top while scrolling*/
-  box-shadow: 2px 0 5px rgba(0,0,0,0.1); /* adds a shadow to separate header from content */
-  border-right: 1px solid #eee;
+  flex: 0 0 180px; /* Fixed width */
+  padding: 20px;
+  background-color: #fff; /* Opaque bg so it covers scrolling content */
+  font-weight: 700;
+  color: #555;
   display: flex;
   align-items: center;
-  font-weight: bold;
-  color: #555;
+  
+  /* STICKY MAGIC: Keeps this column visible when scrolling sideways */
+  position: sticky;
+  left: 0;
+  z-index: 10;
+  border-right: 1px solid #f0f0f0;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.02); /* Tiny shadow to separate it */
 }
 
+/* The Data Columns (Item 1, Item 2...) */
 .col-item {
-  flex: 0 0 180px; /* fixed width for item columns */
-  padding: 15px;
+  flex: 1;
+  min-width: 200px; /* Ensures columns don't get too squished */
+  padding: 20px;
   text-align: center;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   border-right: 1px dashed #eee;
+  color: #444;
 }
 
+.col-item:last-child {
+  border-right: none;
+}
+
+/* --- 6. Typography & Details --- */
 .option-tag {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   text-transform: uppercase;
+  letter-spacing: 1px;
   color: #999;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
+  font-weight: 600;
 }
 
 .item-name {
-  font-weight: bold;
+  font-size: 1.1rem;
+  font-weight: 800;
   color: #222;
+  margin-bottom: 5px;
 }
 
 .price-tag {
-  font-size: 1.1rem;
-  color: #28a745;
-  font-weight: bold;
+  font-size: 1.4rem;
+  color: #27ae60; /* Success Green */
+  font-weight: 800;
 }
 
-/* Badges */
+/* --- 7. Badges (Yes/No/Rating) --- */
 .badge {
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 0.8rem;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: bold;
   color: white;
+  text-transform: uppercase;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
-.badge.yes { background-color: #28a745; }
-.badge.no { background-color: #dc3545; }
 
+.badge.yes { background-color: #2ecc71; }
+.badge.no  { background-color: #e74c3c; }
 
+/* --- 8. Buttons & Links --- */
 .add-to-cart-btn {
-  background-color: #28a745; /* Green color */
+  background-color: #27ae60; /* Fresh Green */
   color: white;
   border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
+  padding: 12px 24px;
+  border-radius: 8px;
   cursor: pointer;
-  font-weight: bold;
+  font-weight: 700;
   font-size: 0.9rem;
-  transition: background 0.2s;
-  white-space: nowrap; /* Keeps text on one line */
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 6px rgba(39, 174, 96, 0.2); /* Green shadow */
 }
 
 .add-to-cart-btn:hover {
-  background-color: #218838; /* darker green on hover */
+  background-color: #219150;
+  transform: translateY(-2px); /* Moves up slightly on hover */
+  box-shadow: 0 6px 12px rgba(39, 174, 96, 0.3);
 }
 
-
-
 .ingredients-cell {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   display: flex;
-  flex-direction: column; /* stacks text and button vertically */
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  line-height: 1.4;
 }
 
 .view-more-link {
-  background: none;
+  color: #3498db;
+  font-weight: 600;
+  font-size: 0.85rem;
+  margin-top: 8px;
+  text-decoration: none;
   border: none;
-  color: #007bff; /* blue link */
+  background: none;
   cursor: pointer;
-  font-size: 0.75rem;
-  text-decoration: underline;
-  margin-top: 4px;
-  padding: 0;
-  font-family: inherit;
 }
 
 .view-more-link:hover {
-  color: #0056b3; /* darker blue on hover */
-  text-decoration: none;
+  text-decoration: underline;
+  color: #2980b9;
 }
