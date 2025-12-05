@@ -4,10 +4,12 @@ const pool = require("../db"); // import the pool from the new module
 const { getLocation } = require("../services/location/postcodeCalling");
 const { getDistance } = require("../services/location/distanceCalculator");
 
+//this creates a mini-app to handle the different routes
 const router = express.Router();
 
 //route to find restaurants near a given postcode
 router.get("/near-restaurants/:postcode", async (req, res) => {
+  //extract the postcode
   const userPostcode = req.params.postcode;
 
   try {
@@ -29,6 +31,7 @@ router.get("/near-restaurants/:postcode", async (req, res) => {
 
       //filter results by distance
       const maxDistance = 5; //keep to 5 km radius
+      //calculate distance to each restaurant
       const nearbyRestaurants = results
         .map((r) => {
           const distance = getDistance(
