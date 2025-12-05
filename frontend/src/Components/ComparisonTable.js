@@ -1,5 +1,5 @@
 import React from 'react';
-import './ComparisonTable.css'; 
+import './ComparisonTable.css';
 import  { useState } from 'react';
 import { Snackbar, Alert } from '@mui/material';
 

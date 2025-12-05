@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import ItemList from './ItemList';
-import ComparisonTable from './ComparisonTable';
+import ItemList from '../Components/ItemList';
+import ComparisonTable from '../Components/ComparisonTable';
 import './FoodComparisonPage.css';
 import { Snackbar, Alert } from '@mui/material';
 

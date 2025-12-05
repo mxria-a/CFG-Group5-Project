@@ -1,6 +1,6 @@
 // import logo from './logo.svg';
 import "./App.css";
-import FoodComparisonPage from './Components/FoodComparisonPage.js';
+import FoodComparisonPage from './Pages/FoodComparisonPage.js';
 import Home from "./Pages/Homepage";
 
 function App() {
