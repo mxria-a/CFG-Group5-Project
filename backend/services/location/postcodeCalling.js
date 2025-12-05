@@ -29,6 +29,7 @@ async function getLocation(postcode) {
     return { longitude, latitude };
   } catch (err) {
     console.error("API error:", err.message);
+    throw err;
   }
 }
 
