@@ -13,8 +13,7 @@ function Postcode_Input({ setPostcode }) {
         <TextField
           required
           id="outlined-required"
-          label="Required"
-          defaultValue="Insert Postcode"
+          label="Postcode"
           //update parent state
           onChange={(e) => setPostcode(e.target.value)}
         />
