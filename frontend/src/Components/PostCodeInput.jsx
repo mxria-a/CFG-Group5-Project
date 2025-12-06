@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import { TextField } from "@mui/material";
 
-function PostcodeInput({ setPostcode }) {
+function PostCodeInput({ setPostcode }) {
   return (
     <Box
       component="form"
@@ -22,4 +22,4 @@ function PostcodeInput({ setPostcode }) {
   );
 }
 
-export default PostcodeInput;
+export default PostCodeInput;

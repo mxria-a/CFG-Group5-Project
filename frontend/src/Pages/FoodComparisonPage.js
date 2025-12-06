@@ -63,9 +63,20 @@ const FoodComparisonPage = ({ searchQuery, postcode, onBackToSearch }) => {
     setView('comparison');
   };
 
+   // Helper to check if all items are selected (by itemID)
+  const areAllItemsSelected = () => {
+    if (allItems.length === 0) return false;
+    const selectedIDs = new Set(selectedItems.map(i => i.itemID));
+    return allItems.every(item => selectedIDs.has(item.itemID));
+  };
   const handleSelectAll = () => {
-    const isAllSelected = selectedItems.length === allItems.length;
-    setSelectedItems(isAllSelected ? [] : allItems);
+    const isAllSelected = areAllItemsSelected();
+    if (isAllSelected) {
+      setSelectedItems([]);
+    } else {
+      // Only select up to 3 items if selection is limited
+      setSelectedItems(allItems.slice(0, 3));
+    }
   };
 
   const handleOrder = (item) => {

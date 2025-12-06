@@ -1,6 +1,6 @@
 import { Autocomplete, TextField, Box } from "@mui/material";
 
-const OPTIONS = ["Burger", "Pizza", "Sushi", "Chicken"]
+const OPTIONS = ["Burger", "Pizza", "Sushi", "Chicken"];
 
 function GetItem({ setItem }) {
   return (
