@@ -1,6 +1,6 @@
-/* src/Components/ItemList.css */
 
-/*CONTAINER*/
+
+/*container*/
 .item-list-container {
   display: flex;
   flex-direction: column; /* Forces one below other */
@@ -10,44 +10,44 @@
   box-sizing: border-box;
 }
 
-/*CARD BASE STYLES*/
+/*card base styles*/
 .item-card {
   display: flex;
   justify-content: space-between; /* Pushes text left, checkbox right */
   align-items: center; /* Vertically centers the checkbox */
   
-  background-color: #f8f9fa; /* Light grey background like wireframe */
+  background-color: #f8f9fa; 
   border: 2px solid #ccc;
   border-radius: 12px;
   padding: 20px;
   cursor: pointer;
   transition: all 0.2s ease;
   
-  /* RESPONSIVE WIDTH LOGIC */
+  /* responsive width logic */
   width: 100%; 
   max-width: 600px; /* On desktop don't get wider than this */
   margin: 0 auto;   /* On desktop center the stack in the middle */
 }
 
-/* HOVER EFFECT */
+/* hover effect */
 .item-card:hover {
   border-color: #888;
   background-color: #fff;
   transform: scale(1.02); /* Slight pop effect */
 }
 
-/* SELECTED STATE */
+/* selected state */
 .item-card.selected {
   border-color: #bae11c; 
-  background-color: #e8f5e9; /* Very light green bg */
+  background-color: #e8f5e9; 
   box-shadow: 0 4px 10px rgba(186, 225, 28, 0.2);
 }
 
-/* TEXT CONTENT (Left Side) */
+/* text content on the left side */
 .card-content {
   display: flex;
   flex-direction: column;
-  gap: 8px; /* Space between title, price, delivery */
+  gap: 8px; 
 }
 
 .card-content h3 {
@@ -66,7 +66,7 @@
 .card-details-row .label {
   font-weight: bold;
   color: #333;
-  width: 80px; /* Aligns the values neatly */
+  width: 80px; 
 }
 
 .restaurant-subtext {
@@ -76,7 +76,7 @@
   font-style: italic;
 }
 
-/* CHECKBOX (Right Side) */
+/* Right Side checkbox */
 .custom-checkbox {
   width: 28px;
   height: 28px;
@@ -103,7 +103,7 @@
   transform: translate(-50%, -50%);
 }
 
-/* MEDIA QUERIES (Mobile Adjustments) */
+/* Mobile Adjustments */
 @media (max-width: 600px) {
   .item-card {
     padding: 15px; /* Slightly less padding on phones */

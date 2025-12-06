@@ -1,6 +1,6 @@
 import "./App.css";
 import Home from "./Pages/Homepage";
-import TeamIntro from "./Components/TeamIntro"; // Import the new component
+import TeamIntro from "./Components/TeamIntro"; 
 
 function App() {
   return (
@@ -11,7 +11,7 @@ function App() {
       {/* Spacing */}
       <div style={{ height: '80px' }}></div>
       
-      {/* The Team Section (Clean and separate) */}
+      {/* The Team Section */}
       <TeamIntro />
       
     </div>
