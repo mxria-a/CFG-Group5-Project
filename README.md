@@ -6,6 +6,13 @@ Repo for CFG group assignment
 
 npm install express mysql2 cors dotenv
 
+# Install MUI library by running,
+npm install @mui/material @emotion/react @emotion/styled
+
+(or)
+npm install @mui/material @emotion/react @emotion/styled --legacy-peer-deps
+
+
 ## Notes when contributing this project (to be deleted before submission)
 
 # When working in backend:

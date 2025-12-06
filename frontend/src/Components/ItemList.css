@@ -1,0 +1,119 @@
+
+
+/*container*/
+.item-list-container {
+  display: flex;
+  flex-direction: column; /* Forces one below other */
+  gap: 20px; /* Space between cards */
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+/*card base styles*/
+.item-card {
+  display: flex;
+  justify-content: space-between; /* Pushes text left, checkbox right */
+  align-items: center; /* Vertically centers the checkbox */
+  
+  background-color: #f8f9fa; 
+  border: 2px solid #ccc;
+  border-radius: 12px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  /* responsive width logic */
+  width: 100%; 
+  max-width: 600px; /* On desktop don't get wider than this */
+  margin: 0 auto;   /* On desktop center the stack in the middle */
+}
+
+/* hover effect */
+.item-card:hover {
+  border-color: #888;
+  background-color: #fff;
+  transform: scale(1.02); /* Slight pop effect */
+}
+
+/* selected state */
+.item-card.selected {
+  border-color: #bae11c; 
+  background-color: #e8f5e9; 
+  box-shadow: 0 4px 10px rgba(186, 225, 28, 0.2);
+}
+
+/* text content on the left side */
+.card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px; 
+}
+
+.card-content h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.card-details-row {
+  font-size: 1rem;
+  color: #555;
+  display: flex;
+  gap: 10px;
+}
+
+.card-details-row .label {
+  font-weight: bold;
+  color: #333;
+  width: 80px; 
+}
+
+.restaurant-subtext {
+  font-size: 0.85rem;
+  color: #888;
+  margin-top: 5px;
+  font-style: italic;
+}
+
+/* Right Side checkbox */
+.custom-checkbox {
+  width: 28px;
+  height: 28px;
+  border: 2px solid #888;
+  border-radius: 50%; /* Circle shape */
+  position: relative;
+  background: white;
+}
+
+.custom-checkbox.checked {
+  background-color: #28a745;
+  border-color: #28a745;
+}
+
+/* Checkmark Symbol */
+.custom-checkbox.checked::after {
+  content: '✓';
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Mobile Adjustments */
+@media (max-width: 600px) {
+  .item-card {
+    padding: 15px; /* Slightly less padding on phones */
+  }
+  
+  .card-content h3 {
+    font-size: 1.1rem;
+  }
+  
+  .card-details-row {
+    font-size: 0.9rem;
+  }
+}

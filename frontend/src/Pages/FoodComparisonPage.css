@@ -1,0 +1,111 @@
+/* Container */
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+/* Header */
+.page-header {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.page-header h2 {
+  margin: 0 0 15px 0;
+  color: #2c3e50;
+}
+
+/* Action bar (The Buttons Row) */
+.action-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Space between buttons */
+  width: 100%;
+}
+
+/* this pushes the first button (Select All) to the far left, 
+   keeping the other buttons on the right. */
+.action-bar > button:first-child {
+  margin-right: auto; 
+}
+
+/*All button styles*/
+
+/*  Compare Button */
+.primary-btn {
+  background-color: #28a745; 
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px; 
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: background 0.2s;
+}
+
+.primary-btn:hover {
+  background-color: #218838;
+}
+
+/* Select All Button */
+.secondary-btn {
+  background-color: #6c757d; 
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.secondary-btn:hover {
+  background-color: #5a6268;
+}
+
+/* Basket Button */
+.basket-btn {
+  background-color: #007bff; 
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px; 
+}
+
+.basket-btn:hover {
+  background-color: #0056b3; 
+}
+
+.back-btn {
+  background: none;
+  border: 1px solid #ccc;
+  padding: 8px 16px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  color: #555;
+}
+
+.back-btn:hover {
+  background-color: #f1f1f1;
+  color: #000;
+}
+
+/* Loading State */
+.loading-state {
+  text-align: center;
+  margin-top: 50px;
+  font-size: 1.2rem;
+  color: #666;
+}
