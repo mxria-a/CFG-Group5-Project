@@ -11,18 +11,13 @@ const FoodComparisonPage = ({ searchQuery, postcode, onBackToSearch }) => {
   const [loading, setLoading] = useState(true); 
 
   const [notification, setNotification] = useState({
-    open: false,
-    message: '',
-    severity: 'success'
+    open: false, message: '', severity: 'success'
   });
 
   useEffect(() => {
     setLoading(true);
     fetch('http://localhost:3001/comparison-table-items')
-      .then(res => {
-        if (!res.ok) throw new Error("Failed to fetch items");
-        return res.json();
-      })
+      .then(res => res.json())
       .then(data => {
         if (searchQuery) {
            const lowerCaseQuery = searchQuery.toLowerCase();
@@ -36,10 +31,7 @@ const FoodComparisonPage = ({ searchQuery, postcode, onBackToSearch }) => {
         }
         setLoading(false);
       })
-      .catch(err => {
-        console.error("Error:", err);
-        setLoading(false); 
-      });
+      .catch(err => { console.error("Error:", err); setLoading(false); });
   }, [searchQuery]);
 
   const handleToggle = (item) => {
@@ -63,25 +55,27 @@ const FoodComparisonPage = ({ searchQuery, postcode, onBackToSearch }) => {
     setView('comparison');
   };
 
-   // Helper to check if all items are selected (by itemID)
+  // Helper to check selection status
   const areAllItemsSelected = () => {
     if (allItems.length === 0) return false;
-    const selectedIDs = new Set(selectedItems.map(i => i.itemID));
-    return allItems.every(item => selectedIDs.has(item.itemID));
+    return selectedItems.length === allItems.length;
   };
+
   const handleSelectAll = () => {
-    const isAllSelected = areAllItemsSelected();
-    if (isAllSelected) {
+    if (areAllItemsSelected()) {
       setSelectedItems([]);
     } else {
-      // Only select up to 3 items if selection is limited
-      setSelectedItems(allItems.slice(0, 3));
+      // If user clicks Select All, take only first 3 items (due to limit)
+      // Or select everything if you removed the limit.
+      // For now, selecting top 3 is safer UX choice
+      setSelectedItems(allItems.slice(0, 3)); 
+      if (allItems.length > 3) {
+          setNotification({ open: true, message: "Selected top 3 items (Limit reached)", severity: 'info' });
+      }
     }
   };
 
-  const handleOrder = (item) => {
-    console.log("Ordering item:", item);
-  };
+  const handleOrder = (item) => { console.log("Ordering item:", item); };
   
   const handleAddToBasket = () => {
     setNotification({ open: true, message: "Items added to cart!", severity: 'success' });
@@ -97,47 +91,54 @@ const FoodComparisonPage = ({ searchQuery, postcode, onBackToSearch }) => {
   return (
     <div className="page-container">
       
-      {/* selection view  */}
       {view === 'selection' ? (
         <div className="selection-wrapper">
+          
           <button 
              onClick={onBackToSearch} 
              className="back-btn"
-             style={{ marginBottom: '10px' }} 
+             style={{ marginBottom: '15px' }}
            >
              &larr; Search Again
            </button>
-          <header className="page-header">
+
+          {/* header layout (Title Left, Link Right) */}
+          <div className="header-row-flex">
+            {/* Title */}
             <h2>{searchQuery ? `Results for "${searchQuery}"` : "All Items"}</h2>
             
-            {/* Action Bar (Buttons Only) */}
-            <div className="action-bar">
-              <button className="secondary-btn" onClick={handleSelectAll}>
-                {selectedItems.length === allItems.length ? "Deselect All" : "Select All"}
-              </button>
-              
-              {selectedItems.length > 0 && (
-                <> 
-                  <button className="primary-btn" onClick={handleCompareClick}>
-                      Compare {selectedItems.length} Options &rarr;
-                  </button>
-                  <button className="basket-btn" onClick={handleAddToBasket}>
-                    Add to Basket &#128722;
-                  </button>
-                </> 
-              )} 
-            </div>
-          </header>
+            {/* Select All Button (Top Right) */}
+            <button className="select-all-link" onClick={handleSelectAll}>
+              {areAllItemsSelected() && allItems.length > 0 ? "Deselect All" : "Select All"}
+            </button>
+          </div>
 
-          {/* Item List (Main Content) */}
+          {/* list contents */}
           <ItemList 
             items={allItems} 
             selectedItems={selectedItems} 
             onToggle={handleToggle} 
           />
+
+          {/* floating bottom bar (Only visible when items selected) */}
+          {selectedItems.length > 0 && (
+            <div className="action-bar-floating">
+               <span className="selection-count">{selectedItems.length} selected</span>
+               
+               <div className="action-buttons">
+                  <button className="primary-btn" onClick={handleCompareClick}>
+                      Compare Options &rarr;
+                  </button>
+                  <button className="basket-btn" onClick={handleAddToBasket}>
+                    Add to Basket &#128722;
+                  </button>
+               </div>
+            </div>
+          )}
+
         </div>
       ) : (
-        /* comparison view*/
+        /* comparison view */
         <div className="comparison-wrapper">
           <button className="back-btn" onClick={() => setView('selection')}>
             &larr; Back to Selection
@@ -150,7 +151,6 @@ const FoodComparisonPage = ({ searchQuery, postcode, onBackToSearch }) => {
         </div>
       )}
 
-      {/* Snackbar */}
       <Snackbar 
         open={notification.open} 
         autoHideDuration={3000} 
