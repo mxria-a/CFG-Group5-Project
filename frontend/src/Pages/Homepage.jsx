@@ -63,7 +63,7 @@ function Home() {
           <h1 className="home-title">Food Ordering App</h1>
 
           <div className="input-group">
-            <GetItem setItem={setItem} />
+            <GetItem item={item} setItem={setItem} />
             <PostCodeInput setPostcode={setPostcode} />
           </div>
 
