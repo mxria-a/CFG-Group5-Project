@@ -13,7 +13,6 @@ const mockItems = [
     calories: 800,
     allergens: 'Gluten',
     isVegan: false,
-    // FIX: Made this string SHORT (under 50 chars) so it won't trigger "View More"
     ingredients: 'Bun, Meat, Cheese, Ketchup' 
   },
   {
@@ -26,7 +25,6 @@ const mockItems = [
     calories: 500,
     allergens: 'Soy',
     isVegan: true,
-    // Keep this one LONG to trigger the "View More" button
     ingredients: 'Plant patty, lettuce, tomato, cucumber, special vegan sauce, sesame bun, onion rings, pickles, avocado, mushrooms, spinach, kale'
   }
 ];
@@ -69,7 +67,7 @@ describe('ComparisonTable Component', () => {
   test('toggles "View More" and "View Less" for long ingredients', () => {
     render(<ComparisonTable items={mockItems} />);
 
-    // Now this will only find ONE button (for the second item), so it won't crash
+    // Find the "View More" button for the long ingredients item
     const viewMoreButton = screen.getByText('View More');
     expect(viewMoreButton).toBeInTheDocument();
 
