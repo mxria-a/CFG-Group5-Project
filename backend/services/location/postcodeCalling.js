@@ -9,9 +9,12 @@ const cors = require("cors");
 const app = express();
 app.use(cors());
 
-//postcode for initial searching
+//Call postcode API to convert postcode to coordinates
 async function getLocation(postcode) {
-  //set ip API details
+  //remove spaces from postcode
+  postcode.replace(" ", "");
+
+  //set up API details
   const apiUrl = `https://api.postcodes.io/postcodes/${postcode}`;
 
   //fetch data for longitude and latitude
@@ -20,6 +23,8 @@ async function getLocation(postcode) {
 
     const longitude = response.data.result.longitude;
     const latitude = response.data.result.latitude;
+
+    console.log(latitude);
 
     //return values
     return { longitude, latitude };
