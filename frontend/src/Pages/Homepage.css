@@ -2,51 +2,105 @@
 
 
 /* Homepage styles */
-.home-container {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: #f7f7fa;
-  padding: 32px 16px;
+.suggestions-section {
+  margin-top: 2rem;
+  width: 100%;
+  max-width: 900px;
 }
-.search-wrapper {
-  background: #fff;
+
+.suggestions-title {
+  font-size: 1.4rem;
+  margin-bottom: 0.25rem;
+}
+
+.suggestions-subtitle {
+  font-size: 0.95rem;
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.suggestions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.suggestion-card {
+  background: #ffffff;
   border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-  padding: 32px 24px 24px 24px;
+  padding: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid #eee;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  max-width: 400px;
-  width: 100%;
+  gap: 0.75rem;
 }
-.home-title {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 24px;
-  color: #333;
-  text-align: center;
-}
-.input-group {
+
+.suggestion-card-header {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  width: 100%;
-  margin-bottom: 24px;
+  gap: 0.15rem;
 }
-.submit-btn-wrapper {
+
+.suggestion-card-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.suggestion-card-subtitle {
+  font-size: 0.9rem;
+  color: #777;
+}
+
+.suggestion-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.suggestion-chip {
+  border: none;
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background: #f5f5f5;
+  transition: background 0.15s ease, transform 0.05s ease;
+}
+
+.suggestion-chip:hover {
+  background: #e0f2ff;
+  transform: translateY(-1px);
+}
+
+.suggestion-chip:active {
+  transform: translateY(0);
+}
+
+.random-box-container {
+  margin-top: 20px;
   display: flex;
   justify-content: center;
-  width: 100%;
+  gap: 15px;
 }
-.results-wrapper {
-  background: #fff;
+
+.random-box {
+  background: #ffffff;
+  padding: 15px 22px;
   border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-  padding: 32px 24px 24px 24px;
-  max-width: 700px;
-  width: 100%;
-  margin: 0 auto;
+  font-size: 1rem;
+  font-weight: 600;
+  border: 1px solid #e5e5e5;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.random-box:hover {
+  background: #f0faff;
+  transform: translateY(-3px);
+}
+
+.random-box:active {
+  transform: translateY(0);
 }
