@@ -11,6 +11,7 @@ const ItemList = ({ items, selectedItems, onToggle }) => {
         return (
           <div 
             key={item.itemID} 
+            data-testid={`food-card-${item.itemID}`}
             className={`item-card ${isSelected ? 'selected' : ''}`}
             onClick={() => onToggle(item)}
           >
