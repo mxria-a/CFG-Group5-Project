@@ -21,10 +21,6 @@ async function getLocation(postcode) {
     const longitude = response.data.result.longitude;
     const latitude = response.data.result.latitude;
 
-    //print results to the console
-    console.log(`${postcode} Longitude: ${longitude}`);
-    console.log(`${postcode} Latitude: ${latitude}`);
-
     //return values
     return { longitude, latitude };
   } catch (err) {
