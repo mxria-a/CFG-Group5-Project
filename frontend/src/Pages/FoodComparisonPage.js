@@ -52,8 +52,6 @@ const FoodComparisonPage = ({ searchQuery, postcode, onBackToSearch }) => {
           lat: coords.latitude,
         });
 
-        console.log(coords);
-
         //calculate distances
         const restaurantDistance = filteredData.map((item) => ({
           ...item,
@@ -70,8 +68,8 @@ const FoodComparisonPage = ({ searchQuery, postcode, onBackToSearch }) => {
         const nearbyItems = restaurantDistance.filter(
           (item) => item.distance <= maxDistance
         );
-        console.log(nearbyItems);
-        //amend filtered list with distances
+
+        //update filtered list with distances
         filteredData = nearbyItems;
         setAllItems(filteredData);
       } catch (err) {
