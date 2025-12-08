@@ -20,7 +20,7 @@ function Home() {
     "Chicken",
     "Noodles",
     "Curry",
-    "Waffles",
+    "Waffle",
     "Burrito",
   ];
 
