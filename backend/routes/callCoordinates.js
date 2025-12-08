@@ -1,11 +1,11 @@
 //Creating a route to get coordinates from postcodes
 const express = require("express");
-const { getLocation } = require("../services/location/postcodeCalling");
+const { getCoordinates } = require("../services/location/getCoordinates");
 const router = express.Router();
 
 router.get("/coordinates/:postcode", async (req, res) => {
   try {
-    const location = await getLocation(req.params.postcode);
+    const location = await getCoordinates(req.params.postcode);
 
     if (!location) {
       return res.status(400).json({ error: "Invalid postcode" });

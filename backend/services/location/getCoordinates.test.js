@@ -1,4 +1,4 @@
-const { getLocation } = require("./postcodeCalling");
+const { getCoordinates } = require("./getCoordinates");
 const axios = require("axios");
 
 //mock API call
@@ -14,7 +14,7 @@ test("returns correct values", async () => {
       },
     },
   });
-  expect(await getLocation("N1 1AB")).toEqual({
+  expect(await getCoordinates("N1 1AB")).toEqual({
     longitude: 1,
     latitude: 1,
   });
@@ -23,5 +23,5 @@ test("returns correct values", async () => {
 //test for error
 test("gives API error when API call fails", async () => {
   axios.get.mockRejectedValue(new Error("API error"));
-  await expect(getLocation("N111")).rejects.toThrow("API error");
+  await expect(getCoordinates("N111")).rejects.toThrow("API error");
 });

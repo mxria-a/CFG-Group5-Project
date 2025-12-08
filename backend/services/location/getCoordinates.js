@@ -1,5 +1,4 @@
 //This file is the backend file that calls the API
-//It hasn't been integrated with the front end yet and will just call for a set postcode
 
 //import dependencies
 const express = require("express");
@@ -10,7 +9,7 @@ const app = express();
 app.use(cors());
 
 //Call postcode API to convert postcode to coordinates
-async function getLocation(postcode) {
+async function getCoordinates(postcode) {
   //remove spaces from postcode
   postcode.replace(" ", "");
 
@@ -34,4 +33,4 @@ async function getLocation(postcode) {
   }
 }
 
-module.exports = { getLocation };
+module.exports = { getCoordinates };
