@@ -10,9 +10,6 @@ app.use(cors());
 
 //Call postcode API to convert postcode to coordinates
 async function getCoordinates(postcode) {
-  //remove spaces from postcode
-  postcode.replace(" ", "");
-
   //set up API details
   const apiUrl = `https://api.postcodes.io/postcodes/${postcode}`;
 
