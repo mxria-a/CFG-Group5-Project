@@ -18,13 +18,21 @@ const basket = () => {
         {foodList.map((item, index) => {
           if (basketItems[item._id] > 0) {
             return (
-              <div classname="basket-items-name basket-items-item">
-                <img src="{item.image" alt="" />
-                <p>{item.name}</p>
-                <p>{item.price}</p>
-                <p>{basketItems[item._id]}</p>
-                <p>{item.price * basketItems[item._id]}</p>
-                <p>x</p>
+              <div>
+                <div classname="basket-items-name basket-items-item">
+                  <img src="{item.image" alt="" />
+                  <p>{item.name}</p>
+                  <p>{item.price}</p>
+                  <p>{basketItems[item._id]}</p>
+                  <p>{item.price * basketItems[item._id]}</p>
+                  <p
+                    onClick={() => removeFromBasket(item._id)}
+                    classname="cross"
+                  >
+                    x
+                  </p>
+                </div>
+                <hr />
               </div>
             );
           }
