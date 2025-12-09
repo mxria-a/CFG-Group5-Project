@@ -6,28 +6,20 @@ import FoodComparisonPage from "./FoodComparisonPage";
 import "./Homepage.css";
 import { Snackbar, Alert } from "@mui/material";
 
+// Random foods list (outside component to be safe)
+const foodOptions = [
+  "Burger", "Pizza", "Sushi", "Chicken", "Noodles", "Curry", "Waffle", "Burrito"
+];
+
 function Home() {
   const [item, setItem] = useState(null);
   const [postcode, setPostcode] = useState(null);
+  
   const [hasSearched, setHasSearched] = useState(false);
   const [showError, setShowError] = useState(false);
-
-  // RANDOM FOOD SUGGESTIONS
-  const foodOptions = [
-    "Burger",
-    "Pizza",
-    "Sushi",
-    "Chicken",
-    "Noodles",
-    "Curry",
-    "Waffle",
-    "Burrito",
-  ];
-
   const [randomFoods, setRandomFoods] = useState([]);
 
   useEffect(() => {
-    // Shuffle and select 3 random foods
     const shuffled = [...foodOptions].sort(() => 0.5 - Math.random());
     setRandomFoods(shuffled.slice(0, 3));
   }, []);
@@ -36,9 +28,10 @@ function Home() {
     setItem(food);
   };
 
-  // SEARCH FUNCTION
+  // search function
   function Search() {
-    if (item || postcode) {
+    // Both are required
+    if (item && postcode) {
       setHasSearched(true);
     } else {
       setShowError(true);
@@ -71,7 +64,6 @@ function Home() {
             <SubmitButton onClick={Search} />
           </div>
 
-          {/*RANDOM SUGGESTION BOXES */}
           <div className="random-box-container">
             {randomFoods.map((food, index) => (
               <div
@@ -101,8 +93,14 @@ function Home() {
         onClose={handleCloseError}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        <Alert severity="error" variant="filled" sx={{ width: "100%" }}>
-          Please enter a food item OR a postcode to start!
+        <Alert 
+          onClose={handleCloseError} 
+          severity="error" 
+          variant="filled" 
+          sx={{ width: "100%" }}
+        >
+          {/* UPDATED MESSAGE */}
+          Please enter BOTH a food item and a postcode to search!
         </Alert>
       </Snackbar>
     </div>
