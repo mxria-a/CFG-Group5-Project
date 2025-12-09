@@ -6,10 +6,8 @@ import FoodComparisonPage from "./FoodComparisonPage";
 import "./Homepage.css";
 import { Snackbar, Alert } from "@mui/material";
 
-// Random foods list (outside component to be safe)
-const foodOptions = [
-  "Burger", "Pizza", "Sushi", "Chicken", "Noodles", "Curry", "Waffle", "Burrito"
-];
+// Defined outside to prevent re-renders
+const foodOptions = ["Burger", "Pizza", "Sushi", "Chicken", "Noodles", "Curry", "Waffle", "Burrito"];
 
 function Home() {
   const [item, setItem] = useState(null);
@@ -28,10 +26,11 @@ function Home() {
     setItem(food);
   };
 
-  // search function
+  // --- UPDATED LOGIC ---
   function Search() {
-    // Both are required
-    if (item && postcode) {
+    // We only care about Postcode. 
+    // Item can be null (meaning "Show All") or "Burger" (meaning "Filter").
+    if (postcode && postcode.trim().length > 0) {
       setHasSearched(true);
     } else {
       setShowError(true);
@@ -86,7 +85,6 @@ function Home() {
         </div>
       )}
 
-      {/* ERROR POPUP */}
       <Snackbar
         open={showError}
         autoHideDuration={4000}
@@ -99,8 +97,8 @@ function Home() {
           variant="filled" 
           sx={{ width: "100%" }}
         >
-          {/* UPDATED MESSAGE */}
-          Please enter BOTH a food item and a postcode to search!
+          {/* Updated Message */}
+          Please enter a postcode to find takeaways near you!
         </Alert>
       </Snackbar>
     </div>
