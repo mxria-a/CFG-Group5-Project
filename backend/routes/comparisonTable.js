@@ -15,7 +15,9 @@ router.get("/comparison-table-items", (req, res) => {
         i.isVegan,          
         r.restaurantName,   
         r.deliveryTime,     
-        r.postcode,         
+        r.postcode, 
+        r.latitude,
+        r.longitude,        
         GROUP_CONCAT(a.allergenName SEPARATOR ', ') AS allergens
     FROM items i
     JOIN restaurants r ON i.restaurantID = r.restaurantID
