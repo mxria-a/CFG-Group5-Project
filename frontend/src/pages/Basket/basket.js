@@ -22,9 +22,9 @@ const basket = () => {
                 <div classname="basket-items-name basket-items-item">
                   <img src="{item.image" alt="" />
                   <p>{item.name}</p>
-                  <p>{item.price}</p>
+                  <p>£{item.price}</p>
                   <p>{basketItems[item._id]}</p>
-                  <p>{item.price * basketItems[item._id]}</p>
+                  <p>£{item.price * basketItems[item._id]}</p>
                   <p
                     onClick={() => removeFromBasket(item._id)}
                     classname="cross"
