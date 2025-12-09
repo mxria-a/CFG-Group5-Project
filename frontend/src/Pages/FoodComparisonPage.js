@@ -15,6 +15,8 @@ const FoodComparisonPage = ({ searchQuery, postcode, onBackToSearch }) => {
     long: null,
     lat: null,
   });
+  //set error message for item filtering
+  const [errorMessage, setErrorMessage] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
   const [view, setView] = useState("selection");
   const [loading, setLoading] = useState(true);
@@ -28,6 +30,7 @@ const FoodComparisonPage = ({ searchQuery, postcode, onBackToSearch }) => {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
+      setErrorMessage("");
 
       try {
         //Fetch items
@@ -47,6 +50,15 @@ const FoodComparisonPage = ({ searchQuery, postcode, onBackToSearch }) => {
 
         //fetch coordinates from postcode
         const coords = await fetchCoords(postcode);
+
+        //error message for invalid postcode
+        if (!coords || !coords.latitude || !coords.longitude) {
+          setErrorMessage("Invalid postcode. Please enter a valid UK postcode");
+          setAllItems([]);
+          return;
+        }
+
+        //store user coordinates
         setUserCoords({
           long: coords.longitude,
           lat: coords.latitude,
@@ -68,6 +80,11 @@ const FoodComparisonPage = ({ searchQuery, postcode, onBackToSearch }) => {
         const nearbyItems = restaurantDistance.filter(
           (item) => item.distance <= maxDistance
         );
+
+        //error handling for no items near postcode
+        if (nearbyItems.length === 0) {
+          setErrorMessage("No items found in your area");
+        }
 
         //update filtered list with distances
         filteredData = nearbyItems;
@@ -181,6 +198,9 @@ const FoodComparisonPage = ({ searchQuery, postcode, onBackToSearch }) => {
                 : "Select All"}
             </button>
           </div>
+
+          {/* Error handling */}
+          <p>{errorMessage}</p>
 
           {/* list contents */}
           <ItemList
