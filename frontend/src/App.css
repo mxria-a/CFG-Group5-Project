@@ -57,3 +57,21 @@
     transform: rotate(360deg);
   }
 }
+
+.team-intro-section {
+  background-color: #282c34; /* Dark grey background */
+  color: white;
+  padding: 40px 20px;
+  text-align: center;
+  border-top: 5px solid #28a745; /* Nice green border to separate from app */
+}
+
+.teammate-card {
+  margin-bottom: 20px;
+}
+
+.divider {
+  border-bottom: 1px solid #555;
+  width: 50%;
+  margin: 20px auto;
+}
