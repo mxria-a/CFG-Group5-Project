@@ -6,28 +6,18 @@ import FoodComparisonPage from "./FoodComparisonPage";
 import "./Homepage.css";
 import { Snackbar, Alert } from "@mui/material";
 
+// Defined outside to prevent re-renders
+const foodOptions = ["Burger", "Pizza", "Sushi", "Chicken", "Noodles", "Curry", "Waffle", "Burrito"];
+
 function Home() {
   const [item, setItem] = useState(null);
   const [postcode, setPostcode] = useState(null);
+  
   const [hasSearched, setHasSearched] = useState(false);
   const [showError, setShowError] = useState(false);
-
-  // RANDOM FOOD SUGGESTIONS
-  const foodOptions = [
-    "Burger",
-    "Pizza",
-    "Sushi",
-    "Chicken",
-    "Noodles",
-    "Curry",
-    "Waffle",
-    "Burrito",
-  ];
-
   const [randomFoods, setRandomFoods] = useState([]);
 
   useEffect(() => {
-    // Shuffle and select 3 random foods
     const shuffled = [...foodOptions].sort(() => 0.5 - Math.random());
     setRandomFoods(shuffled.slice(0, 3));
   }, []);
@@ -36,9 +26,11 @@ function Home() {
     setItem(food);
   };
 
-  // SEARCH FUNCTION
+  // --- UPDATED LOGIC ---
   function Search() {
-    if (item || postcode) {
+    // We only care about Postcode. 
+    // Item can be null (meaning "Show All") or "Burger" (meaning "Filter").
+    if (postcode && postcode.trim().length > 0) {
       setHasSearched(true);
     } else {
       setShowError(true);
@@ -71,7 +63,6 @@ function Home() {
             <SubmitButton onClick={Search} />
           </div>
 
-          {/*RANDOM SUGGESTION BOXES */}
           <div className="random-box-container">
             {randomFoods.map((food, index) => (
               <div
@@ -94,15 +85,20 @@ function Home() {
         </div>
       )}
 
-      {/* ERROR POPUP */}
       <Snackbar
         open={showError}
         autoHideDuration={4000}
         onClose={handleCloseError}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        <Alert severity="error" variant="filled" sx={{ width: "100%" }}>
-          Please enter a food item OR a postcode to start!
+        <Alert 
+          onClose={handleCloseError} 
+          severity="error" 
+          variant="filled" 
+          sx={{ width: "100%" }}
+        >
+          {/* Updated Message */}
+          Please enter a postcode to find takeaways near you!
         </Alert>
       </Snackbar>
     </div>

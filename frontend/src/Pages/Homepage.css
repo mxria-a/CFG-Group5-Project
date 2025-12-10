@@ -1,7 +1,13 @@
-
-
-
 /* Homepage styles */
+.home-container {
+  display: flex;
+  justify-content: center; /* horizontal center */
+  align-items: flex-start; /* keep content near the top */
+  text-align: center;
+  padding-top: 40px; /* adjust how far from top */
+  min-height: 100vh;
+}
+
 .suggestions-section {
   margin-top: 2rem;
   width: 100%;
