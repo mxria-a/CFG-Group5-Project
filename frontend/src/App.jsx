@@ -6,11 +6,14 @@ import TeamIntro from "./Components/TeamIntro";
 function App() {
   return (
     <BrowserRouter>
-      <nav>
-        <Link to="/">Home</Link>
-        <Link to="/basket">Basket</Link>
-        <Link to="/profile">Your Account</Link>
-        <Link to="/about-us">About Us</Link>
+      <nav className="navbar">
+        <div className="nav-logo">App name</div>
+        <div className="nav-links">
+          <Link to="/">Home</Link>
+          <Link to="/basket">Basket</Link>
+          <Link to="/profile">Your Account</Link>
+          <Link to="/about-us">About Us</Link>
+        </div>
       </nav>
 
       <Routes>
