@@ -1,6 +1,6 @@
 /* Main container */
 .checkout-container {
-  max-width: 900px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -34,7 +34,7 @@
 /* Loading state */
 .loading-state {
   text-align: center;
-  margin-top: 70px;
+  margin-top: 80px;
   color: #666;
   font-size: 1.2rem;
   font-weight: 500;
