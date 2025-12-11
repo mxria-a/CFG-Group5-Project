@@ -3,23 +3,8 @@ import { createContext, useState } from "react"
 export const StoreContext = createContext();
 
 export const StoreProvider = ({children})=>{
-    const [basketItems, setBasketItems] = useState([]);
+    const [basketItems, setBasketItems] = useState({});
 };
-
-return (
-    <StoreContext.Provider value={{
-        basketItems,
-        addToBasket,
-        removeFromBasket,
-    }}>
-        {children}
-        </StoreContext.Provider>
-);
-
-
-
-
-
 
 const addToBasket = (itemId) => {
     if (!basketItems[itemId]) {
@@ -41,12 +26,26 @@ const getTotalBasketAmount = () => {
     {
         if (basketItems[item]>0){
         let itemInfo = food_list.find((product)=> product._id === item);
-         totalAmount =+ itemInfo.price* basketItems[item];
+         totalAmount += itemInfo.price* basketItems[item];
 
         }
         }
       return totalAmount;
-}
+};
+
+console.log(basketItems);
+return (
+    <StoreContext.Provider 
+    value={{
+        basketItems,
+        addToBasket,
+        removeFromBasket,
+        getTotalBasketAmount,
+    }}>
+        {children}
+        </StoreContext.Provider>
+);
+
 
 const contextValue = {
     food_list,
