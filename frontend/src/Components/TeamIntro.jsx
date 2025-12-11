@@ -58,7 +58,7 @@ const TeamIntro = () => {
         </p>
         <p>
           I love being active, i'm a massive foodie and reality TV is my guilty
-          pleasure! &#127952;
+          pleasure! 
         </p>
       </div>
       <div className="divider"></div>
