@@ -21,13 +21,9 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Home />} />
-<<<<<<< HEAD
         <Route path="/profile" element={<CustomerProfile />} />
-=======
-        <Route path="/profile" />
-        <Route path="/profile" element={<Basket />} />
->>>>>>> origin/basket
         <Route path="/about-us" element={<TeamIntro />} />
+        <Route path="/basket" element={<Basket />} />
       </Routes>
     </BrowserRouter>
   );
