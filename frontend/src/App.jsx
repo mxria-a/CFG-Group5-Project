@@ -28,13 +28,3 @@ function App() {
 }
 
 export default App;
-
-// import "./App.css";
-// import CustomerProfile from "./Pages/CustomerProfile/customerProfile";
-
-// function App() {
-//   return <CustomerProfile />;
-// }
-
-// export default App;
-
