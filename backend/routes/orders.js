@@ -3,7 +3,7 @@ const pool = require("../db");
 const router = express.Router();
 
 // Creating route for order history
-router.get("/:customerId", (req, res) => {
+router.get("/orders/:customerId", (req, res) => {
   const sql = `
     SELECT o.orderID, o.totalPrice, o.orderDetails, o.orderTime, i.itemName
     FROM orders o
