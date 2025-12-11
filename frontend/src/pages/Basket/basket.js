@@ -1,6 +1,6 @@
 import React from 'react';
 
-const basket = () => {
+const Basket = () => {
   const { basketItems, foodList, removeFromBasket } = useContext(StoreContext);
   return (
     <div class="basket">
