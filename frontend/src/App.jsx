@@ -1,15 +1,18 @@
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-import { Box } from "@mui/material"; // 
+import { Box } from "@mui/material"; 
 import "./App.css";
+
+
 import Home from "./Pages/Homepage";
 import TeamIntro from "./Components/TeamIntro";
-import Footer from "./Components/Footer"; // 
+import CustomerProfile from "./Pages/CustomerProfile/customerProfile"; 
+import Footer from "./Components/Footer"; 
+import Basket from "./frontend/src/basket"; 
 
 function App() {
   return (
     <BrowserRouter>
-      {/* wrapped everything in this Box */}
-      {/* This creates the sticky footer layout */}
+      {/* Wrapper for Sticky Footer Layout*/}
       <Box 
         sx={{ 
           display: "flex", 
@@ -18,7 +21,7 @@ function App() {
         }}
       >
         
-        {/*  Navbar */}
+        {/* Navbar */}
         <nav className="navbar">
           <div className="nav-logo">App name</div>
           <div className="nav-links">
@@ -29,11 +32,17 @@ function App() {
           </div>
         </nav>
 
-        {/* Main Content Area - flexGrow pushes the footer down */}
+        {/* Main Content Area */}
         <Box component="main" sx={{ flexGrow: 1 }}>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/profile" />
+            
+            {/* The Basket Route */}
+            <Route path="/basket" element={<Basket />} />
+
+            {/* The Profile Route */}
+            <Route path="/profile" element={<CustomerProfile />} />
+
             <Route path="/about-us" element={<TeamIntro />} />
           </Routes>
         </Box>
