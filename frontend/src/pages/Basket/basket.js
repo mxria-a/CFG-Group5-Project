@@ -38,6 +38,28 @@ const Basket = () => {
           }
         })}
       </div>
+      <div classname="basket-bottom">
+        <div class="basket-total">
+          <h2>Basket Total</h2>
+          <div>
+            <div class="basket-total-details">
+              <p>Subtotal</p>
+              <p>{0}</p>
+            </div>
+            <hr />
+            <div class="basket-total-details">
+              <p>Delivery Fee</p>
+              <p>{2}</p>
+            </div>
+            <hr />
+            <div class="basket-total-details">
+              <b>Total</b>
+              <b>{0}</b>
+            </div>
+          </div>
+          <button>PROCEED TO CHECKOUT</button>
+        </div>
+      </div>
     </div>
   );
 };
