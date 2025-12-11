@@ -38,7 +38,8 @@ CREATE TABLE customers(
     customerID INT AUTO_INCREMENT PRIMARY KEY,
     firstName VARCHAR(50) NOT NULL,
     lastName VARCHAR(50) NOT NULL,
-    emailAddress VARCHAR(100) NOT NULL
+    emailAddress VARCHAR(100) NOT NULL,
+    phoneNumber VARCHAR(20) NOT NULL
 );
 
 -- ORDERS
@@ -271,12 +272,12 @@ INSERT INTO items (itemName, restaurantID, price, avRating, calories, descriptio
 -- POPULATE CUSTOMERS, ORDERS & ALLERGENS
 -- ================================================
 
-INSERT INTO customers (firstName, lastName, emailAddress) VALUES 
-('Alice', 'Green', 'alice@example.com'),
-('Bob', 'Brown', 'bob@example.com'),
-('Charlie', 'White', 'charlie@example.com'),
-('David', 'Black', 'david@example.com'),
-('Emma', 'Blue', 'emma@example.com');
+INSERT INTO customers (firstName, lastName, emailAddress, phoneNumber) VALUES 
+('Alice', 'Green', 'alice@example.com', '07123 456789'),
+('Bob', 'Brown', 'bob@example.com', '07234 567890'),
+('Charlie', 'White', 'charlie@example.com', '07345 678901'),
+('David', 'Black', 'david@example.com', '07456 789012'),
+('Emma', 'Blue', 'emma@example.com', '07567 890123');
 
 INSERT INTO orders (itemID, customerID, totalPrice, orderDetails) VALUES 
 (51, 1, 9.00, 'Margherita Pizza order for Alice'), 
