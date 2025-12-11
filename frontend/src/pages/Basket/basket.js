@@ -42,4 +42,4 @@ const Basket = () => {
   );
 };
 
-export default basket;
+export default Basket;

@@ -7,7 +7,7 @@ import Home from "./Pages/Homepage";
 import TeamIntro from "./Components/TeamIntro";
 import CustomerProfile from "./Pages/CustomerProfile/customerProfile"; 
 import Footer from "./Components/Footer"; 
-import Basket from "./frontend/src/basket"; 
+import Basket from "./Pages/Basket/basket";
 
 function App() {
   return (
