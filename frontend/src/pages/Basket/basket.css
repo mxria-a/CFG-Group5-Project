@@ -54,5 +54,29 @@ width: 50px;
 }
 .basket-promocode{
   flex: 1;
-  
 } 
+.basket-promocode p {
+  color: grey;
+}
+.basket-promocode-input {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #eaeaea;
+  border-radius: 4px;
+}
+.basket-promocode-input input {
+  background: transparent;
+  border: none;
+  outline: none;
+  padding-left: 10px;
+}
+.basket-promocode-input button{
+  width: max(10vw, 150px);
+  padding: 12px 5px;
+  background-color: black;
+  border: none;
+  color: white;
+  border-radius: 4px;
+}
