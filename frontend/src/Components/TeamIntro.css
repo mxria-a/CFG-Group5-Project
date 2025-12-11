@@ -1,0 +1,21 @@
+.team-intro-section {
+  background-color: white;
+  color: black;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.teammate-card {
+  margin-bottom: 20px;
+}
+
+.divider {
+  border-bottom: 1px solid #555;
+  width: 50%;
+  margin: 20px auto;
+}
+
+h1,
+h2 {
+  color: #0073ce;
+}

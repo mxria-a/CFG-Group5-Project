@@ -37,7 +37,7 @@ const FoodComparisonPage = ({ searchQuery, postcode, onBackToSearch }) => {
         // (If searchQuery is null, currentData stays as ALL items)
 
         // 2. filter by location (Mandatory)
-        // We assume postcode exists because Homepage blocked empty postcodes
+        // Defensive check: Homepage is supposed to block empty postcodes, but we check anyway.
         if (postcode) {
           const coords = await fetchCoords(postcode);
 
@@ -99,8 +99,11 @@ const FoodComparisonPage = ({ searchQuery, postcode, onBackToSearch }) => {
       else setSelectedItems(allItems.slice(0, 3));
   };
   const handleOrder = (item) => console.log(item);
-  const handleAddToBasket = () => setNotification({ open: true, message: "Added!", severity: "success" });
-  const handleCloseNotification = (event, reason) => { if (reason === "clickaway") return; setNotification(prev => ({...prev, open:false})); };
+  const handleAddToBasket = () => setNotification({ open: true, message: "Items added to basket!", severity: "success" });
+ const handleCloseNotification = (event, reason) => {
+    if (reason === "clickaway") return;
+    setNotification(prev => ({ ...prev, open: false }));
+  };
 
   if (loading) return <div className="loading-state">Finding food near {postcode}...</div>;
 
