@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import "./App.css";
 import Home from "./Pages/Homepage";
+import Basket from "./Pages/Basket/basket";
 import TeamIntro from "./Components/TeamIntro";
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/profile" />
+        <Route path="/profile" element={<Basket />} />
         <Route path="/about-us" element={<TeamIntro />} />
       </Routes>
     </BrowserRouter>
