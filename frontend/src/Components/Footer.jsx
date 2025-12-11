@@ -18,8 +18,8 @@ const Footer = () => {
       <Container maxWidth="lg">
         <Grid container spacing={4}>
           
-          {/* Column 1: Brand Info */}
-          <Grid item xs={12} sm={4}> {/* 2. Fixed typo "itemQXXs" to "item xs" */}
+          {/* Brand Info */}
+          <Grid item xs={12} sm={4}> 
             <Typography variant="h6" gutterBottom sx={{ fontWeight: "bold", color: "#ff9800" }}>
               Pickier
             </Typography>
@@ -29,14 +29,14 @@ const Footer = () => {
             </Typography>
           </Grid>
 
-          {/* Column 2: Quick Links */}
+          {/* Quick Links */}
           <Grid item xs={12} sm={4}>
             <Typography variant="h6" gutterBottom sx={{ fontWeight: "bold" }}>
               Quick Links
             </Typography>
             <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
               
-              {/* 3. Use MuiLink with component={RouterLink} for internal navigation */}
+              {/* MuiLink with component={RouterLink} for internal navigation */}
               <MuiLink component={RouterLink} to="/" color="inherit" underline="hover">
                 Home
               </MuiLink>
@@ -45,7 +45,7 @@ const Footer = () => {
                 Basket
               </MuiLink>
 
-              {/* ✅ THE FIX: About Us using React Router */}
+              
               <MuiLink component={RouterLink} to="/about-us" color="inherit" underline="hover">
                 About Us
               </MuiLink>
