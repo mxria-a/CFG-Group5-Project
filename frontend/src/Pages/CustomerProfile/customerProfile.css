@@ -44,8 +44,13 @@ h2 {
     border-radius: 4px;
     border: 1px solid #ccc;
     box-sizing: border-box;
+    color: #7c7c7c;
   }
-  
+
+  input:focus {
+    outline: none;
+  }
+
   .preferences select {
     display: block;
     margin-top: 10px;
