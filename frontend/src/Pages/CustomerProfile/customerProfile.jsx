@@ -1,10 +1,9 @@
 import React from "react";
-import AccountDetails from "../../components/AccountDetails"
-import OrderHistory from "../../components/OrderHistory"
-// import PaymentMethods from "../components/PaymentMethods"
-import Preferences from "../../components/Preferences"
-import Addresses from "../../components/Addresses"
-import "../styles/customerProfile.css";
+import AccountDetails from "../../Components/AccountDetails"
+import OrderHistory from "../../Components/OrderHistory"
+import Preferences from "../../Components/Preferences"
+import Addresses from "../../Components/Addresses"
+import "../../Pages/CustomerProfile/customerProfile.css";
 
 const CustomerProfile = () => {
   return (

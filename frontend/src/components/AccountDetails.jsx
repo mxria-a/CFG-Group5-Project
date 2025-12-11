@@ -1,9 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const AccountDetails = () => {
-  const [name, setName] = useState("Jane");
-  const [email, setEmail] = useState("janesmith@gmail.com");
-  const [phone, setPhone] = useState("07932573211");
+  const [customer, setCustomer] = useState({});
+  const customerId = 1;
+
+  useEffect(() => {
+    fetch(`http://localhost:5000/customers/${customerId}`)
+      .then((res) => res.json())
+      .then((data) => setCustomer(data))
+      .catch((err) => console.error(err));
+  }, [customerId]);
 
   return (
     <>
@@ -12,15 +18,16 @@ const AccountDetails = () => {
       </div>
       <div className="account-details">
         <label>
-          Name: <input value={name} onChange={(e) => setName(e.target.value)} />
+          First Name: <input value={customer.firstName} readOnly />
         </label>
         <label>
-          Email:
-          <input value={email} onChange={(e) => setEmail(e.target.value)} />
+          Last Name: <input value={customer.lastName} readOnly />
         </label>
         <label>
-          Phone:
-          <input value={phone} onChange={(e) => setPhone(e.target.value)} />
+          Email Address: <input value={customer.emailAddress} readOnly />
+        </label>
+        <label>
+          Phone Number: <input value={customer.phoneNumber || "N/A"} readOnly />
         </label>
       </div>
     </>
