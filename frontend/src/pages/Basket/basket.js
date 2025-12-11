@@ -1,6 +1,6 @@
-import React from 'react';
-import '.Basket.css';
-import { StoreContext } from '../../Context/shop-context';
+import React from "react";
+import ".Basket.css";
+import { StoreContext } from "../../Context/shop-context";
 
 const Basket = () => {
   const { basketItems, foodList, removeFromBasket, getTotalBasketAmount } =
