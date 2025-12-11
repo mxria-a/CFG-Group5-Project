@@ -1,11 +1,15 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 const OrderHistory = () => {
-    const orders = [
-        "Cheeseburger | Honest Burgers | £12.49 | 11 Nov",
-        "Pepporoni Pizza | Dominos | £14 | 20 Nov",
-        "Chicken Chow Mein | Jasmine Garden | £7.99 | 29 Nov"
-    ];
+  const [orders, setOrders] = useState([]);
+  const customerId = 241;
+
+  useEffect(() => {
+    fetch(`http://localhost:3001/orders/${customerId}`)
+      .then((res) => res.json())
+      .then((data) => setOrders(data))
+      .catch((err) => console.error(err));
+  }, [customerId]);
 
   return (
     <>
@@ -13,11 +17,17 @@ const OrderHistory = () => {
       <h2>Order History</h2>
       </div>
     <div className="order-history">
-      <ul>
-        {orders.map(order => 
-          <li>{order}</li>
+    {orders.length === 0 ? (
+          <p>No orders found.</p>
+        ) : (
+          <ul>
+            {orders.map((order) => (
+              <li key={order.orderID}>
+                {order.itemName} - £{order.totalPrice}
+              </li>
+            ))}
+          </ul>
         )}
-      </ul>
       </div>
       </>
   );
