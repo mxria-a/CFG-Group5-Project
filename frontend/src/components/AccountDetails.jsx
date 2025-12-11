@@ -5,7 +5,7 @@ const AccountDetails = () => {
   const customerId = 1;
 
   useEffect(() => {
-    fetch(`http://localhost:5000/customers/${customerId}`)
+    fetch(`http://localhost:3001/customers/${customerId}`)
       .then((res) => res.json())
       .then((data) => setCustomer(data))
       .catch((err) => console.error(err));
@@ -18,13 +18,13 @@ const AccountDetails = () => {
       </div>
       <div className="account-details">
         <label>
-          First Name: <input value={customer.firstName} readOnly />
+          First Name: <input value={customer.firstName || "N/A"} readOnly />
         </label>
         <label>
-          Last Name: <input value={customer.lastName} readOnly />
+          Last Name: <input value={customer.lastName || "N/A"} readOnly />
         </label>
         <label>
-          Email Address: <input value={customer.emailAddress} readOnly />
+          Email Address: <input value={customer.emailAddress || "N/A"} readOnly />
         </label>
         <label>
           Phone Number: <input value={customer.phoneNumber || "N/A"} readOnly />
