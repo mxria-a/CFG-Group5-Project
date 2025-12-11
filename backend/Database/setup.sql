@@ -39,7 +39,7 @@ CREATE TABLE customers(
     firstName VARCHAR(50) NOT NULL,
     lastName VARCHAR(50) NOT NULL,
     emailAddress VARCHAR(100) NOT NULL,
-    phoneNumber VARCHAR(11) NOT NULL
+    phoneNumber VARCHAR(20) NOT NULL
 );
 
 -- ORDERS
