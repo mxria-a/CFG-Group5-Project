@@ -1,7 +1,10 @@
 import React from 'react';
+import '.Basket.css';
+import { StoreContext } from '../../Context/shop-context';
 
 const Basket = () => {
-  const { basketItems, foodList, removeFromBasket } = useContext(StoreContext);
+  const { basketItems, foodList, removeFromBasket, getTotalBasketAmount } =
+    useContext(StoreContext);
   return (
     <div class="basket">
       <div class="basket-items">
@@ -44,17 +47,17 @@ const Basket = () => {
           <div>
             <div class="basket-total-details">
               <p>Subtotal</p>
-              <p>{0}</p>
+              <p>£{getTotalBasketAmount()}</p>
             </div>
             <hr />
             <div class="basket-total-details">
               <p>Delivery Fee</p>
-              <p>{2}</p>
+              <p>£{2}</p>
             </div>
             <hr />
             <div class="basket-total-details">
               <b>Total</b>
-              <b>{0}</b>
+              <b>£{getTotalBasketAmount() + 2}</b>
             </div>
           </div>
           <button>PROCEED TO CHECKOUT</button>
