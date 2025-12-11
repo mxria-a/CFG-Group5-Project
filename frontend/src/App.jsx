@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import "./App.css";
 import Home from "./Pages/Homepage";
 import TeamIntro from "./Components/TeamIntro";
+import CustomerProfile from "./Pages/CustomerProfile/customerProfile";
+
 
 function App() {
   return (
@@ -18,7 +20,7 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/profile" />
+        <Route path="/profile" element={<CustomerProfile />} />
         <Route path="/about-us" element={<TeamIntro />} />
       </Routes>
     </BrowserRouter>
@@ -26,3 +28,13 @@ function App() {
 }
 
 export default App;
+
+// import "./App.css";
+// import CustomerProfile from "./Pages/CustomerProfile/customerProfile";
+
+// function App() {
+//   return <CustomerProfile />;
+// }
+
+// export default App;
+
