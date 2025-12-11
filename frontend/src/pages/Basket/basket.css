@@ -23,3 +23,9 @@ width: 50px;
 .basket-items-item .cross {
     cursor: pointer;
 } 
+.basket-bottom {
+  margin-top: 80px;
+  display: flex;
+  justify-content: space-between;
+  gap: max(12vw,20px);
+}

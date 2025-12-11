@@ -59,6 +59,13 @@ const Basket = () => {
           </div>
           <button>PROCEED TO CHECKOUT</button>
         </div>
+        <div class="basket-promocode">
+          <p>Add promo code</p>
+          <div classname="basket-promocode-input">
+            <input type="text" placeholder="Promo Code" />
+            <button>Apply Code</button>
+          </div>
+        </div>
       </div>
     </div>
   );
