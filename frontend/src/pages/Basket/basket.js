@@ -1,7 +1,10 @@
-import React from 'react';
+import React from "react";
+import ".Basket.css";
+import { StoreContext } from "../../Context/shop-context";
 
 const Basket = () => {
-  const { basketItems, foodList, removeFromBasket } = useContext(StoreContext);
+  const { basketItems, foodList, removeFromBasket, getTotalBasketAmount } =
+    useContext(StoreContext);
   return (
     <div class="basket">
       <div class="basket-items">
@@ -38,8 +41,37 @@ const Basket = () => {
           }
         })}
       </div>
+      <div classname="basket-bottom">
+        <div class="basket-total">
+          <h2>Basket Total</h2>
+          <div>
+            <div class="basket-total-details">
+              <p>Subtotal</p>
+              <p>£{getTotalBasketAmount()}</p>
+            </div>
+            <hr />
+            <div class="basket-total-details">
+              <p>Delivery Fee</p>
+              <p>£{2}</p>
+            </div>
+            <hr />
+            <div class="basket-total-details">
+              <b>Total</b>
+              <b>£{getTotalBasketAmount() + 2}</b>
+            </div>
+          </div>
+          <button>PROCEED TO CHECKOUT</button>
+        </div>
+        <div class="basket-promocode">
+          <p>Add promo code</p>
+          <div classname="basket-promocode-input">
+            <input type="text" placeholder="Promo Code" />
+            <button>Apply Code</button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default basket;
+export default Basket;

@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import "./App.css";
 import Home from "./Pages/Homepage";
+import Basket from "./Pages/Basket/basket";
 import TeamIntro from "./Components/TeamIntro";
 import CustomerProfile from "./Pages/CustomerProfile/customerProfile";
 
@@ -20,7 +21,12 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Home />} />
+<<<<<<< HEAD
         <Route path="/profile" element={<CustomerProfile />} />
+=======
+        <Route path="/profile" />
+        <Route path="/profile" element={<Basket />} />
+>>>>>>> origin/basket
         <Route path="/about-us" element={<TeamIntro />} />
       </Routes>
     </BrowserRouter>
