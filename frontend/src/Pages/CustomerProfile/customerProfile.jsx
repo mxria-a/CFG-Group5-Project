@@ -13,7 +13,6 @@ const CustomerProfile = () => {
       <AccountDetails />
       <Preferences />
       <Addresses />
-      {/* <PaymentMethods /> */}
     </div>
   );
 };
