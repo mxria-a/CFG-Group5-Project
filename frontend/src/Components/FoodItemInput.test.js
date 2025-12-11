@@ -4,7 +4,7 @@ import FoodItemInput from "./FoodItemInput";
 
 
 //create user and mock function
-test("should call setItem with the selected value when an option is clikced", async () => {
+test("should call setItem with the selected value when an option is clicked", async () => {
     const user = userEvent.setup();
     const setItem = jest.fn();
 
