@@ -19,6 +19,7 @@ pool.getConnection((err, connection) => {
 // Import routes
 app.use("/", require("./routes/comparisonTable"));
 app.use("/", require("./routes/callCoordinates"));
+app.use("/customers", require("./routes/customers"));
 
 // Start server
 app.listen(port, () => {
