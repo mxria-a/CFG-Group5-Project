@@ -1,9 +1,12 @@
+import React from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import { Box } from "@mui/material"; 
 import "./App.css";
 
 
 import Home from "./Pages/Homepage";
+import {StoreProvider} from "./Context/shop-context";
+
 import TeamIntro from "./Components/TeamIntro";
 import CustomerProfile from "./Pages/CustomerProfile/customerProfile"; 
 import Footer from "./Components/Footer"; 
@@ -11,6 +14,7 @@ import Basket from "./Pages/Basket/basket";
 
 function App() {
   return (
+    <StoreProvider> 
     <BrowserRouter>
       {/* Wrapper for Sticky Footer Layout*/}
       <Box 
@@ -52,6 +56,7 @@ function App() {
 
       </Box>
     </BrowserRouter>
+    </StoreProvider>
   );
 }
 
