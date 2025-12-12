@@ -23,7 +23,7 @@ const OrderHistory = () => {
           <ul>
             {orders.map((order) => (
               <li key={order.orderID}>
-                {order.itemName} - £{order.totalPrice}
+                {order.restaurantName} | {order.itemName} | £{order.totalPrice} | {new Date(order.orderTime).toLocaleString()}
               </li>
             ))}
           </ul>
