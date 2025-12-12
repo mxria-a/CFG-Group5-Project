@@ -1,4 +1,4 @@
-# INSERT APP NAME - A food delivery app done differently
+# **Pickier** - A food delivery app done differently
 
 ## Project description
 
@@ -60,8 +60,18 @@ ADD LATER
 
 ## Testing
 
-- Tests for this project are written using Jest
-- To perform tests for the project CHECK THIS
+- Tests for this project are written for testing with Jest. Frontend tests use The React Testing Library
+- Tests need to be performed in the frontend and backend of the project separately
+  - Frontend testing
+    ```
+    cd frontend
+    NPM test
+    ```
+  - Backend testing
+    ```
+    cd backend
+    NPM test
+    ```
 
 ## Credits
 
@@ -76,4 +86,4 @@ This tool was built as part of a group project for the CFG degree. It was built 
 
 ## Licence
 
-STILL TO ADD
+This project is licenced under the MIT licence
