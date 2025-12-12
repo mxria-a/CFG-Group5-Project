@@ -2,17 +2,17 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import PostCodeInput from "./PostCodeInput";
 
 describe("PostCodeInput", () => {
-  //create a mock item for tesitng
-  const mockSetPostcode = jest.fn();
-
-  //mount component
-  render(<PostCodeInput setPostcode={mockSetPostcode} />);
-
-  //find input field in document
-  const input = screen.getByLabelText(/postcode/i);
-
   //test to find the postcode input field
   test("renders the postcode input", () => {
+    //create a mock item for tesitng
+    const mockSetPostcode = jest.fn();
+
+    //mount component
+    render(<PostCodeInput setPostcode={mockSetPostcode} />);
+
+    //find input field in document
+    const input = screen.getByLabelText(/postcode/i);
+
     expect(input).toBeInTheDocument();
   });
 

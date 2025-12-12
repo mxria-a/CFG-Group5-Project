@@ -1,4 +1,3 @@
-//const { get } = require("../../../backend/routes/nearRestaurants");
 const { getDistance } = require("./distanceCalculator");
 
 //for tests got lon/lats fron latlong.net
