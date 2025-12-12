@@ -1,13 +1,17 @@
+import React from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import "./App.css";
 import Home from "./Pages/Homepage";
 import Basket from "./Pages/Basket/basket";
+import {StoreProvider} from "./Context/shop-context";
+
 import TeamIntro from "./Components/TeamIntro";
 import CustomerProfile from "./Pages/CustomerProfile/customerProfile";
 
 
 function App() {
   return (
+    <StoreProvider> 
     <BrowserRouter>
       <nav className="navbar">
         <div className="nav-logo">App name</div>
@@ -18,18 +22,15 @@ function App() {
           <Link to="/about-us">About Us</Link>
         </div>
       </nav>
-
+      
       <Routes>
         <Route path="/" element={<Home />} />
-<<<<<<< HEAD
-        <Route path="/profile" element={<CustomerProfile />} />
-=======
+        <Route path="/basket" element={<Basket />} />
         <Route path="/profile" />
-        <Route path="/profile" element={<Basket />} />
->>>>>>> origin/basket
         <Route path="/about-us" element={<TeamIntro />} />
       </Routes>
     </BrowserRouter>
+    </StoreProvider>
   );
 }
 

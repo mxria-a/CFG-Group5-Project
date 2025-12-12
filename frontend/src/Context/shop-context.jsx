@@ -7,12 +7,14 @@ export const StoreProvider = ({children})=>{
 
 
 const addToBasket = (itemId) => {
-     setBasketItems((prev)=>({...prev,[itemId]: (prev[itemId] || 0)+1,}));
+     setBasketItems((prev)=>({...prev,[itemId]: (prev[itemId] || 0)+1 }));
    
 };
 
 const removeFromBasket = (itemId) => {
-    setBasketItems((prev)=>({...prev,[itemId]: Math.max ((prev[itemId] || 0)-1,0),}));
+    setBasketItems((prev)=>({...prev,[itemId]: Math.max ((prev[itemId] || 0)-1,0),
+        
+    }));
 };
 
 const getTotalBasketAmount = (food_list) => {

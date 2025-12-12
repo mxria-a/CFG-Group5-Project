@@ -1,5 +1,6 @@
-import React from "react";
-import "./ItemList.css";
+import React, { useContext } from 'react';
+import { StoreProvider } from './Context/shop-context';
+import './ItemList.css';
 
 // ItemList component to display list of items with selection checkboxes
 const ItemList = ({ items, selectedItems, onToggle }) => {
@@ -12,8 +13,8 @@ const ItemList = ({ items, selectedItems, onToggle }) => {
           <div
             key={item.itemID}
             // to pass test id for testing purposes
-            data-testid={`food-card-${item.itemID}`} 
-            className={`item-card ${isSelected ? "selected" : ""}`}
+            data-testid={`food-card-${item.itemID}`}
+            className={`item-card ${isSelected ? 'selected' : ''}`}
             onClick={() => onToggle(item)}
           >
             {/* LEFT SIDE: Text Info */}
@@ -33,8 +34,8 @@ const ItemList = ({ items, selectedItems, onToggle }) => {
               {/* Distance */}
               {item.distance && (
                 <div className="card-details-row">
-                    <span className="label">Distance:</span>
-                    <span className="value">{item.distance.toFixed(1)} km</span>
+                  <span className="label">Distance:</span>
+                  <span className="value">{item.distance.toFixed(1)} km</span>
                 </div>
               )}
 
@@ -46,7 +47,7 @@ const ItemList = ({ items, selectedItems, onToggle }) => {
             {/* Big Checkbox on the right side */}
             <div className="card-action">
               <div
-                className={`custom-checkbox ${isSelected ? "checked" : ""}`}
+                className={`custom-checkbox ${isSelected ? 'checked' : ''}`}
               ></div>
             </div>
           </div>
