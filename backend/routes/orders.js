@@ -5,9 +5,10 @@ const router = express.Router();
 // Creating route for order history
 router.get("/orders/:customerId", (req, res) => {
   const sql = `
-    SELECT o.orderID, o.totalPrice, o.orderDetails, o.orderTime, i.itemName
+    SELECT o.orderID, o.totalPrice, o.orderDetails, o.orderTime, i.itemName, r.restaurantName
     FROM orders o
     JOIN items i ON o.itemID = i.itemID
+    JOIN restaurants r ON i.restaurantID = r.restaurantID 
     WHERE o.customerID = ?
     ORDER BY o.orderTime DESC
   `;

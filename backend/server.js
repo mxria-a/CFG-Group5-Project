@@ -19,9 +19,9 @@ pool.getConnection((err, connection) => {
 // Import routes
 app.use("/", require("./routes/comparisonTable"));
 app.use("/", require("./routes/callCoordinates"));
-app.use("/customers", require("./routes/customers"));
-app.use("/allergens", require("./routes/allergens"));
-app.use("/orders", require("./routes/orders"));
+app.use("/", require("./routes/customers"));
+app.use("/", require("./routes/allergens"));
+app.use("/", require("./routes/orders"));
 
 // Start server
 app.listen(port, () => {
