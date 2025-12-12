@@ -1,6 +1,7 @@
 import React from "react";
-import ".Basket.css";
+import "./basket.css";
 import { StoreContext } from "../../Context/shop-context";
+import { useContext } from "react";
 
 const Basket = () => {
   const { basketItems, foodList, removeFromBasket, getTotalBasketAmount } =
