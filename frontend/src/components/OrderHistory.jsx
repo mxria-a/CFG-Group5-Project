@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 const OrderHistory = () => {
   const [orders, setOrders] = useState([]);
-  const customerId = 241;
+  const customerId = 1;
 
   useEffect(() => {
     fetch(`http://localhost:3001/orders/${customerId}`)
@@ -23,7 +23,7 @@ const OrderHistory = () => {
           <ul>
             {orders.map((order) => (
               <li key={order.orderID}>
-                {order.itemName} - £{order.totalPrice}
+                {order.restaurantName} | {order.itemName} | £{order.totalPrice} | {new Date(order.orderTime).toLocaleString()}
               </li>
             ))}
           </ul>
