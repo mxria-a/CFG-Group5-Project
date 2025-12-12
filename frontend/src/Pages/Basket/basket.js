@@ -1,14 +1,14 @@
-import React from "react";
-import ".Basket.css";
-import { StoreContext } from "../../Context/shop-context";
+import React, { useContext } from 'react';
+import './basket.css';
+import { StoreContext } from '../../Context/shop-context';
 
 const Basket = () => {
   const { basketItems, foodList, removeFromBasket, getTotalBasketAmount } =
     useContext(StoreContext);
   return (
-    <div class="basket">
-      <div class="basket-items">
-        <div class="basket-items-name">
+    <div className="basket">
+      <div className="basket-items">
+        <div className="basket-items-name">
           <p>Items</p>
           <p>Name</p>
           <p>Price</p>
@@ -18,53 +18,55 @@ const Basket = () => {
         </div>
         <br />
         <hr />
-        {foodList.map((item, index) => {
-          if (basketItems[item._id] > 0) {
-            return (
-              <div>
-                <div classname="basket-items-name basket-items-item">
-                  <img src="{item.image" alt="" />
-                  <p>{item.name}</p>
-                  <p>£{item.price}</p>
-                  <p>{basketItems[item._id]}</p>
-                  <p>£{item.price * basketItems[item._id]}</p>
-                  <p
-                    onClick={() => removeFromBasket(item._id)}
-                    classname="cross"
-                  >
-                    x
-                  </p>
+        {foodList &&
+          foodList.map((item) => {
+            if (basketItems[item._id] > 0) {
+              return (
+                <div key={item._id}>
+                  <div className="basket-items-name basket-items-item">
+                    <img src={item.image} alt={item.name} />
+                    <p>{item.name}</p>
+                    <p>£{item.price}</p>
+                    <p>{basketItems[item._id]}</p>
+                    <p>£{item.price * basketItems[item._id]}</p>
+                    <p
+                      onClick={() => removeFromBasket(item._id)}
+                      className="cross"
+                    >
+                      x
+                    </p>
+                  </div>
+                  <hr />
                 </div>
-                <hr />
-              </div>
-            );
-          }
-        })}
+              );
+            }
+            return null;
+          })}
       </div>
-      <div classname="basket-bottom">
-        <div class="basket-total">
+      <div className="basket-bottom">
+        <div className="basket-total">
           <h2>Basket Total</h2>
           <div>
-            <div class="basket-total-details">
+            <div className="basket-total-details">
               <p>Subtotal</p>
               <p>£{getTotalBasketAmount()}</p>
             </div>
             <hr />
-            <div class="basket-total-details">
+            <div className="basket-total-details">
               <p>Delivery Fee</p>
               <p>£{2}</p>
             </div>
             <hr />
-            <div class="basket-total-details">
+            <div className="basket-total-details">
               <b>Total</b>
               <b>£{getTotalBasketAmount() + 2}</b>
             </div>
           </div>
           <button>PROCEED TO CHECKOUT</button>
         </div>
-        <div class="basket-promocode">
+        <div className="basket-promocode">
           <p>Add promo code</p>
-          <div classname="basket-promocode-input">
+          <div className="basket-promocode-input">
             <input type="text" placeholder="Promo Code" />
             <button>Apply Code</button>
           </div>

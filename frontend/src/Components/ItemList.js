@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { StoreProvider } from './Context/shop-context';
+import { StoreProvider } from '../Context/shop-context';
 import './ItemList.css';
 
 // ItemList component to display list of items with selection checkboxes
