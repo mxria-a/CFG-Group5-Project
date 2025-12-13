@@ -6,7 +6,7 @@ export const StoreContextProvider = ({ children }) => {
   const [basketItems, setBasketItems] = useState({});
   const [foodList, setFoodList] = useState([]);
 
-  // 1. FETCH FOOD LIST FROM YOUR BACKEND
+  // fetch food list on mount
   useEffect(() => {
     const fetchFood = async () => {
       try {
@@ -21,7 +21,7 @@ export const StoreContextProvider = ({ children }) => {
     fetchFood();
   }, []);
 
-  // 2. ADD TO BASKET
+  // ADD TO BASKET
   const addToBasket = (itemId) => {
     setBasketItems((prev) => ({
       ...prev,
@@ -29,7 +29,7 @@ export const StoreContextProvider = ({ children }) => {
     }));
   };
 
-  // 3. REMOVE FROM BASKET
+  // REMOVE FROM BASKET
   const removeFromBasket = (itemId) => {
     setBasketItems((prev) => ({
       ...prev,
@@ -37,13 +37,13 @@ export const StoreContextProvider = ({ children }) => {
     }));
   };
 
-  // 4. CALCULATE TOTAL (Fixed to use itemID)
+  // GET TOTAL BASKET AMOUNT
   const getTotalBasketAmount = () => {
     let totalAmount = 0;
     for (const itemId in basketItems) {
       if (basketItems[itemId] > 0) {
         // Find the product in the foodList
-        // We use Number(itemId) because object keys are strings, but SQL IDs are numbers
+        
         const itemInfo = foodList.find((product) => product.itemID === Number(itemId));
         
         if (itemInfo) {
@@ -56,7 +56,7 @@ export const StoreContextProvider = ({ children }) => {
 
   console.log("Basket state:", basketItems);
 
-  // 5. PASS EVERYTHING TO THE REST OF THE APP
+  // pass down the state and functions via context
   const contextValue = {
     foodList,
     basketItems,

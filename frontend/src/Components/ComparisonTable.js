@@ -1,15 +1,15 @@
-import React, { useState, useContext } from "react"; // 1. Added useContext
+import React, { useState, useContext } from "react"; 
 import "./ComparisonTable.css";
 import { Snackbar, Alert } from "@mui/material";
 
-// 2. Import the Context
+
 import { StoreContext } from "../Context/shop-context"; 
 
 const ComparisonTable = ({ items, onSelectWinner }) => {
   const [showNotification, setShowNotification] = useState(false);
   const [expandedIngredients, setExpandedIngredients] = useState({});
 
-  // 3. Get the addToBasket function from the brain
+  // Get the addToBasket function from the brain
   const { addToBasket } = useContext(StoreContext);
 
   if (!items || items.length === 0) return <div>No items selected</div>;
@@ -21,14 +21,14 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
 
   // Handler for the "Add to Cart" button click
   const handleAddToCartClick = (item) => {
-    // A. ACTUALLY ADD TO BASKET (This was missing)
+    
     addToBasket(item.itemID);
 
-    // B. Keep your existing logic
+    
     if (onSelectWinner) {
       onSelectWinner(item);
     }
-    // C. Show popup
+    //  Show popup
     setShowNotification(true);
   };
 

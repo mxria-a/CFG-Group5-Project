@@ -28,7 +28,7 @@ const FoodComparisonPage = ({ searchQuery, postcode, onBackToSearch }) => {
 
         let currentData = data;
 
-        // 1. filter by name (Only if user actually typed an item)
+        // filter by name (Only if user actually typed an item)
         if (searchQuery) {
           const lowerCaseQuery = searchQuery.toLowerCase();
           currentData = currentData.filter((item) =>
@@ -36,10 +36,10 @@ const FoodComparisonPage = ({ searchQuery, postcode, onBackToSearch }) => {
             item.restaurantName.toLowerCase().includes(lowerCaseQuery)
           );
         }
-        // (If searchQuery is null, currentData stays as ALL items)
+        
 
-        // 2. filter by location (Mandatory)
-        // Defensive check: Homepage is supposed to block empty postcodes, but we check anyway.
+        // filter by location (Mandatory)
+        
         if (postcode) {
           const coords = await fetchCoords(postcode);
 
