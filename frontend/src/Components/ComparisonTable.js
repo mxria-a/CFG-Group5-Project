@@ -1,35 +1,48 @@
-import React, { useState, useContext } from "react"; 
+import React, { useState, useContext } from "react";
 import "./ComparisonTable.css";
-import { Snackbar, Alert } from "@mui/material";
 
-
+import { 
+  Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, 
+  Snackbar, Alert 
+} from "@mui/material";
+import { useNavigate } from "react-router-dom"; 
 import { StoreContext } from "../Context/shop-context"; 
 
 const ComparisonTable = ({ items, onSelectWinner }) => {
+  // State for the " Dialog Popup" and "Notification"
   const [showNotification, setShowNotification] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
   const [expandedIngredients, setExpandedIngredients] = useState({});
 
-  // Get the addToBasket function from the brain
   const { addToBasket } = useContext(StoreContext);
+  const navigate = useNavigate();
 
   if (!items || items.length === 0) return <div>No items selected</div>;
 
+  // Handler to close Snackbar
   const handleCloseNotification = (event, reason) => {
     if (reason === "clickaway") return;
     setShowNotification(false);
   };
 
-  // Handler for the "Add to Cart" button click
+  // Snackbar first, then Dialog 
   const handleAddToCartClick = (item) => {
-    
+    // Add to Global Basket
     addToBasket(item.itemID);
 
-    
+    // Call parent prop if exists
     if (onSelectWinner) {
       onSelectWinner(item);
     }
-    //  Show popup
+
+    // Show Snackbar Immediately
     setShowNotification(true);
+
+    // Wait 1.5 seconds, Close Snackbar, Open Dialog
+    setTimeout(() => {
+      setShowNotification(false);
+      setOpenDialog(true);
+    }, 1500); 
   };
 
   const toggleIngredient = (id) => {
@@ -55,7 +68,7 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
           ))}
         </div>
 
-        {/*Price*/}
+        {/* Price */}
         <div className="table-row">
           <div className="col-label">Price</div>
           {items.map((item) => (
@@ -65,7 +78,7 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
           ))}
         </div>
 
-        {/*Delivery*/}
+        {/* Delivery */}
         <div className="table-row">
           <div className="col-label">Delivery</div>
           {items.map((item) => (
@@ -75,7 +88,7 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
           ))}
         </div>
 
-        {/*Restaurant*/}
+        {/* Restaurant */}
         <div className="table-row">
           <div className="col-label">Restaurant</div>
           {items.map((item) => (
@@ -85,7 +98,7 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
           ))}
         </div>
 
-        {/*Rating*/}
+        {/* Rating */}
         <div className="table-row">
           <div className="col-label">Rating</div>
           {items.map((item) => (
@@ -97,7 +110,7 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
           ))}
         </div>
 
-        {/*Calories*/}
+        {/* Calories */}
         <div className="table-row">
           <div className="col-label">Calories</div>
           {items.map((item) => (
@@ -107,7 +120,7 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
           ))}
         </div>
 
-        {/*Allergens*/}
+        {/* Allergens */}
         <div className="table-row">
           <div className="col-label">Allergens</div>
           {items.map((item) => (
@@ -121,7 +134,7 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
           ))}
         </div>
 
-        {/*Vegan Status*/}
+        {/* Vegan Status */}
         <div className="table-row">
           <div className="col-label">Vegan?</div>
           {items.map((item) => (
@@ -169,7 +182,7 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
             <div key={item.itemID} className="col-item">
               <button
                 className="add-to-cart-btn"
-                onClick={() => handleAddToCartClick(item)} 
+                onClick={() => handleAddToCartClick(item)}
               >
                 Add to Cart &#128722;
               </button>
@@ -178,9 +191,33 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
         </div>
       </div>
 
+      {/* THE DIALOG POPUP (Decision) */}
+      <Dialog 
+        open={openDialog} 
+        onClose={() => setOpenDialog(false)}
+      >
+        <DialogTitle>Success!</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Item added to basket. What would you like to do next?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDialog(false)}>Keep Shopping</Button>
+          <Button 
+            onClick={() => navigate("/basket")} 
+            variant="contained" 
+            color="success"
+          >
+            View Basket
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* THE SNACKBAR NOTIFICATION */}
       <Snackbar
         open={showNotification}
-        autoHideDuration={3000}
+        autoHideDuration={1500} 
         onClose={handleCloseNotification}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
