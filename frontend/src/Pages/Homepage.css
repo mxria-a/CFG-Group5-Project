@@ -1,11 +1,16 @@
 /* Homepage styles */
 .home-container {
   display: flex;
-  justify-content: center; /* horizontal center */
-  align-items: flex-start; /* keep content near the top */
+  justify-content: center; 
+  align-items: flex-start; 
   text-align: center;
-  padding-top: 40px; /* adjust how far from top */
+  padding-top: 40px; 
   min-height: 100vh;
+   background: linear-gradient(
+    180deg,
+    #fff8f2 0%,
+    #ffffff 45% );
+  
 }
 
 .suggestions-section {
