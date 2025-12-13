@@ -10,24 +10,35 @@
     180deg,
     #fff8f2 0%,
     #ffffff 45% );
+    font-family: 'Inter', sans-serif;
   
 }
 
+.home-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #ff6b35; 
+  margin-bottom: 2rem;
+  letter-spacing: 1px;
+}
+
 .suggestions-section {
-  margin-top: 2rem;
+  margin-top: 2.5rem;
   width: 100%;
-  max-width: 900px;
+  max-width: 1000px;
+  
 }
 
 .suggestions-title {
   font-size: 1.4rem;
+  font-weight: 600;
   margin-bottom: 0.25rem;
 }
 
 .suggestions-subtitle {
   font-size: 0.95rem;
-  color: #666;
-  margin-bottom: 1rem;
+  color: #777;
+  margin-bottom: 1.2rem;
 }
 
 .suggestions-grid {
@@ -41,7 +52,7 @@
   border-radius: 14px;
   padding: 1.2 rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-  border: 1px solid #eee;
+  border: 1px solid #f3ebeb;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -91,27 +102,37 @@
   transform: translateY(0);
 }
 
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  max-width: 500px;
+  margin-bottom: 2rem;
+}
+
 .random-box-container {
   margin-top: 20px;
   display: flex;
   justify-content: center;
-  gap: 15px;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
 .random-box {
   background: #ffffff;
-  padding: 15px 22px;
-  border-radius: 12px;
+  padding: 16px 25px;
+  border-radius: 14px;
   font-size: 1rem;
   font-weight: 600;
-  border: 1px solid #e5e5e5;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+  border: 1px solid #ffd1b3;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
   cursor: pointer;
-  transition: 0.2s ease;
+  transition: transform 0.2s ease, background 0.2s ease;
 }
 
 .random-box:hover {
-  background: #f0faff;
+  background: #fff0e6;
   transform: translateY(-3px);
 }
 
