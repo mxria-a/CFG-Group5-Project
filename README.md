@@ -83,6 +83,7 @@ This tool was built as part of a group project for the CFG degree. It was built 
 - Jescintha - @JescinthaRajkumar12
 - Maria - @mxria-a
 - Temi - @Temioye
+- Mariam - Mariamd06
 
 ## Licence
 
