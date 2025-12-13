@@ -9,6 +9,10 @@ import CustomerProfile from "./Pages/CustomerProfile/customerProfile";
 import Footer from "./Components/Footer"; 
 import Basket from "./Pages/Basket/basket";
 
+import OrderConfirmation from "./Pages/Orders/OrderConfirmation";
+import OrderHistory from "./Pages/Orders/OrderHistory";
+import OrderTracking from "./Pages/Orders/OrderTracking";
+
 function App() {
   return (
     <BrowserRouter>
@@ -44,6 +48,12 @@ function App() {
             <Route path="/profile" element={<CustomerProfile />} />
 
             <Route path="/about-us" element={<TeamIntro />} />
+
+           {/* Post-order routes */}
+           <Route path="/order-confirmation" element={<OrderConfirmation />} />
+           <Route path="/orders" element={<OrderHistory />} />
+           <Route path="/orders/track" element={<OrderTracking />} />
+  
           </Routes>
         </Box>
 
