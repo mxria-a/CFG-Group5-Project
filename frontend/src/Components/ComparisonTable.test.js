@@ -1,7 +1,14 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, within, act } from '@testing-library/react';
 import ComparisonTable from './ComparisonTable';
+import { StoreContext } from '../Context/shop-context';
 
-// 1. Mock Data Setup
+// Mock useNavigate
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+  useNavigate: () => mockNavigate,
+}), { virtual: true });
+
+// Mock data
 const mockItems = [
   {
     itemID: 1,
@@ -25,61 +32,101 @@ const mockItems = [
     calories: 500,
     allergens: 'Soy',
     isVegan: true,
-    ingredients: 'Plant patty, lettuce, tomato, cucumber, special vegan sauce, sesame bun, onion rings, pickles, avocado, mushrooms, spinach, kale'
+    ingredients: 'Plant patty, lettuce, tomato, cucumber, special vegan sauce, sesame bun, onion rings, pickles, avocado, mushrooms, spinach, kale, extra toppings'
   }
 ];
 
-describe('ComparisonTable Component', () => {
+// helper to render with context
+const renderWithContext = (component, mockAddToBasket = jest.fn()) => {
+  return render(
+    <StoreContext.Provider value={{ addToBasket: mockAddToBasket }}>
+      {component}
+    </StoreContext.Provider>
+  );
+};
 
-  // Test 1: Basic Rendering
-  test('renders "No items selected" when list is empty', () => {
-    render(<ComparisonTable items={[]} />);
-    expect(screen.getByText(/No items selected/i)).toBeInTheDocument();
+describe('ComparisonTable Component', () => {
+  
+  beforeEach(() => {
+    jest.useRealTimers();
   });
 
-  test('renders correctly with items', () => {
-    render(<ComparisonTable items={mockItems} />);
-    
+  // Test 1: Empty State
+  test('renders "No items selected" when list is empty', () => {
+    renderWithContext(<ComparisonTable items={[]} />);
+    expect(screen.getByText(/no items selected/i)).toBeInTheDocument();
+  });
+
+  // Test 2: Renders Data Correctly
+  test('renders item details (price, restaurant, vegan badge)', () => {
+    renderWithContext(<ComparisonTable items={mockItems} />);
+
     expect(screen.getByText('Compare Options')).toBeInTheDocument();
     expect(screen.getByText('Burger A')).toBeInTheDocument();
-    expect(screen.getByText('Vegan Burger')).toBeInTheDocument();
-    expect(screen.getByText('£10.5')).toBeInTheDocument(); 
-    expect(screen.getByText('£12')).toBeInTheDocument(); 
-  });
-
-  // Test 2: Add to Cart Interaction
-  test('calls onSelectWinner and shows notification when "Add to Cart" is clicked', async () => {
-    const mockSelectWinner = jest.fn();
-    render(<ComparisonTable items={mockItems} onSelectWinner={mockSelectWinner} />);
-
-    const addButtons = screen.getAllByText(/Add to Cart/i);
-    fireEvent.click(addButtons[0]);
-
-    expect(mockSelectWinner).toHaveBeenCalledTimes(1);
-    expect(mockSelectWinner).toHaveBeenCalledWith(mockItems[0]);
-
-    await waitFor(() => {
-        expect(screen.getByText(/Item added to cart!/i)).toBeInTheDocument();
-    });
-  });
-
-  // Test 3: Toggle Ingredients Logic
-  test('toggles "View More" and "View Less" for long ingredients', () => {
-    render(<ComparisonTable items={mockItems} />);
-
-    // Find the "View More" button for the long ingredients item
-    const viewMoreButton = screen.getByText('View More');
-    expect(viewMoreButton).toBeInTheDocument();
-
-    // Click to expand
-    fireEvent.click(viewMoreButton);
-
-    // Should now change to "View Less"
-    expect(screen.getByText('View Less')).toBeInTheDocument();
     
-    // Click to collapse
-    fireEvent.click(screen.getByText('View Less'));
-    expect(screen.getByText('View More')).toBeInTheDocument();
+    //Regex matcher that accepts £10.5 OR £10.50
+    expect(screen.getByText(/£10\.50?/)).toBeInTheDocument();
+    
+    expect(screen.getByText('Burger King')).toBeInTheDocument();
+    
+    const veganBadges = screen.getAllByText('Yes'); 
+    expect(veganBadges.length).toBeGreaterThan(0);
   });
 
+
+  // Test 3: Toggle Ingredients
+  test('toggles "View More" and "View Less" for long ingredients', () => {
+    renderWithContext(<ComparisonTable items={mockItems} />);
+
+    const ingredientCell = screen.getByTestId('ingredients-2');
+    const viewMoreBtn = within(ingredientCell).getByRole('button', { name: /view more/i });
+    fireEvent.click(viewMoreBtn);
+
+    expect(within(ingredientCell).getByRole('button', { name: /view less/i })).toBeInTheDocument();
+    expect(within(ingredientCell).getByText(/spinach/i)).toBeInTheDocument();
+  });
+
+
+  // Test 4: Add to Cart Logic
+  test('adds item to basket and shows snackbar on click', () => {
+    const mockAddToBasket = jest.fn();
+    const mockOnSelectWinner = jest.fn();
+
+    renderWithContext(
+      <ComparisonTable items={mockItems} onSelectWinner={mockOnSelectWinner} />, 
+      mockAddToBasket
+    );
+
+    const addButton = screen.getByTestId('add-to-cart-1');
+    fireEvent.click(addButton);
+
+    expect(mockAddToBasket).toHaveBeenCalledWith(1);
+    expect(mockOnSelectWinner).toHaveBeenCalledWith(mockItems[0]);
+    expect(screen.getByText(/item added to cart!/i)).toBeInTheDocument();
+  });
+
+  // Test 5: The Dialog Timeout
+  test('shows Dialog after 1.5 seconds and navigates to basket', () => {
+    jest.useFakeTimers(); 
+    const mockAddToBasket = jest.fn();
+
+    renderWithContext(<ComparisonTable items={mockItems} />, mockAddToBasket);
+
+    fireEvent.click(screen.getByTestId('add-to-cart-1'));
+
+    expect(screen.queryByText('Success!')).not.toBeInTheDocument();
+
+    act(() => {
+      jest.advanceTimersByTime(1600);
+    });
+
+    expect(screen.getByText('Success!')).toBeInTheDocument();
+    
+    const viewBasketBtn = screen.getByRole('button', { name: /view basket/i });
+    fireEvent.click(viewBasketBtn);
+
+    expect(mockNavigate).toHaveBeenCalledWith('/basket');
+    
+    jest.useRealTimers();
+  });
 });

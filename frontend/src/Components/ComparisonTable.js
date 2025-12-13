@@ -156,7 +156,8 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
             const shouldTruncate = fullText.length > textLimit;
 
             return (
-              <div key={item.itemID} className="col-item ingredients-cell">
+              <div key={item.itemID} className="col-item ingredients-cell"
+              data-testid={`ingredients-${item.itemID}`}>
                 <span style={{ fontStyle: "italic" }}>
                   {isExpanded || !shouldTruncate
                     ? fullText
@@ -183,6 +184,7 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
               <button
                 className="add-to-cart-btn"
                 onClick={() => handleAddToCartClick(item)}
+                data-testid={`add-to-cart-${item.itemID}`}
               >
                 Add to Cart &#128722;
               </button>
