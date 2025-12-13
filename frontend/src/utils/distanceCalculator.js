@@ -1,7 +1,7 @@
 //calculates distances between long/lats
 //using the Haversine formula
 
-function getDistance(lon1, lat1, lon2, lat2) {
+export function getDistance(lon1, lat1, lon2, lat2) {
   const R = 6371; // radius of the earth in km
   const dLon = deg2rad(lon2 - lon1);
   const dLat = deg2rad(lat2 - lat1);
@@ -21,5 +21,3 @@ function getDistance(lon1, lat1, lon2, lat2) {
 function deg2rad(deg) {
   return deg * (Math.PI / 180);
 }
-
-module.exports = { getDistance };
