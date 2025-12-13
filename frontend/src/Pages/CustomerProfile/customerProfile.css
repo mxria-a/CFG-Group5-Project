@@ -73,8 +73,11 @@ h2 {
     color: #7c7c7c;
   }
 
+  
+
   input:focus {
     outline: none;
+    
   }
 
   .preferences select {
