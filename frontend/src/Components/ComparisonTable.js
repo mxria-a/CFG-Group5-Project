@@ -1,36 +1,41 @@
-import React from "react";
+import React, { useState, useContext } from "react"; // 1. Added useContext
 import "./ComparisonTable.css";
-import { useState } from "react";
 import { Snackbar, Alert } from "@mui/material";
 
+// 2. Import the Context
+import { StoreContext } from "../Context/shop-context"; 
+
 const ComparisonTable = ({ items, onSelectWinner }) => {
-  const [showNotification, setShowNotification] = useState(false); // Notification state for adding to basket
+  const [showNotification, setShowNotification] = useState(false);
   const [expandedIngredients, setExpandedIngredients] = useState({});
+
+  // 3. Get the addToBasket function from the brain
+  const { addToBasket } = useContext(StoreContext);
 
   if (!items || items.length === 0) return <div>No items selected</div>;
 
-  // handler to close the popup
   const handleCloseNotification = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
+    if (reason === "clickaway") return;
     setShowNotification(false);
   };
 
-  // handler for the "Add to Cart" button click
+  // Handler for the "Add to Cart" button click
   const handleAddToCartClick = (item) => {
-    //  call the parent prop just in case it's needed later
+    // A. ACTUALLY ADD TO BASKET (This was missing)
+    addToBasket(item.itemID);
+
+    // B. Keep your existing logic
     if (onSelectWinner) {
       onSelectWinner(item);
     }
-    // to show the "Added to Cart" popup
+    // C. Show popup
     setShowNotification(true);
   };
-  //Toggle function for read more/less
+
   const toggleIngredient = (id) => {
     setExpandedIngredients((prev) => ({
       ...prev,
-      [id]: !prev[id], // toggle the boolean for this specific ID
+      [id]: !prev[id],
     }));
   };
 
@@ -85,7 +90,6 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
           <div className="col-label">Rating</div>
           {items.map((item) => (
             <div key={item.itemID} className="col-item">
-              {/* Display rating if it's available or  'N/A' if missing */}
               <span style={{ fontWeight: "bold", color: "#f39c12" }}>
                 {item.avRating ? `★ ${item.avRating}` : "N/A"}
               </span>
@@ -98,7 +102,6 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
           <div className="col-label">Calories</div>
           {items.map((item) => (
             <div key={item.itemID} className="col-item">
-              {/* check if calories exist before rendering */}
               {item.calories ? `${item.calories} kcal` : "N/A"}
             </div>
           ))}
@@ -113,7 +116,6 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
               className="col-item"
               style={{ color: "#d9534f", fontSize: "0.85rem" }}
             >
-              {/* checks if allergens exist otherwise show 'None' */}
               {item.allergens ? item.allergens : "None"}
             </div>
           ))}
@@ -135,7 +137,6 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
         <div className="table-row">
           <div className="col-label">Ingredients</div>
           {items.map((item) => {
-            // logic variables
             const fullText = item.ingredients || "View details";
             const isExpanded = expandedIngredients[item.itemID];
             const textLimit = 50;
@@ -148,8 +149,6 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
                     ? fullText
                     : `${fullText.substring(0, textLimit)}...`}
                 </span>
-
-                {/* only show button if text is long enough */}
                 {shouldTruncate && (
                   <button
                     className="view-more-link"
@@ -164,14 +163,13 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
         </div>
 
         {/* Action Buttons */}
-
         <div className="table-row">
           <div className="col-label"></div>
           {items.map((item) => (
             <div key={item.itemID} className="col-item">
               <button
                 className="add-to-cart-btn"
-                onClick={() => handleAddToCartClick(item)} /* click handler */
+                onClick={() => handleAddToCartClick(item)} 
               >
                 Add to Cart &#128722;
               </button>
@@ -179,7 +177,7 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
           ))}
         </div>
       </div>
-      {/* MUI Snackbar popup */}
+
       <Snackbar
         open={showNotification}
         autoHideDuration={3000}

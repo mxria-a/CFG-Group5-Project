@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import ItemList from "../Components/ItemList";
 import ComparisonTable from "../Components/ComparisonTable";
 import "./FoodComparisonPage.css";
 import { Snackbar, Alert } from "@mui/material";
 import { fetchCoords } from "../utils/fetchCoords";
 import { getDistance } from "../utils/distanceCalculator";
+import { StoreContext } from "../Context/shop-context";
 
 const FoodComparisonPage = ({ searchQuery, postcode, onBackToSearch }) => {
   const [allItems, setAllItems] = useState([]);
@@ -14,6 +15,7 @@ const FoodComparisonPage = ({ searchQuery, postcode, onBackToSearch }) => {
   
   const [errorMessage, setErrorMessage] = useState("");
   const [notification, setNotification] = useState({ open: false, message: "", severity: "success" });
+  const { addToBasket } = useContext(StoreContext);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -99,7 +101,24 @@ const FoodComparisonPage = ({ searchQuery, postcode, onBackToSearch }) => {
       else setSelectedItems(allItems.slice(0, 3));
   };
   const handleOrder = (item) => console.log(item);
-  const handleAddToBasket = () => setNotification({ open: true, message: "Items added to basket!", severity: "success" });
+  const handleAddToBasket = () => {
+    if (selectedItems.length === 0) return;
+
+    // Loop through selected items and add them to the global basket state
+    selectedItems.forEach((item) => {
+      addToBasket(item.itemID); // Use the correct ID field from your DB
+    });
+
+    // Show success message
+    setNotification({ 
+      open: true, 
+      message: `Added ${selectedItems.length} items to basket!`, 
+      severity: "success" 
+    });
+    
+    // Clear selection after adding
+    setSelectedItems([]); 
+  };
  const handleCloseNotification = (event, reason) => {
     if (reason === "clickaway") return;
     setNotification(prev => ({ ...prev, open: false }));

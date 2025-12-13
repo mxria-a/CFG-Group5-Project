@@ -1,10 +1,16 @@
 import React, { useContext } from 'react';
 import './basket.css';
+// Ensure this path matches your folder structure exactly
 import { StoreContext } from '../../Context/shop-context';
 
 const Basket = () => {
-  const { basketItems, foodList, removeFromBasket, getTotalBasketAmount } =
-    useContext(StoreContext);
+  const { basketItems, foodList, removeFromBasket, getTotalBasketAmount } = useContext(StoreContext);
+
+  // Calculate totals safely
+  const subtotal = getTotalBasketAmount();
+  const deliveryFee = subtotal > 0 ? 2 : 0; // Only charge delivery if basket is not empty
+  const total = subtotal + deliveryFee;
+
   return (
     <div className="basket">
       <div className="basket-items">
@@ -18,52 +24,65 @@ const Basket = () => {
         </div>
         <br />
         <hr />
-        {foodList &&
-          foodList.map((item) => {
-            if (basketItems[item._id] > 0) {
-              return (
-                <div key={item._id}>
-                  <div className="basket-items-name basket-items-item">
-                    <img src={item.image} alt={item.name} />
-                    <p>{item.name}</p>
-                    <p>£{item.price}</p>
-                    <p>{basketItems[item._id]}</p>
-                    <p>£{item.price * basketItems[item._id]}</p>
-                    <p
-                      onClick={() => removeFromBasket(item._id)}
-                      className="cross"
-                    >
-                      x
-                    </p>
-                  </div>
-                  <hr />
+        
+        {foodList.map((item) => {
+          // 1. CRITICAL FIX: Use item.itemID to match your Database and Context
+          if (basketItems[item.itemID] > 0) {
+            return (
+              <div key={item.itemID}>
+                <div className="basket-items-name basket-items-item">
+                  
+                  {/* Image Fallback in case DB image is missing */}
+                  <img src={item.image || "https://placehold.co/50"} alt={item.itemName} />
+                  
+                  {/* 2. FIX: Use 'itemName' if that is what your DB column is named */}
+                  <p>{item.itemName}</p>
+                  
+                  <p>£{item.price}</p>
+                  
+                  {/* 3. FIX: Access basketItems using [item.itemID] */}
+                  <p>{basketItems[item.itemID]}</p>
+                  
+                  <p>£{(item.price * basketItems[item.itemID]).toFixed(2)}</p>
+                  
+                  <p
+                    onClick={() => removeFromBasket(item.itemID)}
+                    className="cross"
+                    style={{ cursor: "pointer", color: "red" }}
+                  >
+                    x
+                  </p>
                 </div>
-              );
-            }
-            return null;
-          })}
+                <hr />
+              </div>
+            );
+          }
+          return null;
+        })}
       </div>
+
       <div className="basket-bottom">
         <div className="basket-total">
           <h2>Basket Total</h2>
           <div>
             <div className="basket-total-details">
               <p>Subtotal</p>
-              <p>£{getTotalBasketAmount()}</p>
+              <p>£{subtotal.toFixed(2)}</p>
             </div>
             <hr />
             <div className="basket-total-details">
               <p>Delivery Fee</p>
-              <p>£{2}</p>
+              <p>£{deliveryFee}</p>
             </div>
             <hr />
             <div className="basket-total-details">
               <b>Total</b>
-              <b>£{getTotalBasketAmount() + 2}</b>
+              <b>£{total.toFixed(2)}</b>
             </div>
           </div>
           <button>PROCEED TO CHECKOUT</button>
         </div>
+        
         <div className="basket-promocode">
           <p>Add promo code</p>
           <div className="basket-promocode-input">

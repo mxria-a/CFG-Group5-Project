@@ -26,7 +26,7 @@ function Home() {
     setItem(food);
   };
 
-  // --- UPDATED LOGIC ---
+  // Search function triggered on Submit button click
   function Search() {
     // We only care about Postcode. 
     // Item can be null (meaning "Show All") or "Burger" (meaning "Filter").
@@ -52,7 +52,7 @@ function Home() {
     <div className="home-container">
       {!hasSearched ? (
         <div className="search-wrapper">
-          <h1 className="home-title">Food Ordering App</h1>
+          <h1 className="home-title">Pickier</h1>
 
           <div className="input-group">
             <GetItem item={item} setItem={setItem} />

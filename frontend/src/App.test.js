@@ -3,6 +3,6 @@ import App from './App';
 
 test('renders the main app title', () => {
   render(<App />);
-  const linkElement = screen.getByText(/Food Ordering App/i);
+  const linkElement = screen.getByText(/Pickier/i);
   expect(linkElement).toBeInTheDocument();
 });
