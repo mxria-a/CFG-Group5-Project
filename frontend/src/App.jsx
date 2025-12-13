@@ -5,7 +5,7 @@ import "./App.css";
 
 
 import Home from "./Pages/Homepage";
-import {StoreProvider} from "./Context/shop-context";
+import { StoreContextProvider } from "./Context/shop-context";
 
 import TeamIntro from "./Components/TeamIntro";
 import CustomerProfile from "./Pages/CustomerProfile/customerProfile"; 
@@ -14,7 +14,7 @@ import Basket from "./Pages/Basket/basket";
 
 function App() {
   return (
-    <StoreProvider> 
+    <StoreContextProvider> 
     <BrowserRouter>
       {/* Wrapper for Sticky Footer Layout*/}
       <Box 
@@ -56,7 +56,7 @@ function App() {
 
       </Box>
     </BrowserRouter>
-    </StoreProvider>
+    </StoreContextProvider>
   );
 }
 
