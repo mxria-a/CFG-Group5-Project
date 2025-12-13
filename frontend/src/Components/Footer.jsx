@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Container, Grid, Typography, Link as MuiLink } from "@mui/material";
-import { Link as RouterLink } from "react-router-dom"; // 1. Renamed to avoid conflict
+import { Link as RouterLink } from "react-router-dom"; 
 import { Facebook, Instagram, Twitter } from "@mui/icons-material";
 
 const Footer = () => {
