@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import './basket.css';
-// Ensure this path matches your folder structure exactly
+
 import { StoreContext } from '../../Context/shop-context';
 
 const Basket = () => {
@@ -26,21 +26,21 @@ const Basket = () => {
         <hr />
         
         {foodList.map((item) => {
-          // 1. CRITICAL FIX: Use item.itemID to match your Database and Context
+          // Checks if the item is in the basket using item.itemID
           if (basketItems[item.itemID] > 0) {
             return (
               <div key={item.itemID}>
                 <div className="basket-items-name basket-items-item">
                   
-                  {/* Image Fallback in case DB image is missing */}
+                  {/* Image Fallback  */}
                   <img src={item.image || "https://placehold.co/50"} alt={item.itemName} />
                   
-                  {/* 2. FIX: Use 'itemName' if that is what your DB column is named */}
+                  
                   <p>{item.itemName}</p>
                   
                   <p>£{item.price}</p>
                   
-                  {/* 3. FIX: Access basketItems using [item.itemID] */}
+                  
                   <p>{basketItems[item.itemID]}</p>
                   
                   <p>£{(item.price * basketItems[item.itemID]).toFixed(2)}</p>
