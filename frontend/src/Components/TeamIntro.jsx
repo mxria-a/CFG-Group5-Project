@@ -72,6 +72,18 @@ const TeamIntro = () => {
           I love going on long solo walks and listening to a good audio book.
         </p>
       </div>
+          <div className="divider"></div>
+
+      <div className="teammate-card">
+        <h2 className="Teammate-name">Mariam</h2>
+        <p>
+          <b>Favourite hobby:</b> Horse riding
+        </p>
+        <p>
+          I enjoy horse riding and it’s a sport I’ve been involved in from a young age.
+        </p>
+      </div>
+
     </section>
   );
 };
