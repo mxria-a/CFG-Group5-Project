@@ -50,8 +50,13 @@ const Footer = () => {
                 About Us
               </MuiLink>
 
-              <MuiLink href="#" color="inherit" underline="hover">Terms of Service</MuiLink>
-              <MuiLink href="#" color="inherit" underline="hover">Privacy Policy</MuiLink>
+              <MuiLink component={RouterLink} to="/terms" color="inherit" underline="hover">
+                 Terms of Service
+                 </MuiLink>
+
+              <MuiLink component={RouterLink} to="/privacy" color="inherit" underline="hover">
+                Privacy Policy
+                    </MuiLink>
             </Box>
           </Grid>
 
