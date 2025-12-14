@@ -1,19 +1,18 @@
-import React, { useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './basket.css';
+import React, { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import "./basket.css";
 
-import { StoreContext } from '../../Context/shop-context';
+import { StoreContext } from "../../Context/shop-context";
 
 const Basket = () => {
   const { basketItems, foodList, removeFromBasket, getTotalBasketAmount } =
     useContext(StoreContext);
 
-  // FIXED: Correctly initialized the hook with ()
-  const navigate = useNavigate();
+  const navigate = useNavigate;
 
   // Calculate totals safely
   const subtotal = getTotalBasketAmount() || 0;
-  const deliveryFee = subtotal > 0 ? 2 : 0; 
+  const deliveryFee = subtotal > 0 ? 2 : 0;
   const total = subtotal + deliveryFee;
 
   return (
@@ -35,8 +34,6 @@ const Basket = () => {
             return (
               <div key={item.itemID}>
                 <div className="basket-items-name basket-items-item">
-                  
-                  
                   <img
                     src={item.image || "https://placehold.co/50"}
                     alt={item.itemName}
@@ -50,7 +47,7 @@ const Basket = () => {
                   <p
                     onClick={() => removeFromBasket(item.itemID)}
                     className="cross"
-                    style={{ cursor: 'pointer', color: 'red' }}
+                    style={{ cursor: "pointer", color: "red" }}
                   >
                     x
                   </p>
@@ -82,7 +79,7 @@ const Basket = () => {
               <b>£{total.toFixed(2)}</b>
             </div>
           </div>
-          <button onClick={() => navigate('/checkout')}>
+          <button onClick={() => navigate("/checkout")}>
             PROCEED TO CHECKOUT
           </button>
         </div>

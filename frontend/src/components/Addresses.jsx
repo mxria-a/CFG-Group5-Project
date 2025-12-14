@@ -1,28 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const Addresses = () => {
-  const [homeAddress, setHomeAddress] = useState("123 London Road, SW12 3JW");
-  const [workAddress, setWorkAddress] = useState("456 London Road, EN3 2SW");
+const Addresses = ({ customerId }) => {
+  const [address, setAddress] = useState("");
+
+  useEffect(() => {
+    if (!customerId) return;
+
+    fetch(`http://localhost:3001/addresses/${customerId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setAddress(data.address || "");
+      })
+      .catch((err) => console.error(err));
+  }, [customerId]);
 
   return (
     <>
       <div className="section-heading">
-        <h2>Addresses</h2>
+        <h2>Address</h2>
       </div>
       <div className="addresses">
         <label>
-          Home:
-          <input
-            value={homeAddress}
-            onChange={(e) => setHomeAddress(e.target.value)}
-          />
-        </label>
-        <label>
-          Work:
-          <input
-            value={workAddress}
-            onChange={(e) => setWorkAddress(e.target.value)}
-          />
+          Address
+          <input value={address} readOnly />
         </label>
       </div>
     </>
