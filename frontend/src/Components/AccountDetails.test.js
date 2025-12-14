@@ -1,45 +1,50 @@
-import { render, screen, act } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import AccountDetails from "./AccountDetails";
 
-beforeEach(() => {
-  global.fetch = jest.fn(() =>
-    Promise.resolve({
-      json: () =>
-        Promise.resolve({
-          firstName: "Test",
-          lastName: "User",
-          emailAddress: "test.user@example.com",
-          phoneNumber: "07000000000",
-        }),
-    })
-  );
-});
-
-afterEach(() => {
-  jest.clearAllMocks();
-});
-
 describe("AccountDetails Component", () => {
+  const mockCustomer = {
+    firstName: "Test",
+    lastName: "User",
+    emailAddress: "test.user@example.com",
+    phoneNumber: "07000000000",
+  };
+
+  beforeEach(() => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({ json: () => Promise.resolve(mockCustomer) })
+    );
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+    delete global.fetch;
+  });
 
   test("renders Personal Details heading and labels", () => {
-    render(<AccountDetails />);
+    render(<AccountDetails customerId={1} />);
 
-    expect(screen.getByText("Personal Details")).toBeInTheDocument();
-    expect(screen.getByText(/First Name/i)).toBeInTheDocument();
-    expect(screen.getByText(/Last Name/i)).toBeInTheDocument();
-    expect(screen.getByText(/Email Address/i)).toBeInTheDocument();
-    expect(screen.getByText(/Phone Number/i)).toBeInTheDocument();
+    const heading = screen.getByRole("heading", { name: /Personal Details/i });
+    expect(heading).toBeInTheDocument();
+
+    expect(screen.getByLabelText(/First Name/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Last Name/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Email Address/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Phone Number/i)).toBeInTheDocument();
   });
 
   test("displays customer details after fetch", async () => {
-    await act(async () => {
-      render(<AccountDetails />);
-    });
+    render(<AccountDetails customerId={1} />);
 
-    expect(screen.getByDisplayValue("Test")).toBeInTheDocument();
-    expect(screen.getByDisplayValue("User")).toBeInTheDocument();
-    expect(screen.getByDisplayValue("test.user@example.com")).toBeInTheDocument();
-    expect(screen.getByDisplayValue("07000000000")).toBeInTheDocument();
+    expect(
+      await screen.findByDisplayValue(mockCustomer.firstName)
+    ).toBeInTheDocument();
+    expect(screen.getByDisplayValue(mockCustomer.lastName)).toBeInTheDocument();
+    expect(
+      screen.getByDisplayValue(mockCustomer.emailAddress)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByDisplayValue(mockCustomer.phoneNumber)
+    ).toBeInTheDocument();
   });
 
   test('falls back to "N/A" when customer data is missing', async () => {
@@ -47,12 +52,14 @@ describe("AccountDetails Component", () => {
       Promise.resolve({ json: () => Promise.resolve({}) })
     );
 
-    await act(async () => {
-      render(<AccountDetails />);
-    });
+    render(<AccountDetails customerId={1} />);
 
-    const inputs = screen.getAllByDisplayValue("N/A");
+    const inputs = await screen.findAllByDisplayValue("N/A");
     expect(inputs.length).toBe(4);
   });
 
+  test("does not fetch if no customerId", () => {
+    render(<AccountDetails />);
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
 });
