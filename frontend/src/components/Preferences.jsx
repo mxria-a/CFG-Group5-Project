@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
 
-  const Preferences = () => {
-    const [allergies, setAllergies] = useState("");
-    const [allergenOptions, setAllergenOptions] = useState([]);
+const Preferences = () => {
+  const [allergies, setAllergies] = useState("");
+  const [allergenOptions, setAllergenOptions] = useState([]);
 
-    useEffect(() => {
-      fetch("http://localhost:3001/allergens")
-        .then((res) => res.json())
-        .then((data) => {
-          setAllergenOptions(data);
-        })
-        .catch((err) => console.error(err));
-    }, []);
+  useEffect(() => {
+    fetch("http://localhost:3001/allergens")
+      .then((res) => res.json())
+      .then((data) => {
+        setAllergenOptions(data);
+      })
+      .catch((err) => console.error(err));
+  }, []);
 
   return (
     <>
@@ -19,9 +19,12 @@ import React, { useState, useEffect } from "react";
         <h2>Preferences</h2>
       </div>
       <div className="preferences">
-      <label>
+        <label>
           Allergies/Dietary:
-          <select value={allergies} onChange={(e) => setAllergies(e.target.value)}>
+          <select
+            value={allergies}
+            onChange={(e) => setAllergies(e.target.value)}
+          >
             <option value="">Select</option>
             {allergenOptions.map((allergen) => (
               <option key={allergen.allergenID} value={allergen.allergenName}>
