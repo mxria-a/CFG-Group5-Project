@@ -74,6 +74,7 @@ function Home() {
               </div>
             ))}
           </div>
+          
         </div>
       ) : (
         <div className="results-wrapper">
