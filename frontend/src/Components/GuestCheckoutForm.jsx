@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "./GuestCheckoutForm.css";
 
 const GuestCheckoutForm = ({ handleCustomerInfo }) => {
   const [formData, setFormData] = useState({
@@ -85,8 +86,9 @@ const GuestCheckoutForm = ({ handleCustomerInfo }) => {
           required
         />
       </div>
-
-      <button type="submit">Confirm details</button>
+      <div className="submit-btn-wrapper">
+  <button type="submit">Confirm Details</button>
+</div>
     </form>
   );
 };
