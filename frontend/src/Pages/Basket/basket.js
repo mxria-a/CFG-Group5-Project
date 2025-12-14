@@ -8,12 +8,12 @@ const Basket = () => {
   const { basketItems, foodList, removeFromBasket, getTotalBasketAmount } =
     useContext(StoreContext);
 
-  const navigate = useNavigate 
-
+  
+  const navigate = useNavigate();
 
   // Calculate totals safely
   const subtotal = getTotalBasketAmount() || 0;
-  const deliveryFee = subtotal > 0 ? 2 : 0; // Only charge delivery if basket is not empty
+  const deliveryFee = subtotal > 0 ? 2 : 0; 
   const total = subtotal + deliveryFee;
 
   return (
@@ -31,27 +31,20 @@ const Basket = () => {
         <hr />
 
         {foodList.map((item) => {
-          // Checks if the item is in the basket using item.itemID
           if (basketItems[item.itemID] > 0) {
             return (
               <div key={item.itemID}>
                 <div className="basket-items-name basket-items-item">
-                  {/* Image Fallback  */}
+                  
+                  
                   <img
-<<<<<<< HEAD
                     src={item.image || "https://placehold.co/50"}
-=======
-                    src={item.image || 'https://placehold.co/50'}
->>>>>>> eae90cf (created and updated test for basket)
                     alt={item.itemName}
                   />
 
                   <p>{item.itemName}</p>
-
                   <p>£{item.price}</p>
-
                   <p>{basketItems[item.itemID]}</p>
-
                   <p>£{(item.price * basketItems[item.itemID]).toFixed(2)}</p>
 
                   <p
