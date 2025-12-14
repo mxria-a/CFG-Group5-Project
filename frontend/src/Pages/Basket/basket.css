@@ -1,5 +1,11 @@
 .basket {
-  margin: 100px;  
+  margin-top: 100px;
+  font-family: 'Inter', sans-serif;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px;
+  background: linear-gradient(180deg, #fff8f2 0%, #ffffff 45%);
 }
 .basket-items-name {
 display:grid;
@@ -7,6 +13,7 @@ grid-template-columns: 1fr 1.5fr 1fr 1fr 1fr 0.5fr;
 align-items: center;
 color: black;
 font-size: max(1vw, 12px);
+
 }
 .basket-items-item {
 margin: 10px 0px;
@@ -45,12 +52,18 @@ width: 50px;
 }
 .basket-total button {
   border: none;
-  color: white;
-  background-color: #0073ce;
-  width: max(15vw,200px);
+  color: #ffffff;
+  background-color: #ff6b35;
+  width: max(15vw, 200px);
   padding: 12px 0px;
-  border-radius: 4px;
+  border-radius: 14px;
   cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+.basket-total button:hover {
+  background-color: #ff3b00;
+  transform: translateY(-3px);
 }
 .basket-promocode{
   flex: 1;

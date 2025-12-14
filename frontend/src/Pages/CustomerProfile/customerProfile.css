@@ -82,8 +82,11 @@ h2 {
     outline: 2px solid #ff6b35;
   }
 
+  
+
   input:focus {
     outline: none;
+    
   }
 
   .preferences select {
