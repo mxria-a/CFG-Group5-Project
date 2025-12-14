@@ -110,10 +110,10 @@ const CheckoutPage = () => {
         if (!res.ok) throw new Error("Order failed");
         return res.json();
       })
-      .then(() => {
+      .then((data) => {
         setNotification({
           open: true,
-          message: "Order placed successfully!",
+          message: `Order placed successfully! Your order number is ${data.orderNumber}`,
           severity: "success",
         });
       })

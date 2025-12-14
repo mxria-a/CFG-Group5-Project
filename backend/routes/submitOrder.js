@@ -14,8 +14,16 @@ router.post("/submit-order", (req, res) => {
   pool.query(sql, [item.itemID, customerId, item.price], (err, result) => {
     if (err) {
       console.error("Error inserting order: ", err.message);
+      return res.status(500).json({ message: "Database error" });
     }
-    res.status(201).json({ message: "Order placed successfully " });
+
+    //return order number
+    res
+      .status(201)
+      .json({
+        message: "Order placed successfully ",
+        orderNumber: result.insertId,
+      });
   });
 });
 
