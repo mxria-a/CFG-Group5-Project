@@ -2,7 +2,8 @@ import { useState } from "react";
 
 const GuestCheckoutForm = ({ handleCustomerInfo }) => {
   const [formData, setFormData] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     address: "",
     postcode: "",
@@ -10,7 +11,7 @@ const GuestCheckoutForm = ({ handleCustomerInfo }) => {
   });
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.Value });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = (e) => {
@@ -20,11 +21,22 @@ const GuestCheckoutForm = ({ handleCustomerInfo }) => {
   return (
     <form onSubmit={handleSubmit} className="guest-checkout-form">
       <div>
-        <label>Name:</label>
+        <label>First name:</label>
         <input
           type="text"
-          name="name"
-          value={formData.name}
+          name="firstName"
+          value={formData.firstName}
+          onChange={handleChange}
+          required
+        />
+      </div>
+
+      <div>
+        <label>Last name:</label>
+        <input
+          type="text"
+          name="lastName"
+          value={formData.lastName}
           onChange={handleChange}
           required
         />

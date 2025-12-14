@@ -10,7 +10,8 @@ const CheckoutPage = () => {
   const { basketItems, foodList } = useContext(StoreContext);
 
   const [customerInfo, setCustomerInfo] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     address: "",
     postcode: "",
@@ -34,6 +35,28 @@ const CheckoutPage = () => {
       message: "Customer details stored",
       severity: "success",
     });
+
+    //send guest details to backend
+    fetch("http://localhost:3001/store-details", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to store customer details");
+        return res.json();
+      })
+      .then((resData) => {
+        console.log("Customer details saved", resData);
+      })
+      .catch((err) => {
+        console.error(err);
+        setNotification({
+          open: true,
+          message: "Failed to store customer details",
+          severity: "error",
+        });
+      });
   };
 
   //get checkout item
