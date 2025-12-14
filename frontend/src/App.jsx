@@ -11,8 +11,8 @@ import CustomerProfile from "./Pages/CustomerProfile/customerProfile";
 import Footer from "./Components/Footer";
 import Basket from "./Pages/Basket/basket";
 import CheckoutPage from "./Pages/CheckoutPage";
-import TermsOfService from './Components/TermsOfService'; 
-import PrivacyPolicy from './Components/PrivacyPolicy';
+import TermsOfService from "./Components/TermsOfService";
+import PrivacyPolicy from "./Components/PrivacyPolicy";
 
 function App() {
   return (
@@ -42,18 +42,11 @@ function App() {
           <Box component="main" sx={{ flexGrow: 1 }}>
             <Routes>
               <Route path="/" element={<Home />} />
-
-              {/* The Basket Route */}
               <Route path="/basket" element={<Basket />} />
-
-              {/* The Profile Route */}
               <Route path="/profile" element={<CustomerProfile />} />
-
               <Route path="/about-us" element={<TeamIntro />} />
-
-              <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/terms" element={<TermsOfService />} />
-               <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
             </Routes>
           </Box>
 
