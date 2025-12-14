@@ -1,11 +1,10 @@
 const express = require("express");
-const pool = require("../db"); // import the pool from the new module
+const pool = require("../db");
 const router = express.Router();
 
-// Creating route to get a customer by ID
-router.get("/customers/:id", (req, res) => {
-  const sql = "SELECT * FROM customers WHERE customerID = ?";
-  pool.query(sql, [req.params.id], (err, results) => {
+router.get("/customers/email/:email", (req, res) => {
+  const sql = "SELECT * FROM customers WHERE emailAddress = ?";
+  pool.query(sql, [req.params.email], (err, results) => {
     if (err) {
       console.error("Database error fetching customer:", err);
       return res

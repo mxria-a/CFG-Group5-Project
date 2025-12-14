@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Container, Grid, Typography, Link as MuiLink } from "@mui/material";
-import { Link as RouterLink } from "react-router-dom"; // 1. Renamed to avoid conflict
+import { Link as RouterLink } from "react-router-dom"; 
 import { Facebook, Instagram, Twitter } from "@mui/icons-material";
 
 const Footer = () => {
@@ -8,7 +8,7 @@ const Footer = () => {
     <Box
       component="footer"
       sx={{
-        backgroundColor: "#1c1c1c",
+        backgroundColor: "#0073ce",
         color: "white",
         py: 6,
         mt: "auto",
@@ -23,7 +23,7 @@ const Footer = () => {
             <Typography variant="h6" gutterBottom sx={{ fontWeight: "bold", color: "#ff9800" }}>
               Pickier
             </Typography>
-            <Typography variant="body2" sx={{ color: "#b0b0b0" }}>
+            <Typography variant="body2" sx={{ color: "#ffffffff" }}>
               Find the best burgers, pizzas, and more near you. Compare prices and
               calories instantly.
             </Typography>
@@ -50,8 +50,13 @@ const Footer = () => {
                 About Us
               </MuiLink>
 
-              <MuiLink href="#" color="inherit" underline="hover">Terms of Service</MuiLink>
-              <MuiLink href="#" color="inherit" underline="hover">Privacy Policy</MuiLink>
+              <MuiLink component={RouterLink} to="/terms" color="inherit" underline="hover">
+                 Terms of Service
+                 </MuiLink>
+
+              <MuiLink component={RouterLink} to="/privacy" color="inherit" underline="hover">
+                Privacy Policy
+                    </MuiLink>
             </Box>
           </Grid>
 
@@ -60,7 +65,7 @@ const Footer = () => {
             <Typography variant="h6" gutterBottom sx={{ fontWeight: "bold" }}>
               Contact Us
             </Typography>
-            <Typography variant="body2" sx={{ mb: 2, color: "#b0b0b0" }}>
+            <Typography variant="body2" sx={{ mb: 2, color: "#ffffffff" }}>
               123 Group 5 Project Street, London, UK
               <br />
               support@group5project.com
@@ -77,7 +82,7 @@ const Footer = () => {
 
         {/* Copyright Bar */}
         <Box sx={{ textAlign: "center", mt: 4, pt: 2, borderTop: "1px solid #333" }}>
-          <Typography variant="body2" sx={{ color: "#888" }}>
+          <Typography variant="body2" sx={{ color: "#ffffffff" }}>
             &copy; {new Date().getFullYear()} Group 5 Project. All rights reserved.
           </Typography>
         </Box>

@@ -3,25 +3,35 @@ h2 {
 }
 
 .customer-profile {
-    margin: 20px 60px;
-    font-family: Arial, sans-serif;
-  }
+  margin: 20px auto;
+  max-width: 1000px;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(180deg, #fff8f2 0%, #ffffff 45%);
+  padding: 40px 20px;
+  border-radius: 16px;
+}
   
   .customer-profile h1 {
-    text-align: center;
-    margin-bottom: 30px;
-  }
+  text-align: center;
+  margin-bottom: 40px;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #ff6b35;
+  letter-spacing: 1px;
+}
   
   .account-details,
   .addresses,
   .preferences,
   .payment-methods,
   .order-history {
-    border: 1px solid #ddd;
-    padding: 16px;
-    margin-bottom: 30px;
-    border-radius: 6px;
-    background: #fafafa;
+  border: 1px solid #f3ebeb;
+  padding: 20px;
+  margin-bottom: 30px;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
 
   .section-heading h2 {
@@ -37,6 +47,22 @@ h2 {
   
   }
 
+  .account-details:hover,
+.addresses:hover,
+.preferences:hover,
+.payment-methods:hover,
+.order-history:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.section-heading h2 {
+  margin-bottom: 12px;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #ff6b35;
+}
+
   input {
     width: 100%;
     padding: 8px;
@@ -45,13 +71,50 @@ h2 {
     border: 1px solid #ccc;
     box-sizing: border-box;
     color: #7c7c7c;
+    background: #f4f4f4;
   }
+
+  .addresses input {
+    background: white;
+  }
+
+  .addresses input:focus {
+    outline: 2px solid #ff6b35;
+  }
+
+  
 
   input:focus {
     outline: none;
+    
   }
 
   .preferences select {
     display: block;
     margin-top: 10px;
   }
+
+  /* mobile responsive*/
+@media (max-width: 600px) {
+  
+  /* Save screen space */
+  .customer-profile {
+    padding: 20px 15px; /* Reduce big 40px padding */
+    margin: 10px;       /* Reduce outer margin */
+  }
+
+  /* Shrink the big title */
+  .customer-profile h1 {
+    font-size: 1.8rem; /* Down from 2.2rem */
+    margin-bottom: 25px;
+  }
+
+  /* Make Dropdowns easier to tap */
+  .preferences select {
+    width: 100%;       /* Make dropdowns full width like inputs */
+    padding: 10px;     /* Bigger touch target */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #f4f4f4;
+  }
+}

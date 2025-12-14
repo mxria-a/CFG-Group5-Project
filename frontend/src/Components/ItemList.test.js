@@ -27,7 +27,8 @@ describe('ItemList Component', () => {
 
     expect(screen.getByText('Cheese Pizza')).toBeInTheDocument();
     expect(screen.getByText('Chicken Wrap')).toBeInTheDocument();
-    expect(screen.getByText('£12.5')).toBeInTheDocument();
+    
+    expect(screen.getByText(/£12\.50?/)).toBeInTheDocument();
     expect(screen.getByText(/from Pizza Hut/i)).toBeInTheDocument();
   });
 

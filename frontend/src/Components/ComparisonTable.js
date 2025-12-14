@@ -1,36 +1,54 @@
-import React from "react";
+import React, { useState, useContext } from "react";
 import "./ComparisonTable.css";
-import { useState } from "react";
-import { Snackbar, Alert } from "@mui/material";
+
+import { 
+  Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, 
+  Snackbar, Alert 
+} from "@mui/material";
+import { useNavigate } from "react-router-dom"; 
+import { StoreContext } from "../Context/shop-context"; 
 
 const ComparisonTable = ({ items, onSelectWinner }) => {
-  const [showNotification, setShowNotification] = useState(false); // Notification state for adding to basket
+  // State for the " Dialog Popup" and "Notification"
+  const [showNotification, setShowNotification] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
   const [expandedIngredients, setExpandedIngredients] = useState({});
+
+  const { addToBasket } = useContext(StoreContext);
+  const navigate = useNavigate();
 
   if (!items || items.length === 0) return <div>No items selected</div>;
 
-  // handler to close the popup
+  // Handler to close Snackbar
   const handleCloseNotification = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
+    if (reason === "clickaway") return;
     setShowNotification(false);
   };
 
-  // handler for the "Add to Cart" button click
+  // Snackbar first, then Dialog 
   const handleAddToCartClick = (item) => {
-    //  call the parent prop just in case it's needed later
+    // Add to Global Basket
+    addToBasket(item.itemID);
+
+    // Call parent prop if exists
     if (onSelectWinner) {
       onSelectWinner(item);
     }
-    // to show the "Added to Cart" popup
+
+    // Show Snackbar Immediately
     setShowNotification(true);
+
+    // Wait 1.5 seconds, Close Snackbar, Open Dialog
+    setTimeout(() => {
+      setShowNotification(false);
+      setOpenDialog(true);
+    }, 1500); 
   };
-  //Toggle function for read more/less
+
   const toggleIngredient = (id) => {
     setExpandedIngredients((prev) => ({
       ...prev,
-      [id]: !prev[id], // toggle the boolean for this specific ID
+      [id]: !prev[id],
     }));
   };
 
@@ -50,7 +68,7 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
           ))}
         </div>
 
-        {/*Price*/}
+        {/* Price */}
         <div className="table-row">
           <div className="col-label">Price</div>
           {items.map((item) => (
@@ -60,7 +78,7 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
           ))}
         </div>
 
-        {/*Delivery*/}
+        {/* Delivery */}
         <div className="table-row">
           <div className="col-label">Delivery</div>
           {items.map((item) => (
@@ -70,7 +88,7 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
           ))}
         </div>
 
-        {/*Restaurant*/}
+        {/* Restaurant */}
         <div className="table-row">
           <div className="col-label">Restaurant</div>
           {items.map((item) => (
@@ -80,12 +98,11 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
           ))}
         </div>
 
-        {/*Rating*/}
+        {/* Rating */}
         <div className="table-row">
           <div className="col-label">Rating</div>
           {items.map((item) => (
             <div key={item.itemID} className="col-item">
-              {/* Display rating if it's available or  'N/A' if missing */}
               <span style={{ fontWeight: "bold", color: "#f39c12" }}>
                 {item.avRating ? `★ ${item.avRating}` : "N/A"}
               </span>
@@ -93,18 +110,17 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
           ))}
         </div>
 
-        {/*Calories*/}
+        {/* Calories */}
         <div className="table-row">
           <div className="col-label">Calories</div>
           {items.map((item) => (
             <div key={item.itemID} className="col-item">
-              {/* check if calories exist before rendering */}
               {item.calories ? `${item.calories} kcal` : "N/A"}
             </div>
           ))}
         </div>
 
-        {/*Allergens*/}
+        {/* Allergens */}
         <div className="table-row">
           <div className="col-label">Allergens</div>
           {items.map((item) => (
@@ -113,13 +129,12 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
               className="col-item"
               style={{ color: "#d9534f", fontSize: "0.85rem" }}
             >
-              {/* checks if allergens exist otherwise show 'None' */}
               {item.allergens ? item.allergens : "None"}
             </div>
           ))}
         </div>
 
-        {/*Vegan Status*/}
+        {/* Vegan Status */}
         <div className="table-row">
           <div className="col-label">Vegan?</div>
           {items.map((item) => (
@@ -135,21 +150,19 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
         <div className="table-row">
           <div className="col-label">Ingredients</div>
           {items.map((item) => {
-            // logic variables
             const fullText = item.ingredients || "View details";
             const isExpanded = expandedIngredients[item.itemID];
             const textLimit = 50;
             const shouldTruncate = fullText.length > textLimit;
 
             return (
-              <div key={item.itemID} className="col-item ingredients-cell">
+              <div key={item.itemID} className="col-item ingredients-cell"
+              data-testid={`ingredients-${item.itemID}`}>
                 <span style={{ fontStyle: "italic" }}>
                   {isExpanded || !shouldTruncate
                     ? fullText
                     : `${fullText.substring(0, textLimit)}...`}
                 </span>
-
-                {/* only show button if text is long enough */}
                 {shouldTruncate && (
                   <button
                     className="view-more-link"
@@ -164,14 +177,14 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
         </div>
 
         {/* Action Buttons */}
-
         <div className="table-row">
           <div className="col-label"></div>
           {items.map((item) => (
             <div key={item.itemID} className="col-item">
               <button
                 className="add-to-cart-btn"
-                onClick={() => handleAddToCartClick(item)} /* click handler */
+                onClick={() => handleAddToCartClick(item)}
+                data-testid={`add-to-cart-${item.itemID}`}
               >
                 Add to Cart &#128722;
               </button>
@@ -179,10 +192,34 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
           ))}
         </div>
       </div>
-      {/* MUI Snackbar popup */}
+
+      {/* THE DIALOG POPUP (Decision) */}
+      <Dialog 
+        open={openDialog} 
+        onClose={() => setOpenDialog(false)}
+      >
+        <DialogTitle>Success!</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Item added to basket. What would you like to do next?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDialog(false)}>Keep Shopping</Button>
+          <Button 
+            onClick={() => navigate("/basket")} 
+            variant="contained" 
+            color="success"
+          >
+            View Basket
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* THE SNACKBAR NOTIFICATION */}
       <Snackbar
         open={showNotification}
-        autoHideDuration={3000}
+        autoHideDuration={1500} 
         onClose={handleCloseNotification}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >

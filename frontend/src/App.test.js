@@ -3,6 +3,9 @@ import App from './App';
 
 test('renders the main app title', () => {
   render(<App />);
-  const linkElement = screen.getByText(/Food Ordering App/i);
-  expect(linkElement).toBeInTheDocument();
+  const elements = screen.getAllByText(/Pickier/i);
+  
+  // We just check that at least one exists.
+  expect(elements.length).toBeGreaterThan(0);
 });
+

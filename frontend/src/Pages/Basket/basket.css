@@ -1,0 +1,143 @@
+.basket {
+  margin-top: 100px;
+  font-family: 'Inter', sans-serif;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px;
+  background: linear-gradient(180deg, #fff8f2 0%, #ffffff 45%);
+}
+.basket-items-name {
+display:grid;
+grid-template-columns: 1fr 1.5fr 1fr 1fr 1fr 0.5fr;
+padding: 12px 0;
+align-items: center;
+color: black;
+font-size: max(1vw, 12px);
+
+}
+.basket-items-item {
+margin: 10px 0px;
+padding: 8px 0;
+color: black;
+}
+.basket-items-item img{
+width: 50px;
+}
+.basket hr {
+   height: 1px;
+   background-color: #0073ce; 
+   border:none;
+}
+.basket-items-item .cross {
+    cursor: pointer;
+} 
+.basket-bottom {
+  margin-top: 80px;
+  display: flex;
+  justify-content: space-between;
+  gap: max(12vw,20px);
+}
+.basket-total {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.basket-total-details {
+  display: flex;
+  justify-content: space-between;
+  color: black;
+}
+.basket-total hr {
+  margin: 10px 0px;
+}
+.basket-total button {
+  border: none;
+  color: #ffffff;
+  background-color: #ff6b35;
+  width: max(15vw, 200px);
+  padding: 12px 0px;
+  border-radius: 14px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+.basket-total button:hover {
+  background-color: #ff3b00;
+  transform: translateY(-3px);
+}
+.basket-promocode{
+  flex: 1;
+} 
+.basket-promocode p {
+  color: grey;
+}
+.basket-promocode-input {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #eaeaea;
+  border-radius: 4px;
+}
+.basket-promocode-input input {
+  background: transparent;
+  border: none;
+  outline: none;
+  padding-left: 10px;
+}
+.basket-promocode-input button{
+  width: max(10vw, 150px);
+  padding: 12px 5px;
+  background-color: black;
+  border: none;
+  color: white;
+  border-radius: 4px;
+}
+/* MOBILE RESPONSIVE PATCH */
+@media (max-width: 768px) {
+  
+  .basket {
+    margin-top: 50px;
+    padding: 15px;
+  
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+  /* Hide the table headers on mobile (too cramped) */
+  .basket-items-name {
+    display: none; 
+  }
+  
+  /* Re-layout the items for mobile */
+  .basket-items-item {
+     display: grid; 
+     /* Layout: Image (60px) | Details (Auto) | Remove Button (30px) */
+     grid-template-columns: 60px 1fr 30px; 
+     align-items: center;
+     gap: 15px;
+     border-bottom: 1px solid #eee;
+     padding-bottom: 15px;
+  }
+
+  /* Stack the Bottom Section (Promo Code & Total) */
+  .basket-bottom {
+    flex-direction: column-reverse; /* Puts Total at the bottom, Promo on top */
+    gap: 30px;
+  }
+
+  /* Make sections full width */
+  .basket-promocode, 
+  .basket-total {
+    width: 100%;
+  }
+
+  /* Make buttons easy to tap (Full Width) */
+  .basket-total button,
+  .basket-promocode-input button {
+    width: 100%;
+    max-width: none; /* Removes the desktop limit */
+  }
+}
