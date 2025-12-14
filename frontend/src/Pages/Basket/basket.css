@@ -93,3 +93,51 @@ width: 50px;
   color: white;
   border-radius: 4px;
 }
+
+/* MOBILE RESPONSIVE PATCH */
+@media (max-width: 768px) {
+  
+  
+  .basket {
+    margin-top: 50px;
+    padding: 15px;
+  }
+
+  
+  
+  .basket-items-name {
+    
+    display: none; 
+    
+  }
+  
+  
+  .basket-items-item {
+     display: grid; 
+     /* Layout: Image (60px) | Details (Auto) | Remove Button (30px) */
+     grid-template-columns: 60px 1fr 30px; 
+     align-items: center;
+     gap: 15px;
+     border-bottom: 1px solid #eee;
+     padding-bottom: 15px;
+  }
+
+  /* Stack the Bottom Section (Promo Code & Total) */
+  .basket-bottom {
+    flex-direction: column-reverse; /* Puts Total at the bottom, Promo on top */
+    gap: 30px;
+  }
+
+  /*  Make sections full width */
+  .basket-promocode, 
+  .basket-total {
+    width: 100%;
+  }
+
+  /* Make buttons easy to tap (Full Width) */
+  .basket-total button,
+  .basket-promocode-input button {
+    width: 100%;
+    max-width: none; /* Removes the desktop limit */
+  }
+}
