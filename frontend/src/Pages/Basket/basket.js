@@ -8,7 +8,8 @@ const Basket = () => {
   const { basketItems, foodList, removeFromBasket, getTotalBasketAmount } =
     useContext(StoreContext);
 
-  const navigate = useNavigate;
+  
+  const navigate = useNavigate();
 
   // Calculate totals safely
   const subtotal = getTotalBasketAmount() || 0;
