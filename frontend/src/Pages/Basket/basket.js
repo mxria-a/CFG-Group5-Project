@@ -8,7 +8,7 @@ const Basket = () => {
   const { basketItems, foodList, removeFromBasket, getTotalBasketAmount } =
     useContext(StoreContext);
 
-  // FIXED: Correctly initialized the hook with ()
+  
   const navigate = useNavigate();
 
   // Calculate totals safely
