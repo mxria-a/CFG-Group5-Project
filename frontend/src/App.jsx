@@ -34,7 +34,6 @@ function App() {
               <Link to="/basket">Basket</Link>
               <Link to="/profile">Your Account</Link>
               <Link to="/about-us">About Us</Link>
-              <Link to="/checkout">Checkout</Link>
             </div>
           </nav>
 
@@ -43,6 +42,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/basket" element={<Basket />} />
+              <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/profile" element={<CustomerProfile />} />
               <Route path="/about-us" element={<TeamIntro />} />
               <Route path="/terms" element={<TermsOfService />} />
