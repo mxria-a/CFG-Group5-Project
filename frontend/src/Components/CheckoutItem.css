@@ -1,0 +1,34 @@
+.checkout-item {
+  display: grid;
+  grid-template-columns: 60px 1fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.checkout-item-img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.checkout-item-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.checkout-item-name {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.checkout-item-price {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.checkout-item-total {
+  font-weight: 600;
+}
