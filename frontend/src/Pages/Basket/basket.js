@@ -1,10 +1,13 @@
-import React, { useContext } from 'react';
-import './basket.css';
+import React, { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import "./basket.css";
 
-import { StoreContext } from '../../Context/shop-context';
+import { StoreContext } from "../../Context/shop-context";
 
 const Basket = () => {
-  const { basketItems, foodList, removeFromBasket, getTotalBasketAmount } = useContext(StoreContext);
+  const { basketItems, foodList, removeFromBasket, getTotalBasketAmount } =
+    useContext(StoreContext);
+  const navigate = useNavigate();
 
   // Calculate totals safely
   const subtotal = getTotalBasketAmount();
@@ -24,27 +27,27 @@ const Basket = () => {
         </div>
         <br />
         <hr />
-        
+
         {foodList.map((item) => {
           // Checks if the item is in the basket using item.itemID
           if (basketItems[item.itemID] > 0) {
             return (
               <div key={item.itemID}>
                 <div className="basket-items-name basket-items-item">
-                  
                   {/* Image Fallback  */}
-                  <img src={item.image || "https://placehold.co/50"} alt={item.itemName} />
-                  
-                  
+                  <img
+                    src={item.image || "https://placehold.co/50"}
+                    alt={item.itemName}
+                  />
+
                   <p>{item.itemName}</p>
-                  
+
                   <p>£{item.price}</p>
-                  
-                  
+
                   <p>{basketItems[item.itemID]}</p>
-                  
+
                   <p>£{(item.price * basketItems[item.itemID]).toFixed(2)}</p>
-                  
+
                   <p
                     onClick={() => removeFromBasket(item.itemID)}
                     className="cross"
@@ -80,9 +83,11 @@ const Basket = () => {
               <b>£{total.toFixed(2)}</b>
             </div>
           </div>
-          <button>PROCEED TO CHECKOUT</button>
+          <button onClick={() => navigate("/checkout")}>
+            PROCEED TO CHECKOUT
+          </button>
         </div>
-        
+
         <div className="basket-promocode">
           <p>Add promo code</p>
           <div className="basket-promocode-input">

@@ -22,6 +22,8 @@ app.use("/", require("./routes/callCoordinates"));
 app.use("/", require("./routes/customers"));
 app.use("/", require("./routes/allergens"));
 app.use("/", require("./routes/orders"));
+app.use("/", require("./routes/storeDetails"));
+app.use("/", require("./routes/submitOrder"));
 
 // Start server
 app.listen(port, () => {
