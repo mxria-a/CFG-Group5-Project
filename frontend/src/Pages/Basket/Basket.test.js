@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import Basket from './Basket';
+import Basket from './basket';
 import { StoreContext } from '../../Context/shop-context';
 
 describe('Basket Component', () => {
