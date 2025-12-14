@@ -10,6 +10,7 @@
 .basket-items-name {
 display:grid;
 grid-template-columns: 1fr 1.5fr 1fr 1fr 1fr 0.5fr;
+padding: 12px 0;
 align-items: center;
 color: black;
 font-size: max(1vw, 12px);
@@ -17,6 +18,7 @@ font-size: max(1vw, 12px);
 }
 .basket-items-item {
 margin: 10px 0px;
+padding: 8px 0;
 color: black;
 }
 .basket-items-item img{
@@ -25,7 +27,7 @@ width: 50px;
 .basket hr {
    height: 1px;
    background-color: #0073ce; 
-   border:none
+   border:none;
 }
 .basket-items-item .cross {
     cursor: pointer;
@@ -93,25 +95,23 @@ width: 50px;
   color: white;
   border-radius: 4px;
 }
-
 /* MOBILE RESPONSIVE PATCH */
 @media (max-width: 768px) {
-  
   
   .basket {
     margin-top: 50px;
     padding: 15px;
+  
+    margin-left: 10px;
+    margin-right: 10px;
   }
 
-  
-  
+  /* Hide the table headers on mobile (too cramped) */
   .basket-items-name {
-    
     display: none; 
-    
   }
   
-  
+  /* Re-layout the items for mobile */
   .basket-items-item {
      display: grid; 
      /* Layout: Image (60px) | Details (Auto) | Remove Button (30px) */
@@ -128,7 +128,7 @@ width: 50px;
     gap: 30px;
   }
 
-  /*  Make sections full width */
+  /* Make sections full width */
   .basket-promocode, 
   .basket-total {
     width: 100%;
