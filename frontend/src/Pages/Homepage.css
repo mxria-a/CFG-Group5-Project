@@ -92,13 +92,13 @@
 .suggestion-card {
   background: #ffffff;
   border-radius: 14px;
-  padding: 1.2 rem;
+  padding: 1.2rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
   border: 1px solid #f3ebeb;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  transition: tranform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   
 }
 
@@ -180,4 +180,45 @@
 
 .random-box:active {
   transform: translateY(0);
+}
+
+/* mobile responsive patch */
+@media (max-width: 600px) {
+  
+  
+  .home-container {
+    padding-left: 20px;
+    padding-right: 20px;
+    
+   
+    flex-direction: column;
+    align-items: center; 
+  }
+
+  /* Shrinks the Main Title */
+  .home-title {
+    font-size: 2rem; 
+    margin-bottom: 2rem;
+  }
+  
+  
+  .home-title::after {
+    width: 50px;
+    margin-top: 10px;
+  }
+
+  
+  .suggestions-section {
+    width: 100%;
+  }
+  
+  /* Stack Random Boxes if they get squashed */
+  .random-box-container {
+    gap: 10px;
+  }
+  
+  .random-box {
+    width: 100%; /* Full width buttons on mobile are easier to tap */
+    text-align: center;
+  }
 }
