@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 
-const OrderHistory = () => {
+const OrderHistory = ({ customerId }) => {
   const [orders, setOrders] = useState([]);
-  const customerId = 1;
 
   useEffect(() => {
+    if (!customerId) return;
+
     fetch(`http://localhost:3001/orders/${customerId}`)
       .then((res) => res.json())
       .then((data) => setOrders(data))
@@ -14,22 +15,23 @@ const OrderHistory = () => {
   return (
     <>
       <div className="section-heading">
-      <h2>Order History</h2>
+        <h2>Order History</h2>
       </div>
-    <div className="order-history">
-    {orders.length === 0 ? (
+      <div className="order-history">
+        {orders.length === 0 ? (
           <p>No orders found.</p>
         ) : (
           <ul>
             {orders.map((order) => (
               <li key={order.orderID}>
-                {order.restaurantName} | {order.itemName} | £{order.totalPrice} | {new Date(order.orderTime).toLocaleString()}
+                {order.restaurantName} | {order.itemName} | £{order.totalPrice}{" "}
+                | {new Date(order.orderTime).toLocaleString()}
               </li>
             ))}
           </ul>
         )}
       </div>
-      </>
+    </>
   );
 };
 

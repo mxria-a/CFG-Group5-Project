@@ -24,6 +24,8 @@ app.use("/", require("./routes/allergens"));
 app.use("/", require("./routes/orders"));
 app.use("/", require("./routes/storeDetails"));
 app.use("/", require("./routes/submitOrder"));
+app.use("/", require("./routes/customersByEmail"));
+app.use("/", require("./routes/addresses"));
 
 // Start server
 app.listen(port, () => {

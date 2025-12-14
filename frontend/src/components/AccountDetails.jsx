@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 
-const AccountDetails = () => {
+const AccountDetails = ({ customerId }) => {
   const [customer, setCustomer] = useState({});
-  const customerId = 1;
 
   useEffect(() => {
+    if (!customerId) return;
+
     fetch(`http://localhost:3001/customers/${customerId}`)
       .then((res) => res.json())
       .then((data) => setCustomer(data))
@@ -14,7 +15,7 @@ const AccountDetails = () => {
   return (
     <>
       <div className="section-heading">
-      <h2>Personal Details</h2>
+        <h2>Personal Details</h2>
       </div>
       <div className="account-details">
         <label>
@@ -24,7 +25,8 @@ const AccountDetails = () => {
           Last Name: <input value={customer.lastName || "N/A"} readOnly />
         </label>
         <label>
-          Email Address: <input value={customer.emailAddress || "N/A"} readOnly />
+          Email Address:{" "}
+          <input value={customer.emailAddress || "N/A"} readOnly />
         </label>
         <label>
           Phone Number: <input value={customer.phoneNumber || "N/A"} readOnly />
