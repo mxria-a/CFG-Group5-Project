@@ -2,10 +2,8 @@ import React from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import { Box } from "@mui/material";
 import "./App.css";
-
 import Home from "./Pages/Homepage";
 import { StoreContextProvider } from "./Context/shop-context";
-
 import TeamIntro from "./Components/TeamIntro";
 import CustomerProfile from "./Pages/CustomerProfile/customerProfile";
 import Footer from "./Components/Footer";
@@ -13,11 +11,6 @@ import Basket from "./Pages/Basket/basket";
 import CheckoutPage from "./Pages/CheckoutPage";
 import TermsOfService from "./Components/TermsOfService";
 import PrivacyPolicy from "./Components/PrivacyPolicy";
-
-import OrderConfirmation from "./Pages/Orders/OrderConfirmation";
-import OrderHistory from "./Pages/Orders/OrderHistory";
-import OrderTracking from "./Pages/Orders/OrderTracking";
-
 function App() {
   return (
     <StoreContextProvider>
@@ -40,7 +33,6 @@ function App() {
               <Link to="/about-us">About Us</Link>
             </div>
           </nav>
-
           {/* Main Content Area */}
           <Box component="main" sx={{ flexGrow: 1 }}>
             <Routes>
@@ -53,27 +45,6 @@ function App() {
               <Route path="/privacy" element={<PrivacyPolicy />} />
             </Routes>
           </Box>
-        {/* Main Content Area */}
-        <Box component="main" sx={{ flexGrow: 1 }}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            
-            {/* The Basket Route */}
-            <Route path="/basket" element={<Basket />} />
-
-            {/* The Profile Route */}
-            <Route path="/profile" element={<CustomerProfile />} />
-
-            <Route path="/about-us" element={<TeamIntro />} />
-
-           {/* Post-order routes */}
-           <Route path="/order-confirmation" element={<OrderConfirmation />} />
-           <Route path="/orders" element={<OrderHistory />} />
-           <Route path="/orders/track" element={<OrderTracking />} />
-  
-          </Routes>
-        </Box>
-
           {/* The Footer */}
           <Footer />
         </Box>
@@ -81,5 +52,4 @@ function App() {
     </StoreContextProvider>
   );
 }
-
 export default App;
