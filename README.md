@@ -2,13 +2,18 @@
 
 ## Project description
 
-This repo contains the components for a food-delivery app, built using React. This is a group project for the CFG degree to utilise and demonstrate our React and Javascript skills.
+This repo contains the components for a food-delivery app, built using React. This is a group project for the CFG degree to utilise and demonstrate our React and JavaScript skills.
 
 We have built a prototype for a food delivery app, where users can search for items, instead of cuisines or restaurants. The tool's USP is a comparison page, which allows takeaway lovers to compare similar items from different restaurants. This tool was built with dietary requirements and allergies in mind, allergens can be compared up front between specific items, allowing the user to select the most suitable item for them.
 
 ## Project features
 
-ADD LATER
+1. A search tool that finds a specific dish in a database of items
+2. Location filtering that filters search items by a set radius from the user postcode
+3. Item comparison, allowing comparison of 3 items to inspect calories, rating, allergens, price etc.
+4. Basket where users can add items to cart
+5. Checkout to complete the order and post to database
+6. Customer profile, where users can view their personal information and past orders
 
 ## How to install and run this project
 
@@ -56,7 +61,7 @@ ADD LATER
 
 - Once the React app has been started, the user can move through the interface, simulating the experience of ordering a takeaway
 - Currently, the restaurants in the database are only in London, so it will only return items for London postcodes
-- The item seach is limited to the options in the drop-down menu as this is just a prototype product
+- The item search is limited to the options in the drop-down menu as this is just a prototype product
 
 ## Testing
 
@@ -87,4 +92,4 @@ This tool was built as part of a group project for the CFG degree. It was built 
 
 ## Licence
 
-This project is licenced under the MIT licence
+This project is licensed under the MIT licence
