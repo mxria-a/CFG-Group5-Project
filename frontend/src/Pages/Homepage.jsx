@@ -4,6 +4,7 @@ import PostCodeInput from "../Components/PostCodeInput";
 import SubmitButton from "../Components/SubmitButton";
 import FoodComparisonPage from "./FoodComparisonPage";
 import "./Homepage.css";
+import bgImage from '../assets/jonathan-borba-8l8Yl2ruUsg-unsplash.jpg';
 import { Snackbar, Alert } from "@mui/material";
 
 // Defined outside to prevent re-renders
@@ -49,7 +50,13 @@ function Home() {
   };
 
   return (
-    <div className="home-container">
+    <div className="home-container"
+    style={{
+    backgroundImage: `url(${bgImage})`,
+    backgroundRepeat: "no-repeat",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+  }}>
       {!hasSearched ? (
         <div className="search-wrapper">
           <h1 className="home-title">Pickier</h1>

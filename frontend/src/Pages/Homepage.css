@@ -1,16 +1,20 @@
 /* Homepage styles */
 .home-container {
+  height: 34vw;
+  margin: 30px auto;
+  
+  position: relative;
   display: flex;
   justify-content: center; 
   align-items: flex-start; 
   text-align: center;
   padding-top: 40px; 
   min-height: 100vh;
-   background: linear-gradient(
-    180deg,
-    #fff8f2 0%,
-    #ffffff 45% );
+   background-image: url('../assets/jonathan-borba-8l8Yl2ruUsg-unsplash.jpg');;
     font-family: Arial, sans-serif;
+    background: no-repeat;
+    background-size: 30% auto;
+    background-position: center center;
   
 }
 
