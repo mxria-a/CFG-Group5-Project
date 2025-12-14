@@ -1,14 +1,14 @@
-import React, { useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import "./basket.css";
+import React, { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './basket.css';
 
-import { StoreContext } from "../../Context/shop-context";
+import { StoreContext } from '../../Context/shop-context';
 
 const Basket = () => {
   const { basketItems, foodList, removeFromBasket, getTotalBasketAmount } =
     useContext(StoreContext);
 
-  
+  // FIXED: Correctly initialized the hook with ()
   const navigate = useNavigate();
 
   // Calculate totals safely
@@ -82,7 +82,7 @@ const Basket = () => {
               <b>£{total.toFixed(2)}</b>
             </div>
           </div>
-          <button onClick={() => navigate("/checkout")}>
+          <button onClick={() => navigate('/checkout')}>
             PROCEED TO CHECKOUT
           </button>
         </div>
