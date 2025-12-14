@@ -7,10 +7,12 @@ import { StoreContext } from "../../Context/shop-context";
 const Basket = () => {
   const { basketItems, foodList, removeFromBasket, getTotalBasketAmount } =
     useContext(StoreContext);
-  const navigate = useNavigate();
+
+  const navigate = useNavigate 
+
 
   // Calculate totals safely
-  const subtotal = getTotalBasketAmount();
+  const subtotal = getTotalBasketAmount() || 0;
   const deliveryFee = subtotal > 0 ? 2 : 0; // Only charge delivery if basket is not empty
   const total = subtotal + deliveryFee;
 
@@ -36,7 +38,11 @@ const Basket = () => {
                 <div className="basket-items-name basket-items-item">
                   {/* Image Fallback  */}
                   <img
+<<<<<<< HEAD
                     src={item.image || "https://placehold.co/50"}
+=======
+                    src={item.image || 'https://placehold.co/50'}
+>>>>>>> eae90cf (created and updated test for basket)
                     alt={item.itemName}
                   />
 
@@ -51,7 +57,7 @@ const Basket = () => {
                   <p
                     onClick={() => removeFromBasket(item.itemID)}
                     className="cross"
-                    style={{ cursor: "pointer", color: "red" }}
+                    style={{ cursor: 'pointer', color: 'red' }}
                   >
                     x
                   </p>
