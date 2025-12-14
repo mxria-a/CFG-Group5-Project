@@ -18,23 +18,18 @@ const CheckoutPage = () => {
     phone: "",
   });
 
+  const [customerId, setCustomerId] = useState(null);
+
   const [notification, setNotification] = useState({
     open: false,
     message: "",
     severity: "success",
   });
 
-  //prepare for guest checkout
+  //Get customer details from the guest checkout
   const handleCustomerInfo = (data) => {
     //store info
     setCustomerInfo(data);
-
-    //show notification when info saved
-    setNotification({
-      open: true,
-      message: "Customer details stored",
-      severity: "success",
-    });
 
     //send guest details to backend
     fetch("http://localhost:3001/store-details", {
@@ -47,7 +42,12 @@ const CheckoutPage = () => {
         return res.json();
       })
       .then((resData) => {
-        console.log("Customer details saved", resData);
+        setCustomerId(resData.id);
+        setNotification({
+          open: true,
+          message: "Customer details stored",
+          severity: "success",
+        });
       })
       .catch((err) => {
         console.error(err);
@@ -75,12 +75,26 @@ const CheckoutPage = () => {
     0
   );
 
-  // Submit order
+  //Place order -only works when one item in basket
   const handlePlaceOrder = () => {
+    if (!customerId) {
+      setNotification({
+        open: true,
+        message: "Please fill out the guest checkout first",
+        severity: "error",
+      });
+      return;
+    }
+
+    const item = checkoutItems[0]; //currently only works for one item
+
     fetch("http://localhost:3001/submit-order", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(checkoutItems),
+      body: JSON.stringify({
+        customerId: customerId,
+        item: item,
+      }),
     })
       .then((res) => {
         if (!res.ok) throw new Error("Order failed");
