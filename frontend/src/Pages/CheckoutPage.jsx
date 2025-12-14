@@ -26,6 +26,9 @@ const CheckoutPage = () => {
     severity: "success",
   });
 
+  const [orderPlaced, setOrderPlaced] = useState(false);
+  const [orderNumber, setOrderNumber] = useState(null);
+
   //Get customer details from the guest checkout
   const handleCustomerInfo = (data) => {
     //store info
@@ -111,9 +114,12 @@ const CheckoutPage = () => {
         return res.json();
       })
       .then((data) => {
+        setOrderPlaced(true);
+        setOrderNumber(data.orderNumber);
+
         setNotification({
           open: true,
-          message: `Order placed successfully! Your order number is ${data.orderNumber}`,
+          message: `Order placed successfully!`,
           severity: "success",
         });
       })
@@ -128,46 +134,56 @@ const CheckoutPage = () => {
 
   return (
     <div className="checkout-container">
-      <h2>Your Basket</h2>
-
-      {/* GUEST CHECKOUT */}
-      {checkoutItems.length > 0 && (
-        <GuestCheckout
-          checkoutItems={checkoutItems}
-          totalPrice={totalPrice}
-          handleCustomerInfo={handleCustomerInfo}
-        />
-      )}
-
-      {/* ERROR HANDLING */}
-      {checkoutItems.length === 0 ? (
-        <p className="empty-msg">Your basket is empty.</p>
+      {/* SAVE FOR SUCCESS SCREEN */}
+      {orderPlaced ? (
+        <div className="order-success">
+          <h2>Thank you for your order</h2>
+          <p>Your order number is {orderNumber}</p>
+        </div>
       ) : (
-        <div className="basket-items">
-          {checkoutItems.map((item) => (
-            <CheckoutItem key={item.itemID} item={item} />
-          ))}
-        </div>
+        <>
+          <h2>Your Basket</h2>
+
+          {/* GUEST CHECKOUT */}
+          {checkoutItems.length > 0 && (
+            <GuestCheckout
+              checkoutItems={checkoutItems}
+              totalPrice={totalPrice}
+              handleCustomerInfo={handleCustomerInfo}
+            />
+          )}
+
+          {/* ERROR HANDLING */}
+          {checkoutItems.length === 0 ? (
+            <p className="empty-msg">Your basket is empty.</p>
+          ) : (
+            <div className="basket-items">
+              {checkoutItems.map((item) => (
+                <CheckoutItem key={item.itemID} item={item} />
+              ))}
+            </div>
+          )}
+
+          {/* TOTAL + BUTTON */}
+          {checkoutItems.length > 0 && (
+            <div className="checkout-summary">
+              <div className="total-row">
+                <span>Total:</span>
+                <span>£{totalPrice.toFixed(2)}</span>
+              </div>
+
+              <button
+                className="primary-btn place-order-btn"
+                onClick={handlePlaceOrder}
+              >
+                Place Order
+              </button>
+            </div>
+          )}
+        </>
       )}
 
-      {/* TOTAL + BUTTON */}
-      {checkoutItems.length > 0 && (
-        <div className="checkout-summary">
-          <div className="total-row">
-            <span>Total:</span>
-            <span>£{totalPrice.toFixed(2)}</span>
-          </div>
-
-          <button
-            className="primary-btn place-order-btn"
-            onClick={handlePlaceOrder}
-          >
-            Place Order
-          </button>
-        </div>
-      )}
-
-      {/* Snackbar */}
+      {/* Snackbar MUST be inside the same return */}
       <Snackbar
         open={notification.open}
         autoHideDuration={3000}
