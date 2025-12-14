@@ -1,14 +1,8 @@
 import Box from "@mui/material/Box";
 import { TextField } from "@mui/material";
-
 function PostCodeInput({ setPostcode }) {
   return (
-    <Box
-      component="form"
-      sx={{ "& .MuiTextField-root": { m: 1, width: "25ch" } }}
-      noValidate
-      autoComplete="off"
-    >
+    <Box component="form" sx={{ width: "100%" }} noValidate autoComplete="off">
       <div>
         <TextField
           required
@@ -16,10 +10,10 @@ function PostCodeInput({ setPostcode }) {
           label="Postcode"
           //update parent state
           onChange={(e) => setPostcode(e.target.value)}
+          fullWidth
         />
       </div>
     </Box>
   );
 }
-
 export default PostCodeInput;
