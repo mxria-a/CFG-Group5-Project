@@ -40,7 +40,7 @@
   font-weight: 500;
 }
 
-/* --- Summary Section at Bottom --- */
+/* Summary Section at Bottom */
 .checkout-summary {
   position: fixed;
   bottom: 40px;
@@ -96,5 +96,36 @@
   to {
     transform: translate(-50%, 0);
     opacity: 1;
+  }
+}
+
+/* mobile responsive */
+@media (max-width: 600px) {
+  
+  /* Reduces page padding to gain space */
+  .checkout-container {
+    padding: 15px;
+  }
+
+  /* Floating Summary Bar Overflow */
+  .checkout-summary {
+    width: 90%; /* Forces it to stay within screen width */
+    min-width: auto; /* Overrides the 'max-content' rule */
+    padding: 12px 20px; /* Reduces padding to save space */
+    justify-content: space-between; /* Pushes Text to left, Button to right */
+    bottom: 20px; /* Lowers it slightly */
+    gap: 10px; /* Reduces gap between text and button */
+  }
+
+  
+  .place-order-btn {
+    padding: 10px 15px;
+    font-size: 0.9rem;
+  }
+  
+  
+  .total-row {
+    font-size: 1rem;
+    white-space: nowrap;
   }
 }

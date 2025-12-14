@@ -27,7 +27,7 @@ width: 50px;
 .basket hr {
    height: 1px;
    background-color: #0073ce; 
-   border:none
+   border:none;
 }
 .basket-items-item .cross {
     cursor: pointer;
@@ -95,19 +95,49 @@ width: 50px;
   color: white;
   border-radius: 4px;
 }
+/* MOBILE RESPONSIVE PATCH */
 @media (max-width: 768px) {
-.basket 
-{margin: 80px 16px; 
-padding: 16px; }
+  
+  .basket {
+    margin-top: 50px;
+    padding: 15px;
+  
+    margin-left: 10px;
+    margin-right: 10px;
+  }
 
-.basket-items-name
-{
-  font-size: 12px;
-}
+  /* Hide the table headers on mobile (too cramped) */
+  .basket-items-name {
+    display: none; 
+  }
+  
+  /* Re-layout the items for mobile */
+  .basket-items-item {
+     display: grid; 
+     /* Layout: Image (60px) | Details (Auto) | Remove Button (30px) */
+     grid-template-columns: 60px 1fr 30px; 
+     align-items: center;
+     gap: 15px;
+     border-bottom: 1px solid #eee;
+     padding-bottom: 15px;
+  }
 
-.basket-bottom
-{
-flex-direction: column;
-gap: 32px;  
-}
+  /* Stack the Bottom Section (Promo Code & Total) */
+  .basket-bottom {
+    flex-direction: column-reverse; /* Puts Total at the bottom, Promo on top */
+    gap: 30px;
+  }
+
+  /* Make sections full width */
+  .basket-promocode, 
+  .basket-total {
+    width: 100%;
+  }
+
+  /* Make buttons easy to tap (Full Width) */
+  .basket-total button,
+  .basket-promocode-input button {
+    width: 100%;
+    max-width: none; /* Removes the desktop limit */
+  }
 }
