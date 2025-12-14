@@ -1,17 +1,40 @@
 import { useContext, useEffect, useState } from "react";
 import { StoreContext } from "../Context/shop-context";
-import CheckoutItem from "../Components/CheckoutItem";
-import "./CheckoutPage.css";
 import { Snackbar, Alert } from "@mui/material";
+
+import CheckoutItem from "../Components/CheckoutItem";
+import GuestCheckout from "../Components/GuestCheckout";
+import "./CheckoutPage.css";
 
 const CheckoutPage = () => {
   const { basketItems, foodList } = useContext(StoreContext);
+
+  const [customerInfo, setCustomerInfo] = useState({
+    name: "",
+    email: "",
+    address: "",
+    postcode: "",
+    phone: "",
+  });
 
   const [notification, setNotification] = useState({
     open: false,
     message: "",
     severity: "success",
   });
+
+  //prepare for guest checkout
+  const handleCustomerInfo = (data) => {
+    //store info
+    setCustomerInfo(data);
+
+    //show notification when info saved
+    setNotification({
+      open: true,
+      message: "Customer details stored",
+      severity: "success",
+    });
+  };
 
   //get checkout item
   const checkoutItems = foodList
@@ -56,15 +79,20 @@ const CheckoutPage = () => {
       });
   };
 
-  const handleCloseNotification = (_, reason) => {
-    if (reason === "clickaway") return;
-    setNotification((prev) => ({ ...prev, open: false }));
-  };
-
   return (
     <div className="checkout-container">
       <h2>Your Basket</h2>
 
+      {/* GUEST CHECKOUT */}
+      {checkoutItems.length > 0 && (
+        <GuestCheckout
+          checkoutItems={checkoutItems}
+          totalPrice={totalPrice}
+          handleCustomerInfo={handleCustomerInfo}
+        />
+      )}
+
+      {/* ERROR HANDLING */}
       {checkoutItems.length === 0 ? (
         <p className="empty-msg">Your basket is empty.</p>
       ) : (
