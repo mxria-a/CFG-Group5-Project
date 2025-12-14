@@ -93,3 +93,28 @@ h2 {
     display: block;
     margin-top: 10px;
   }
+
+  /* mobile responsive*/
+@media (max-width: 600px) {
+  
+  /* Save screen space */
+  .customer-profile {
+    padding: 20px 15px; /* Reduce big 40px padding */
+    margin: 10px;       /* Reduce outer margin */
+  }
+
+  /* Shrink the big title */
+  .customer-profile h1 {
+    font-size: 1.8rem; /* Down from 2.2rem */
+    margin-bottom: 25px;
+  }
+
+  /* Make Dropdowns easier to tap */
+  .preferences select {
+    width: 100%;       /* Make dropdowns full width like inputs */
+    padding: 10px;     /* Bigger touch target */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #f4f4f4;
+  }
+}
