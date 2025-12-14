@@ -86,7 +86,17 @@ const CheckoutPage = () => {
       return;
     }
 
-    const item = checkoutItems[0]; //currently only works for one item
+    //check basket length -it currently only works to push one item to the orders at a time
+    if (checkoutItems.length > 1) {
+      setNotification({
+        open: true,
+        message: "Please only checkout with one item at a time",
+        severity: "error",
+      });
+      return;
+    }
+
+    const item = checkoutItems[0];
 
     fetch("http://localhost:3001/submit-order", {
       method: "POST",
