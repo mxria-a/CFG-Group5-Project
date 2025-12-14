@@ -1,4 +1,4 @@
-import { render, screen, act } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import OrderHistory from "./OrderHistory";
 
 const mockOrders = [
@@ -18,20 +18,20 @@ const mockOrders = [
   },
 ];
 
-beforeEach(() => {
-  global.fetch = jest.fn(() =>
-    Promise.resolve({ json: () => Promise.resolve(mockOrders) })
-  );
-});
-
-afterEach(() => {
-  jest.clearAllMocks();
-});
-
 describe("OrderHistory Component", () => {
+  beforeEach(() => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({ json: () => Promise.resolve(mockOrders) })
+    );
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+    delete global.fetch;
+  });
 
   test("renders heading", () => {
-    render(<OrderHistory />);
+    render(<OrderHistory customerId={1} />);
     expect(screen.getByText("Order History")).toBeInTheDocument();
   });
 
@@ -40,29 +40,34 @@ describe("OrderHistory Component", () => {
       Promise.resolve({ json: () => Promise.resolve([]) })
     );
 
-    await act(async () => {
-      render(<OrderHistory />);
-    });
+    render(<OrderHistory customerId={1} />);
 
-    expect(screen.getByText(/No orders found/i)).toBeInTheDocument();
+    const noOrders = await screen.findByText(/No orders found/i);
+    expect(noOrders).toBeInTheDocument();
   });
 
   test("renders list of orders when data exists", async () => {
-    await act(async () => {
-      render(<OrderHistory />);
-    });
+    render(<OrderHistory customerId={1} />);
 
-    expect(screen.getByText((content) =>
-      content.includes("Pizza Hut") &&
-      content.includes("Cheese Pizza") &&
-      content.includes("£12.5")
-    )).toBeInTheDocument();
+    const pizzaOrder = await screen.findByText(
+      (content) =>
+        content.includes("Pizza Hut") &&
+        content.includes("Cheese Pizza") &&
+        content.includes("£12.5")
+    );
+    const kfcOrder = await screen.findByText(
+      (content) =>
+        content.includes("KFC") &&
+        content.includes("Chicken Wrap") &&
+        content.includes("£8.99")
+    );
 
-    expect(screen.getByText((content) =>
-      content.includes("KFC") &&
-      content.includes("Chicken Wrap") &&
-      content.includes("£8.99")
-    )).toBeInTheDocument();
+    expect(pizzaOrder).toBeInTheDocument();
+    expect(kfcOrder).toBeInTheDocument();
   });
 
+  test("does not fetch if no customerId", () => {
+    render(<OrderHistory />);
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
 });
