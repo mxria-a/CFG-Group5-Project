@@ -21,7 +21,7 @@ We have built a prototype for a food delivery app, where users can search for it
 - To run the project:
 
   ```
-  git clone https://github.com/Hargroid/Group-5-Project.git
+  git clone https://github.com/mxria-a/Group-5-Project.git
   cd Group-5-project.git
   ```
 
