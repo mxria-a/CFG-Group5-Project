@@ -12,7 +12,7 @@ const CustomerProfile = () => {
   useEffect(() => {
     if (!email) return;
 
-    fetch(`http://localhost:3001/customers/email/${email}`)
+    fetch(`https://cfg-group5-backend.onrender.com/customers/email/${email}`)
       .then((res) => res.json())
       .then((data) => {
         if (data && data.customerID) {

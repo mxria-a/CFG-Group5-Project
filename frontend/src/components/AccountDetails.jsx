@@ -6,7 +6,7 @@ const AccountDetails = ({ customerId }) => {
   useEffect(() => {
     if (!customerId) return;
 
-    fetch(`http://localhost:3001/customers/${customerId}`)
+    fetch(`https://cfg-group5-backend.onrender.com/customers/${customerId}`)
       .then((res) => res.json())
       .then((data) => setCustomer(data))
       .catch((err) => console.error(err));

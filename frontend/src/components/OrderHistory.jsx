@@ -6,7 +6,7 @@ const OrderHistory = ({ customerId }) => {
   useEffect(() => {
     if (!customerId) return;
 
-    fetch(`http://localhost:3001/orders/${customerId}`)
+    fetch(`https://cfg-group5-backend.onrender.com/orders/${customerId}`)
       .then((res) => res.json())
       .then((data) => setOrders(data))
       .catch((err) => console.error(err));

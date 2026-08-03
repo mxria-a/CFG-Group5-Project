@@ -2,7 +2,7 @@
 export const fetchCoords = async (postcode) => {
   try {
     const response = await fetch(
-      `http://localhost:3001/coordinates/${postcode}`
+      `https://cfg-group5-backend.onrender.com/coordinates/${postcode}`
     );
 
     if (!response.ok) {

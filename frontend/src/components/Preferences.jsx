@@ -5,7 +5,7 @@ const Preferences = () => {
   const [allergenOptions, setAllergenOptions] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3001/allergens")
+    fetch("https://cfg-group5-backend.onrender.com/allergens")
       .then((res) => res.json())
       .then((data) => {
         setAllergenOptions(data);

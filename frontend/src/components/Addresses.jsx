@@ -6,7 +6,7 @@ const Addresses = ({ customerId }) => {
   useEffect(() => {
     if (!customerId) return;
 
-    fetch(`http://localhost:3001/addresses/${customerId}`)
+    fetch(`https://cfg-group5-backend.onrender.com/addresses/${customerId}`)
       .then((res) => res.json())
       .then((data) => {
         setAddress(data.address || "");

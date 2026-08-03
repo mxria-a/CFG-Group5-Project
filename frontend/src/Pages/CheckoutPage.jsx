@@ -35,7 +35,7 @@ const CheckoutPage = () => {
     setCustomerInfo(data);
 
     //send guest details to backend
-    fetch("http://localhost:3001/store-details", {
+    fetch("https://cfg-group5-backend.onrender.com/store-details", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
@@ -101,7 +101,7 @@ const CheckoutPage = () => {
 
     const item = checkoutItems[0];
 
-    fetch("http://localhost:3001/submit-order", {
+    fetch("https://cfg-group5-backend.onrender.com/submit-order", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

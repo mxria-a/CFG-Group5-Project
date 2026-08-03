@@ -30,7 +30,7 @@ const FoodComparisonPage = ({ searchQuery, postcode, onBackToSearch }) => {
       setErrorMessage("");
 
       try {
-        const res = await fetch("http://localhost:3001/comparison-table-items");
+        const res = await fetch("https://cfg-group5-backend.onrender.com/comparison-table-items");
         const data = await res.json();
         let currentData = data;
 

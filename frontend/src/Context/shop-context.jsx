@@ -10,7 +10,7 @@ export const StoreContextProvider = ({ children }) => {
   useEffect(() => {
     const fetchFood = async () => {
       try {
-        const response = await fetch("http://localhost:3001/comparison-table-items");
+        const response = await fetch("https://cfg-group5-backend.onrender.com/comparison-table-items");
         if (!response.ok) throw new Error("Failed to fetch food");
         const data = await response.json();
         setFoodList(data);
