@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { StoreContext } from "../Context/shop-context";
 import { Snackbar, Alert } from "@mui/material";
 
@@ -9,14 +9,14 @@ import "./CheckoutPage.css";
 const CheckoutPage = () => {
   const { basketItems, foodList } = useContext(StoreContext);
 
-  const [customerInfo, setCustomerInfo] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    address: "",
-    postcode: "",
-    phone: "",
-  });
+const [, setCustomerInfo] = useState({
+  firstName: "",
+  lastName: "",
+  email: "",
+  address: "",
+  postcode: "",
+  phone: "",
+});
 
   const [customerId, setCustomerId] = useState(null);
 
