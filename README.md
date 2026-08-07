@@ -1,5 +1,11 @@
 # **Pickier** - A food delivery app done differently
 
+## Live Demo
+
+Frontend: [Picker.com](https://cfg-group5-project.vercel.app/)
+
+Backend API: https://cfg-group5-backend.onrender.com
+
 ## Project description
 
 This repo contains the components for a food-delivery app, built using React. This is a group project for the CFG degree to utilise and demonstrate our React and JavaScript skills.
@@ -15,47 +21,91 @@ We have built a prototype for a food delivery app, where users can search for it
 5. Checkout to complete the order and post to database
 6. Customer profile, where users can view their personal information and past orders
 
+## Technologies Used
+
+### Frontend
+- React
+- React Router
+- Material UI
+- CSS
+
+### Backend
+- Node.js
+- Express.js
+- MySQL
+- REST API
+
+### Deployment
+- Vercel (Frontend)
+- Render (Backend)
+- Aiven (MySQL Database)
+
+---
+
 ## How to install and run this project
 
-- This tool requires node.js to run, all additional dependencies can be installed after cloning the project
-- To run the project:
+This project requires Node.js to run locally. All additional dependencies can be installed after cloning the repository.
 
-  ```
-  git clone https://github.com/mxria-a/CFG-Group5-Project
-  cd Group-5-project.git
-  ```
+### 1. Clone the repository
 
-- Run npm install in backend and frontend to install the required packages
+```bash
+git clone https://github.com/mxria-a/CFG-Group5-Project
 
-  ```
-  cd frontend
-  npm install
-  ```
+cd CFG-Group5-Project
+```
 
-  ```
-  cd backend
-  npm install
-  ```
+### 2. Install dependencies
 
-- Set up the database:
+Install the required packages for both the frontend and backend.
 
-  - Open the `backend -> database -> setup.sql` file in MySQL and run the file to set up the database
-  - clone the sample.env file in backend to create your own .env file in backend and add your MySQL details
+Frontend:
 
-- Run the app
-
-  - Backend - start the server - runs on `http://localhost:3001`
-    ```
-    cd backend
-    npm start
-    ```
-  - Frontend - start the React app - runs on `http://localhost:3000`
-    ```
     cd frontend
-    npm start
-    ```
+    npm install
 
-- API integration: the postcode API used does not have a key - no setup needed
+Backend:
+
+    cd backend
+    npm install
+
+### 3. Set up the database
+
+This project uses a MySQL database.
+
+- Open the `backend/database/setup.sql` file in MySQL and run the script to create the required database tables.
+- Copy the `backend/sample.env` file and create your own `.env` file inside the backend folder.
+- Add your MySQL database connection details to the `.env` file.
+
+### 4. Run the application locally
+
+Start the backend server:
+
+```bash
+cd backend
+npm start 
+```
+
+
+The backend will run on:
+
+    http://localhost:3001
+
+Start the frontend React application:
+
+```bash
+cd frontend
+npm start
+```
+
+The frontend will run on:
+
+    http://localhost:3000
+
+### 5. API integration
+
+The postcode API used by this project does not require an API key, so no additional setup is required.
+
+---
 
 ## How to use this project
 
@@ -68,12 +118,12 @@ We have built a prototype for a food delivery app, where users can search for it
 - Tests for this project are written for testing with Jest. Frontend tests use The React Testing Library
 - Tests need to be performed in the frontend and backend of the project separately
   - Frontend testing
-    ```
+    ```bash
     cd frontend
     NPM test
     ```
   - Backend testing
-    ```
+    ```bash
     cd backend
     NPM test
     ```
