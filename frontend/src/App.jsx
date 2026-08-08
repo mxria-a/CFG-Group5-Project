@@ -25,7 +25,7 @@ function App() {
         >
           {/* Navbar */}
           <nav className="navbar">
-            <div className="nav-logo">Pickier</div>
+            <div className="nav-logo" a href="/frontend/src/Pages/Homepage.jsx">Pickier</div>
             <div className="nav-links">
               <Link to="/">Home</Link>
               <Link to="/basket">Basket</Link>
