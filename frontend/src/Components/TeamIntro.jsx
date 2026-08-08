@@ -8,10 +8,10 @@ const TeamIntro = () => {
       <div className="teammate-card">
         <h2 className="Teammate-name">Maria</h2>
         <p>
-          <b>Favourite hobby:</b> Binging reality shows
+          <b>Favourite hobby:</b> Going to the cinema
         </p>
         <p>
-          I do this because it's my favourite thing to do apart from sleeping
+          I enjoy going to the cinema in my spare time, especially watching new releases and discovering different types of films. I like the experience of switching off from everything else and getting immersed in a good story.
         </p>
       </div>
       <div className="divider"></div>
