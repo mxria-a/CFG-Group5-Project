@@ -1,133 +1,125 @@
-/* Main container */
 .checkout-container {
-  max-width: 1200px;
+  max-width: var(--page-max-width);
   margin: 0 auto;
-  padding: 20px;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  color: #272727;
+  padding: 30px 20px 60px;
+  font-family: var(--font-body);
+  color: var(--espresso);
 }
 
-/* Page title */
 .checkout-container h2 {
-  font-size: 2rem;
+  font-family: var(--font-display);
+  font-size: 1.8rem;
   font-weight: 700;
-  color: #ff6b35;
+  color: var(--espresso);
   margin-bottom: 20px;
-  letter-spacing: 1px;
-  border-bottom: 2px solid #ffd1b3; /* subtle accent line */
   padding-bottom: 12px;
+  border-bottom: 3px solid var(--espresso);
 }
 
-/* When basket has no items */
 .empty-msg {
-  font-size: 1.1rem;
-  color: #666;
+  font-size: 1.05rem;
+  color: var(--espresso-soft);
   margin-top: 20px;
 }
 
-/* Basket item list */
 .basket-items {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  margin-bottom: 120px; /* space for summary bar */
+  gap: 14px;
+  margin-bottom: 140px;
 }
 
-/* Loading state */
 .loading-state {
   text-align: center;
   margin-top: 80px;
-  color: #666;
+  color: var(--espresso-soft);
   font-size: 1.2rem;
-  font-weight: 500;
 }
 
-/* Summary Section at Bottom */
 .checkout-summary {
   position: fixed;
-  bottom: 500px; /* move higher */
+  bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: #2c3e50;
-  color: white;
-  padding: 15px 30px;
-  border-radius: 45px;
+  background: var(--espresso);
+  color: var(--cloud);
+  padding: 15px 28px;
+  border-radius: var(--radius-pill);
   display: flex;
   align-items: center;
-  gap: 25px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+  gap: 22px;
+  box-shadow: 6px 6px 0 var(--basil);
   animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   z-index: 1000;
   min-width: max-content;
 }
 
-/* Total row */
 .total-row {
-  font-size: 1.1rem;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
   font-weight: 600;
-  letter-spacing: 0.3px;
   display: flex;
   gap: 8px;
 }
 
-/* Primary button – matches theme from FoodComparisonPage */
 .place-order-btn {
-  background-color: #27ae60;
-  color: white;
-  border: none;
-  padding: 10px 24px;
-  border-radius: 25px;
+  background: var(--basil);
+  color: var(--cloud);
+  border: 2px solid var(--espresso);
+  padding: 10px 22px;
+  border-radius: var(--radius-pill);
   cursor: pointer;
-  font-weight: bold;
-  font-size: 0.95rem;
-  transition: background 0.2s, transform 0.2s;
-  white-space: nowrap;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9rem;
+  box-shadow: 3px 3px 0 var(--cloud);
+  transition: transform 0.15s ease;
 }
 
 .place-order-btn:hover {
-  background-color: #2ecc71;
-  transform: scale(1.05);
+  background: var(--basil-dark);
+  transform: scale(1.03);
 }
 
-/* Entry animation */
+.order-success {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.order-success h2 {
+  border: none;
+  color: var(--basil);
+  font-family: var(--font-display);
+}
+
+/* Guest checkout form fields — white, per design decision */
+.checkout-container .guest-checkout-field-group input,
+.checkout-container .form-field input {
+  background: var(--cloud);
+  border: 2px solid var(--espresso);
+}
+.checkout-container .guest-checkout-field-group input.invalid,
+.checkout-container .form-field input.invalid {
+  border-color: var(--chili);
+}
+
 @keyframes slideUp {
-  from {
-    transform: translate(-50%, 100%);
-    opacity: 0;
-  }
-  to {
-    transform: translate(-50%, 0);
-    opacity: 1;
-  }
+  from { transform: translate(-50%, 100%); opacity: 0; }
+  to { transform: translate(-50%, 0); opacity: 1; }
 }
 
-/* mobile responsive */
 @media (max-width: 600px) {
-  
-  /* Reduces page padding to gain space */
-  .checkout-container {
-    padding: 15px;
-  }
+  .checkout-container { padding: 20px 15px 60px; }
 
-  /* Floating Summary Bar Overflow */
   .checkout-summary {
-    width: 90%; /* Forces it to stay within screen width */
-    min-width: auto; /* Overrides the 'max-content' rule */
-    padding: 12px 20px; /* Reduces padding to save space */
-    justify-content: space-between; /* Pushes Text to left, Button to right */
-    bottom: 20px; /* Lowers it slightly */
-    gap: 10px; /* Reduces gap between text and button */
+    width: 90%;
+    min-width: auto;
+    padding: 12px 20px;
+    justify-content: space-between;
+    bottom: 16px;
+    gap: 10px;
   }
 
-  
-  .place-order-btn {
-    padding: 10px 15px;
-    font-size: 0.9rem;
-  }
-  
-  
-  .total-row {
-    font-size: 1rem;
-    white-space: nowrap;
-  }
+  .place-order-btn { padding: 10px 15px; font-size: 0.85rem; }
+  .total-row { font-size: 0.95rem; white-space: nowrap; }
 }

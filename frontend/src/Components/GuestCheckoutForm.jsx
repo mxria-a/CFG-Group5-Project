@@ -1,6 +1,15 @@
 import { useState } from "react";
 import "./GuestCheckoutForm.css";
 
+const FIELDS = [
+  { name: "firstName", label: "First name", type: "text" },
+  { name: "lastName", label: "Last name", type: "text" },
+  { name: "email", label: "Email address", type: "email" },
+  { name: "address", label: "Address", type: "text" },
+  { name: "postcode", label: "Postcode", type: "text" },
+  { name: "phone", label: "Phone number", type: "text" },
+];
+
 const GuestCheckoutForm = ({ handleCustomerInfo }) => {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -10,6 +19,7 @@ const GuestCheckoutForm = ({ handleCustomerInfo }) => {
     postcode: "",
     phone: "",
   });
+  const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -17,79 +27,50 @@ const GuestCheckoutForm = ({ handleCustomerInfo }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const newErrors = {};
+    FIELDS.forEach((f) => {
+      if (!formData[f.name].trim()) {
+        newErrors[f.name] = `Please enter your ${f.label.toLowerCase()}`;
+      }
+    });
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) return;
+
     handleCustomerInfo(formData);
   };
+
   return (
-    <form onSubmit={handleSubmit} className="guest-checkout-form">
-      <div>
-        <label>First name:</label>
-        <input
-          type="text"
-          name="firstName"
-          value={formData.firstName}
-          onChange={handleChange}
-          required
-        />
-      </div>
+    <div className="guest-checkout-form-wrapper">
+      <form onSubmit={handleSubmit} className="guest-checkout-form" noValidate>
+        <h2 className="guest-checkout-title">Your details</h2>
 
-      <div>
-        <label>Last name:</label>
-        <input
-          type="text"
-          name="lastName"
-          value={formData.lastName}
-          onChange={handleChange}
-          required
-        />
-      </div>
+        <div className="guest-checkout-field-group">
+          {FIELDS.map((f) => (
+            <div key={f.name}>
+              <label htmlFor={f.name}>{f.label}:</label>
+              <input
+                id={f.name}
+                type={f.type}
+                name={f.name}
+                value={formData[f.name]}
+                onChange={handleChange}
+                className={errors[f.name] ? "invalid" : ""}
+              />
+              {errors[f.name] && (
+                <span className="pk-field-error">{errors[f.name]}</span>
+              )}
+            </div>
+          ))}
+        </div>
 
-      <div>
-        <label>Email address:</label>
-        <input
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-        />
-      </div>
-
-      <div>
-        <label>Address:</label>
-        <input
-          type="text"
-          name="address"
-          value={formData.address}
-          onChange={handleChange}
-          required
-        />
-      </div>
-
-      <div>
-        <label>Postcode:</label>
-        <input
-          type="text"
-          name="postcode"
-          value={formData.postcode}
-          onChange={handleChange}
-          required
-        />
-      </div>
-
-      <div>
-        <label>Phone number:</label>
-        <input
-          type="text"
-          name="phone"
-          value={formData.phone}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div className="submit-btn-wrapper">
-  <button type="submit">Confirm Details</button>
-</div>
-    </form>
+        <div className="guest-checkout-submit-wrapper">
+          <button type="submit" className="pk-btn pk-btn-primary">
+            Confirm Details
+          </button>
+        </div>
+      </form>
+    </div>
   );
 };
 

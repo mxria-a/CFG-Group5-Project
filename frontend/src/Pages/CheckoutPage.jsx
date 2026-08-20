@@ -9,14 +9,14 @@ import "./CheckoutPage.css";
 const CheckoutPage = () => {
   const { basketItems, foodList } = useContext(StoreContext);
 
-const [, setCustomerInfo] = useState({
-  firstName: "",
-  lastName: "",
-  email: "",
-  address: "",
-  postcode: "",
-  phone: "",
-});
+  const [, setCustomerInfo] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    address: "",
+    postcode: "",
+    phone: "",
+  });
 
   const [customerId, setCustomerId] = useState(null);
 
@@ -29,12 +29,9 @@ const [, setCustomerInfo] = useState({
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderNumber, setOrderNumber] = useState(null);
 
-  //Get customer details from the guest checkout
   const handleCustomerInfo = (data) => {
-    //store info
     setCustomerInfo(data);
 
-    //send guest details to backend
     fetch("https://cfg-group5-backend.onrender.com/store-details", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -62,7 +59,6 @@ const [, setCustomerInfo] = useState({
       });
   };
 
-  //get checkout item
   const checkoutItems = foodList
     .filter((item) => basketItems[item.itemID] > 0)
     .map((item) => ({
@@ -78,7 +74,6 @@ const [, setCustomerInfo] = useState({
     0
   );
 
-  //Place order -only works when one item in basket
   const handlePlaceOrder = () => {
     if (!customerId) {
       setNotification({
@@ -89,7 +84,6 @@ const [, setCustomerInfo] = useState({
       return;
     }
 
-    //check basket length -it currently only works to push one item to the orders at a time
     if (checkoutItems.length > 1) {
       setNotification({
         open: true,
@@ -134,7 +128,6 @@ const [, setCustomerInfo] = useState({
 
   return (
     <div className="checkout-container">
-      {/* SAVE FOR SUCCESS SCREEN */}
       {orderPlaced ? (
         <div className="order-success">
           <h2>Thank you for your order</h2>
@@ -144,7 +137,6 @@ const [, setCustomerInfo] = useState({
         <>
           <h2>Your Basket</h2>
 
-          {/* GUEST CHECKOUT */}
           {checkoutItems.length > 0 && (
             <GuestCheckout
               checkoutItems={checkoutItems}
@@ -153,7 +145,6 @@ const [, setCustomerInfo] = useState({
             />
           )}
 
-          {/* ERROR HANDLING */}
           {checkoutItems.length === 0 ? (
             <p className="empty-msg">Your basket is empty.</p>
           ) : (
@@ -164,7 +155,6 @@ const [, setCustomerInfo] = useState({
             </div>
           )}
 
-          {/* TOTAL + BUTTON */}
           {checkoutItems.length > 0 && (
             <div className="checkout-summary">
               <div className="total-row">
@@ -172,10 +162,7 @@ const [, setCustomerInfo] = useState({
                 <span>£{totalPrice.toFixed(2)}</span>
               </div>
 
-              <button
-                className="primary-btn place-order-btn"
-                onClick={handlePlaceOrder}
-              >
+              <button className="place-order-btn" onClick={handlePlaceOrder}>
                 Place Order
               </button>
             </div>
@@ -183,7 +170,6 @@ const [, setCustomerInfo] = useState({
         </>
       )}
 
-      {/* Snackbar MUST be inside the same return */}
       <Snackbar
         open={notification.open}
         autoHideDuration={3000}
