@@ -8,10 +8,8 @@ const Basket = () => {
   const { basketItems, foodList, removeFromBasket, getTotalBasketAmount } =
     useContext(StoreContext);
 
-  
   const navigate = useNavigate();
 
-  // Calculate totals safely
   const subtotal = getTotalBasketAmount() || 0;
   const deliveryFee = subtotal > 0 ? 2 : 0;
   const total = subtotal + deliveryFee;
@@ -27,8 +25,6 @@ const Basket = () => {
           <p>Total</p>
           <p>Remove</p>
         </div>
-        <br />
-        <hr />
 
         {foodList.map((item) => {
           if (basketItems[item.itemID] > 0) {
@@ -48,12 +44,10 @@ const Basket = () => {
                   <p
                     onClick={() => removeFromBasket(item.itemID)}
                     className="cross"
-                    style={{ cursor: "pointer", color: "red" }}
                   >
                     x
                   </p>
                 </div>
-                <hr />
               </div>
             );
           }
@@ -69,12 +63,10 @@ const Basket = () => {
               <p>Subtotal</p>
               <p>£{subtotal.toFixed(2)}</p>
             </div>
-            <hr />
             <div className="basket-total-details">
               <p>Delivery Fee</p>
               <p>£{deliveryFee}</p>
             </div>
-            <hr />
             <div className="basket-total-details">
               <b>Total</b>
               <b>£{total.toFixed(2)}</b>
