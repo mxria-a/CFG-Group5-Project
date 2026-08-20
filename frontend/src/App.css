@@ -1,7 +1,8 @@
 /* Nav bar styling */
+
 .navbar {
   display: flex;
-  justify-content: space-between; /* want logo on the left and links on the right */
+  justify-content: space-between;
   align-items: center;
   padding: 10px 15px;
   background-color: #0073ce;
