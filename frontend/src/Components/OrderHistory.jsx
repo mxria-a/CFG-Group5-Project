@@ -21,14 +21,23 @@ const OrderHistory = ({ customerId }) => {
         {orders.length === 0 ? (
           <p>No orders found.</p>
         ) : (
-          <ul>
+          <div className="order-history-row">
             {orders.map((order) => (
-              <li key={order.orderID}>
-                {order.restaurantName} | {order.itemName} | £{order.totalPrice}{" "}
-                | {new Date(order.orderTime).toLocaleString()}
-              </li>
+              <div className="order-card-h" key={order.orderID}>
+                <div className="order-thumb">🍽️</div>
+                <div className="order-restaurant">{order.restaurantName}</div>
+                <div className="order-items">{order.itemName}</div>
+                <div className="order-date">
+                  {new Date(order.orderTime).toLocaleString()}
+                </div>
+                <div className="order-card-bottom">
+                  <div className="order-price">£{order.totalPrice}</div>
+                  {/* Visual only for now — no reorder endpoint exists yet */}
+                  <button className="order-reorder-btn">Reorder</button>
+                </div>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </div>
     </>

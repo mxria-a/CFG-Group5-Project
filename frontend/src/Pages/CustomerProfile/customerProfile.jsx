@@ -28,7 +28,6 @@ const CustomerProfile = () => {
     <div className="customer-profile">
       <h1>Customer Profile</h1>
 
-      {/* Show email input only if customerId is not found yet */}
       {!customerId && (
         <label>
           Enter your email to load profile

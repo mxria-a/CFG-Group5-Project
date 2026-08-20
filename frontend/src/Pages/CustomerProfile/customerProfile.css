@@ -1,120 +1,185 @@
-h2 {
-    margin-top: 0;
-}
-
 .customer-profile {
-  margin: 20px auto;
-  max-width: 1000px;
-  font-family: 'Inter', sans-serif;
-  background: linear-gradient(180deg, #fff8f2 0%, #ffffff 45%);
-  padding: 40px 20px;
-  border-radius: 16px;
+  max-width: var(--page-max-width);
+  margin: 0 auto;
+  padding: 30px 20px 60px;
+  font-family: var(--font-body);
 }
-  
-  .customer-profile h1 {
-  text-align: center;
-  margin-bottom: 40px;
-  font-size: 2.2rem;
-  font-weight: 700;
-  color: #ff6b35;
-  letter-spacing: 1px;
-}
-  
-  .account-details,
-  .addresses,
-  .preferences,
-  .payment-methods,
-  .order-history {
-  border: 1px solid #f3ebeb;
-  padding: 20px;
+
+.customer-profile h1 {
+  font-family: var(--font-display);
   margin-bottom: 30px;
-  border-radius: 14px;
-  background: #ffffff;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-
-  .section-heading h2 {
-    margin-bottom: 10px;
-  }
-  
-  .account-details label,
-  .addresses label,
-  .preferences label,
-  .payment-methods label {
-    display: block;
-    margin-bottom: 10px;
-  
-  }
-
-  .account-details:hover,
-.addresses:hover,
-.preferences:hover,
-.payment-methods:hover,
-.order-history:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--espresso);
 }
 
-.section-heading h2 {
-  margin-bottom: 12px;
-  font-size: 1.4rem;
+.customer-profile > label {
+  display: block;
+  background: var(--cloud);
+  border: 3px solid var(--espresso);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 20px;
+  margin-bottom: 24px;
   font-weight: 600;
-  color: #ff6b35;
 }
 
-  input {
-    width: 100%;
-    padding: 8px;
-    margin-top: 4px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-    color: #7c7c7c;
-    background: #f4f4f4;
-  }
+.customer-profile > label input {
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--field-border);
+  background: var(--field-fill);
+  box-sizing: border-box;
+}
 
-  .addresses input {
-    background: white;
-  }
+.customer-profile .account-details,
+.customer-profile .addresses,
+.customer-profile .preferences,
+.customer-profile .payment-methods,
+.customer-profile .order-history {
+  background: var(--cloud);
+  border: 3px solid var(--espresso);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 20px 24px;
+  margin-bottom: 24px;
+}
 
-  .addresses input:focus {
-    outline: 2px solid #ff6b35;
-  }
+.customer-profile .card-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
 
-  
+.customer-profile .section-heading h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--chili);
+}
 
-  input:focus {
-    outline: none;
-    
-  }
+.customer-profile .edit-toggle-btn {
+  background: var(--paper);
+  border: 2px solid var(--espresso);
+  border-radius: var(--radius-sm);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--espresso);
+}
 
-  .preferences select {
-    display: block;
-    margin-top: 10px;
-  }
+.customer-profile .edit-toggle-btn:hover { background: var(--mustard); }
 
-  /* mobile responsive*/
+.customer-profile .edit-toggle-btn.editing {
+  background: var(--basil);
+  color: var(--cloud);
+  border-color: var(--espresso);
+}
+
+.customer-profile .account-details label,
+.customer-profile .addresses label,
+.customer-profile .preferences label,
+.customer-profile .payment-methods label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--espresso-soft);
+}
+
+.customer-profile .account-details input,
+.customer-profile .addresses input,
+.customer-profile .preferences select {
+  width: 100%;
+  padding: 9px 12px;
+  margin-top: 4px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--field-border);
+  background: var(--field-fill);
+  box-sizing: border-box;
+  color: var(--espresso);
+  font-family: var(--font-body);
+}
+
+/* Editing state — fields go white with an espresso border */
+.customer-profile .account-details.editing input,
+.customer-profile .addresses.editing input,
+.customer-profile .preferences.editing select {
+  background: var(--cloud);
+  border-color: var(--espresso);
+}
+
+.customer-profile input:focus,
+.customer-profile select:focus {
+  outline: none;
+  border-color: var(--chili);
+}
+
+.customer-profile .preferences select {
+  margin-top: 10px;
+}
+
+/* Order history — horizontal scroll tray */
+.order-history-row {
+  display: flex;
+  align-items: stretch;
+  gap: 14px;
+  overflow-x: auto;
+  padding: 14px;
+  background: var(--paper);
+  border-radius: var(--radius-md);
+  scrollbar-width: auto;
+  scrollbar-color: var(--espresso) var(--paper);
+}
+.order-history-row::-webkit-scrollbar-track { background: var(--paper); border-radius: 10px; }
+.order-history-row::-webkit-scrollbar-thumb { background: var(--espresso); border-radius: 10px; }
+
+.order-card-h {
+  flex: 0 0 190px;
+  display: flex;
+  flex-direction: column;
+  background: var(--cloud);
+  border: 2px solid var(--espresso);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  box-shadow: var(--shadow-md);
+}
+
+.order-card-h .order-thumb { font-size: 1.4rem; margin-bottom: 10px; }
+.order-card-h .order-restaurant { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; margin-bottom: 2px; }
+.order-card-h .order-items { font-size: 0.8rem; color: var(--espresso-soft); margin-bottom: 6px; }
+.order-card-h .order-date { font-size: 0.72rem; color: var(--espresso-soft); }
+.order-card-bottom { margin-top: auto; padding-top: 8px; }
+.order-card-h .order-price { font-family: var(--font-display); font-weight: 700; color: var(--espresso); margin-bottom: 8px; }
+
+.order-reorder-btn {
+  display: block;
+  width: 100%;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.78rem;
+  background: var(--chili);
+  color: var(--cloud);
+  border: 2px solid var(--espresso);
+  border-radius: var(--radius-sm);
+  padding: 6px 12px;
+  cursor: pointer;
+}
+.order-reorder-btn:hover { background: var(--chili-dark); }
+
+.no-orders-msg {
+  color: var(--espresso-soft);
+  font-style: italic;
+}
+
 @media (max-width: 600px) {
-  
-  /* Save screen space */
-  .customer-profile {
-    padding: 20px 15px; /* Reduce big 40px padding */
-    margin: 10px;       /* Reduce outer margin */
-  }
-
-  /* Shrink the big title */
-  .customer-profile h1 {
-    font-size: 1.8rem; /* Down from 2.2rem */
-    margin-bottom: 25px;
-  }
-
-  /* Make Dropdowns easier to tap */
-  .preferences select {
-    width: 100%;       /* Make dropdowns full width like inputs */
-    padding: 10px;     /* Bigger touch target */
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background: #f4f4f4;
-  }
+  .customer-profile { padding: 20px 15px 50px; }
+  .customer-profile h1 { font-size: 1.7rem; margin-bottom: 22px; }
 }
