@@ -11,8 +11,8 @@ import Basket from "./Pages/Basket/basket";
 import CheckoutPage from "./Pages/CheckoutPage";
 import TermsOfService from "./Components/TermsOfService";
 import PrivacyPolicy from "./Components/PrivacyPolicy";
-import OrderConfirmation from "./Pages/OrderConfirmation";
-import OrderTracking from "./Pages/OrderTracking";
+// import OrderConfirmation from "./Pages/OrderConfirmation";
+// import OrderTracking from "./Pages/OrderTracking";
 
 const navLinkClass = ({ isActive }) => (isActive ? "active" : undefined);
 
@@ -70,8 +70,8 @@ function App() {
               <Route path="/about-us" element={<TeamIntro />} />
               <Route path="/terms" element={<TermsOfService />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />
-              <Route path="/order-confirmation" element={<OrderConfirmation />} />
-              <Route path="/order-tracking" element={<OrderTracking />} />
+              {/* <Route path="/order-confirmation" element={<OrderConfirmation />} />
+              <Route path="/order-tracking" element={<OrderTracking />} /> */}
             </Routes>
           </Box>
 
