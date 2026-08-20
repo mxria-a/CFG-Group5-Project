@@ -1,12 +1,12 @@
 import React, { useState, useContext } from "react";
 import "./ComparisonTable.css";
 
-import { 
-  Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, 
-  Snackbar, Alert 
+import {
+  Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography,
+  Snackbar, Alert
 } from "@mui/material";
-import { useNavigate } from "react-router-dom"; 
-import { StoreContext } from "../Context/shop-context"; 
+import { useNavigate } from "react-router-dom";
+import { StoreContext } from "../Context/shop-context";
 
 const ComparisonTable = ({ items, onSelectWinner }) => {
   // State for the " Dialog Popup" and "Notification"
@@ -25,24 +25,19 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
     setShowNotification(false);
   };
 
-  // Snackbar first, then Dialog 
   const handleAddToCartClick = (item) => {
-    // Add to Global Basket
     addToBasket(item.itemID);
 
-    // Call parent prop if exists
     if (onSelectWinner) {
       onSelectWinner(item);
     }
 
-    // Show Snackbar Immediately
     setShowNotification(true);
 
-    // Wait 1.5 seconds, Close Snackbar, Open Dialog
     setTimeout(() => {
       setShowNotification(false);
       setOpenDialog(true);
-    }, 1500); 
+    }, 1500);
   };
 
   const toggleIngredient = (id) => {
@@ -57,7 +52,6 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
       <h2 className="table-title">Compare Options</h2>
 
       <div className="comparison-scroll-wrapper">
-        {/* Header Row*/}
         <div className="table-row header-row">
           <div className="col-label">Feature</div>
           {items.map((item, index) => (
@@ -103,7 +97,7 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
           <div className="col-label">Rating</div>
           {items.map((item) => (
             <div key={item.itemID} className="col-item">
-              <span style={{ fontWeight: "bold", color: "#f39c12" }}>
+              <span className="rating-star">
                 {item.avRating ? `★ ${item.avRating}` : "N/A"}
               </span>
             </div>
@@ -124,11 +118,7 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
         <div className="table-row">
           <div className="col-label">Allergens</div>
           {items.map((item) => (
-            <div
-              key={item.itemID}
-              className="col-item"
-              style={{ color: "#d9534f", fontSize: "0.85rem" }}
-            >
+            <div key={item.itemID} className="col-item allergen-text">
               {item.allergens ? item.allergens : "None"}
             </div>
           ))}
@@ -157,7 +147,7 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
 
             return (
               <div key={item.itemID} className="col-item ingredients-cell"
-              data-testid={`ingredients-${item.itemID}`}>
+                data-testid={`ingredients-${item.itemID}`}>
                 <span style={{ fontStyle: "italic" }}>
                   {isExpanded || !shouldTruncate
                     ? fullText
@@ -194,10 +184,7 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
       </div>
 
       {/* THE DIALOG POPUP (Decision) */}
-      <Dialog 
-        open={openDialog} 
-        onClose={() => setOpenDialog(false)}
-      >
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle>Success!</DialogTitle>
         <DialogContent>
           <Typography>
@@ -206,10 +193,10 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDialog(false)}>Keep Shopping</Button>
-          <Button 
-            onClick={() => navigate("/basket")} 
-            variant="contained" 
-            color="success"
+          <Button
+            onClick={() => navigate("/basket")}
+            variant="contained"
+            sx={{ backgroundColor: "var(--basil)", "&:hover": { backgroundColor: "var(--basil-dark)" } }}
           >
             View Basket
           </Button>
@@ -219,7 +206,7 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
       {/* THE SNACKBAR NOTIFICATION */}
       <Snackbar
         open={showNotification}
-        autoHideDuration={1500} 
+        autoHideDuration={1500}
         onClose={handleCloseNotification}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >

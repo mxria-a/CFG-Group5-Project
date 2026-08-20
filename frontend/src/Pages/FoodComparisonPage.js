@@ -16,7 +16,7 @@ const FoodComparisonPage = ({ searchQuery, postcode, onBackToSearch }) => {
   const [view, setView] = useState("selection");
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
-  
+
   // State for popups
   const [notification, setNotification] = useState({ open: false, message: "", severity: "success" });
   const [openDialog, setOpenDialog] = useState(false);
@@ -80,36 +80,34 @@ const FoodComparisonPage = ({ searchQuery, postcode, onBackToSearch }) => {
 
   // Handlers
   const handleToggle = (item) => { 
-      const isSelected = selectedItems.some(i => i.itemID === item.itemID);
-      if (isSelected) setSelectedItems(prev => prev.filter(i => i.itemID !== item.itemID));
-      else {
-          if (selectedItems.length >= 3) { setNotification({ open: true, message: "Max 3 items", severity: "error" }); return; }
-          setSelectedItems(prev => [...prev, item]);
-      }
+    const isSelected = selectedItems.some((i) => i.itemID === item.itemID);
+    if (isSelected) setSelectedItems((prev) => prev.filter((i) => i.itemID !== item.itemID));
+    else {
+      if (selectedItems.length >= 3) { setNotification({ open: true, message: "Max 3 items", severity: "error" }); return; }
+      setSelectedItems((prev) => [...prev, item]);
+    }
   };
 
   const handleCompareClick = () => {
-      if (selectedItems.length < 2) { setNotification({ open: true, message: "Select 2 items", severity: "warning" }); return; }
-      setView("comparison");
+    if (selectedItems.length < 2) { setNotification({ open: true, message: "Select 2 items", severity: "warning" }); return; }
+    setView("comparison");
   };
 
   const areAllItemsSelected = () => { return allItems.length > 0 && selectedItems.length === allItems.length; };
   const handleSelectAll = () => {
-      if (areAllItemsSelected()) setSelectedItems([]);
-      else setSelectedItems(allItems.slice(0, 3));
+    if (areAllItemsSelected()) setSelectedItems([]);
+    else setSelectedItems(allItems.slice(0, 3));
   };
   const handleOrder = (item) => console.log(item);
 
   const handleCloseNotification = (event, reason) => {
     if (reason === "clickaway") return;
-    setNotification(prev => ({ ...prev, open: false }));
+    setNotification((prev) => ({ ...prev, open: false }));
   };
 
-  
   const handleAddToBasket = () => {
     if (selectedItems.length === 0) return;
 
-   
     selectedItems.forEach((item) => {
       addToBasket(item.itemID); 
     });
@@ -117,16 +115,16 @@ const FoodComparisonPage = ({ searchQuery, postcode, onBackToSearch }) => {
     // Show Snackbar
     setNotification({ 
       open: true, 
-      message: `Added ${selectedItems.length} items to basket!`, 
-      severity: "success" 
+      message: `Added ${selectedItems.length} items to basket!`,
+      severity: "success",
     });
-    
+
     // Clear selected items
-    setSelectedItems([]); 
+    setSelectedItems([]);
 
     // Wait 1.5 seconds, Close Snackbar, Open Dialog
     setTimeout(() => {
-      setNotification(prev => ({ ...prev, open: false }));
+      setNotification((prev) => ({ ...prev, open: false }));
       setOpenDialog(true);
     }, 1500);
   };
@@ -137,14 +135,13 @@ const FoodComparisonPage = ({ searchQuery, postcode, onBackToSearch }) => {
     <div className="page-container">
       {view === "selection" ? (
         <div className="selection-wrapper">
-          <button onClick={onBackToSearch} className="back-btn" style={{ marginBottom: "15px" }}>&larr; Search Again</button>
+          <button onClick={onBackToSearch} className="back-btn">&larr; Search Again</button>
 
           <div className="header-row-flex">
             <h2>
-              {searchQuery 
-                ? `Results for "${searchQuery}" near ${postcode}` 
-                : `All Food near ${postcode}`
-              }
+              {searchQuery
+                ? `Results for "${searchQuery}" near ${postcode}`
+                : `All Food near ${postcode}`}
             </h2>
             <button className="select-all-link" onClick={handleSelectAll}>
               {areAllItemsSelected() ? "Deselect All" : "Select All"}
@@ -173,10 +170,7 @@ const FoodComparisonPage = ({ searchQuery, postcode, onBackToSearch }) => {
       )}
 
       {/* THE DIALOG POPUP */}
-      <Dialog 
-        open={openDialog} 
-        onClose={() => setOpenDialog(false)}
-      >
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle>Items Added!</DialogTitle>
         <DialogContent>
           <Typography>
@@ -185,10 +179,10 @@ const FoodComparisonPage = ({ searchQuery, postcode, onBackToSearch }) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDialog(false)}>Keep Shopping</Button>
-          <Button 
-            onClick={() => navigate("/basket")} 
-            variant="contained" 
-            color="success"
+          <Button
+            onClick={() => navigate("/basket")}
+            variant="contained"
+            sx={{ backgroundColor: "var(--basil)", "&:hover": { backgroundColor: "var(--basil-dark)" } }}
           >
             View Basket
           </Button>

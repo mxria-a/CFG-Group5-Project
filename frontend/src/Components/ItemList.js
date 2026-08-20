@@ -1,10 +1,7 @@
-import React from 'react'; 
-// { useContext } 
-//import { StoreContext } from '../Context/shop-context'; 
+import React from 'react';
 import './ItemList.css';
 
 const ItemList = ({ items, selectedItems, onToggle }) => {
-
 
   return (
     <div className="item-list-container">
@@ -19,8 +16,6 @@ const ItemList = ({ items, selectedItems, onToggle }) => {
             onClick={() => {
               // Call onToggle to select the item for comparison
               onToggle(item);
-              
-              
             }}
           >
             <div className="card-content">
