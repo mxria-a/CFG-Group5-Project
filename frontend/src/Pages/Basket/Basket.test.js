@@ -39,6 +39,11 @@ describe('Basket Component', () => {
     jest.clearAllMocks();
   });
 
+  test('renders the Basket page title', () => {
+    renderBasket();
+    expect(screen.getByText('Basket')).toBeInTheDocument();
+  });
+
   test('renders basket headings', () => {
     renderBasket();
 
@@ -60,7 +65,6 @@ describe('Basket Component', () => {
     expect(screen.getByText('£10')).toBeInTheDocument();
     expect(screen.getByText('£12')).toBeInTheDocument();
 
-    // Quantities (rendered inside the stepper)
     expect(screen.getByText('2')).toBeInTheDocument();
     expect(screen.getByText('1')).toBeInTheDocument();
 
@@ -71,7 +75,6 @@ describe('Basket Component', () => {
     expect(screen.getByText(32)).toBeInTheDocument();
     expect(screen.getByText('Delivery Fee')).toBeInTheDocument();
     expect(screen.getByText('£2')).toBeInTheDocument();
-    expect(screen.getByText('Total')).toBeInTheDocument();
     expect(screen.getByText('£34.00')).toBeInTheDocument();
   });
 
@@ -116,21 +119,17 @@ describe('Basket Component', () => {
     expect(screen.getByText('Apply Code')).toBeInTheDocument();
   });
 
-  test('renders correctly when basket is empty', () => {
+  test('shows the empty-basket screen when there are no items', () => {
     renderBasket({
       basketItems: {},
       foodList: [],
       getTotalBasketAmount: () => 0,
     });
 
-    expect(screen.getByText('Subtotal')).toBeInTheDocument();
-    expect(screen.getByText('£0.00')).toBeInTheDocument();
-    expect(screen.getByText('Delivery Fee')).toBeInTheDocument();
-    expect(screen.getByText('Total')).toBeInTheDocument();
-    expect(screen.getByText('£0.00')).toBeInTheDocument();
-    const removeButtons = screen.queryAllByText('x');
-    expect(removeButtons.length).toBe(0);
-    expect(screen.getByText('Add promo code')).toBeInTheDocument();
+    expect(screen.getByText('Your basket is empty')).toBeInTheDocument();
+    expect(screen.getByText('Browse takeaways')).toBeInTheDocument();
+    expect(screen.queryByText('Subtotal')).not.toBeInTheDocument();
+    expect(screen.queryAllByText('x').length).toBe(0);
   });
 
   test('shows an emoji placeholder when item image is missing', () => {
