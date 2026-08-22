@@ -49,7 +49,6 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
-  margin-bottom: 24px;
 }
 
 .loading-state {
@@ -59,57 +58,49 @@
   font-size: 1.2rem;
 }
 
-/* Confirmed guest details card */
-.guest-confirmed-card {
+/* Payment options (visual only — no real payment processing yet) */
+.payment-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.payment-option {
   background: var(--cloud);
-  border: 3px solid var(--basil);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-  padding: 18px 22px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.guest-confirmed-card .confirmed-label {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-weight: 600;
-}
-
-.guest-confirmed-card .confirmed-check {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: var(--basil);
-  color: var(--cloud);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  flex-shrink: 0;
-}
-
-.guest-confirmed-card .confirmed-details p {
-  margin: 2px 0;
-  font-size: 0.9rem;
-  color: var(--espresso-soft);
-}
-
-.guest-confirmed-card .edit-details-btn {
-  background: var(--cloud);
-  border: 2px solid var(--espresso);
-  border-radius: var(--radius-sm);
-  padding: 7px 16px;
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 0.85rem;
+  border: 3px solid var(--espresso);
+  border-radius: var(--radius-md);
+  padding: 16px;
   cursor: pointer;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
-.guest-confirmed-card .edit-details-btn:hover { background: var(--paper); }
+
+.payment-option:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.payment-option.selected {
+  border-color: var(--basil);
+  background: #F0F8EC;
+  box-shadow: var(--shadow-sm);
+}
+
+.payment-option .payment-icon {
+  font-size: 1.5rem;
+}
+
+@media (max-width: 600px) {
+  .payment-options {
+    grid-template-columns: 1fr;
+  }
+}
 
 /* Order readiness checklist */
 .order-checklist {
@@ -216,16 +207,6 @@
   font-family: var(--font-display);
 }
 
-.checkout-container .guest-checkout-field-group input,
-.checkout-container .form-field input {
-  background: var(--cloud);
-  border: 2px solid var(--espresso);
-}
-.checkout-container .guest-checkout-field-group input.invalid,
-.checkout-container .form-field input.invalid {
-  border-color: var(--chili);
-}
-
 @keyframes slideUp {
   from { transform: translate(-50%, 100%); opacity: 0; }
   to { transform: translate(-50%, 0); opacity: 1; }
@@ -245,6 +226,4 @@
 
   .place-order-btn { padding: 10px 15px; font-size: 0.85rem; }
   .total-row { font-size: 0.95rem; white-space: nowrap; }
-
-  .guest-confirmed-card { flex-direction: column; align-items: flex-start; }
 }
