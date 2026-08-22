@@ -4,14 +4,38 @@ import { Snackbar, Alert } from "@mui/material";
 import { Link } from "react-router-dom";
 
 import CheckoutItem from "../Components/CheckoutItem";
-import GuestCheckout from "../Components/GuestCheckout";
+import GuestCheckoutForm from "../Components/GuestCheckoutForm";
 import "./CheckoutPage.css";
 
-const CheckoutPage = () => {
-  const { basketItems, foodList } = useContext(StoreContext);
+const FIELD_LABELS = {
+  firstName: "your first name",
+  lastName: "your last name",
+  email: "your email",
+  address: "your address",
+  postcode: "your postcode",
+  phone: "your phone number",
+};
 
-  const [customerInfo, setCustomerInfo] = useState(null);
-  const [customerId, setCustomerId] = useState(null);
+const PAYMENT_OPTIONS = [
+  { id: "card", label: "Card", icon: "\u{1F4B3}" },
+  { id: "paypal", label: "PayPal", icon: "\u{1F17F}\uFE0F" },
+  { id: "cash", label: "Cash on delivery", icon: "\u{1F4B5}" },
+];
+
+const CheckoutPage = () => {
+  const { basketItems, foodList, clearBasket } = useContext(StoreContext);
+
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    address: "",
+    postcode: "",
+    phone: "",
+  });
+  const [errors, setErrors] = useState({});
+  const [paymentMethod, setPaymentMethod] = useState(null);
+  const [paymentError, setPaymentError] = useState(false);
 
   const [notification, setNotification] = useState({
     open: false,
@@ -21,39 +45,10 @@ const CheckoutPage = () => {
 
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderNumber, setOrderNumber] = useState(null);
+  const [placing, setPlacing] = useState(false);
 
-  const handleCustomerInfo = (data) => {
-    setCustomerInfo(data);
-
-    fetch("https://cfg-group5-backend.onrender.com/store-details", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to store customer details");
-        return res.json();
-      })
-      .then((resData) => {
-        setCustomerId(resData.id);
-        setNotification({
-          open: true,
-          message: "Details saved!",
-          severity: "success",
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-        setNotification({
-          open: true,
-          message: "Failed to store customer details",
-          severity: "error",
-        });
-      });
-  };
-
-  const handleEditDetails = () => {
-    setCustomerId(null);
+  const handleFieldChange = (name, value) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const checkoutItems = foodList
@@ -72,22 +67,44 @@ const CheckoutPage = () => {
   );
 
   const tooManyItemTypes = checkoutItems.length > 1;
-  const detailsConfirmed = !!customerId;
-  const readyToOrder = detailsConfirmed && !tooManyItemTypes && checkoutItems.length === 1;
 
   const handlePlaceOrder = () => {
-    if (!readyToOrder) return;
+    if (checkoutItems.length === 0 || tooManyItemTypes || placing) return;
 
-    const item = checkoutItems[0];
+    const newErrors = {};
+    Object.keys(formData).forEach((key) => {
+      if (!formData[key].trim()) {
+        newErrors[key] = `Please enter ${FIELD_LABELS[key]}`;
+      }
+    });
+    setErrors(newErrors);
 
-    fetch("https://cfg-group5-backend.onrender.com/submit-order", {
+    const missingPayment = !paymentMethod;
+    setPaymentError(missingPayment);
+
+    if (Object.keys(newErrors).length > 0 || missingPayment) return;
+
+    setPlacing(true);
+
+    fetch("https://cfg-group5-backend.onrender.com/store-details", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        customerId: customerId,
-        item: item,
-      }),
+      body: JSON.stringify(formData),
     })
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to store customer details");
+        return res.json();
+      })
+      .then((resData) => {
+        const customerId = resData.id;
+        const item = checkoutItems[0];
+
+        return fetch("https://cfg-group5-backend.onrender.com/submit-order", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ customerId, item }),
+        });
+      })
       .then((res) => {
         if (!res.ok) throw new Error("Order failed");
         return res.json();
@@ -95,20 +112,21 @@ const CheckoutPage = () => {
       .then((data) => {
         setOrderPlaced(true);
         setOrderNumber(data.orderNumber);
-
+        clearBasket();
         setNotification({
           open: true,
-          message: `Order placed successfully!`,
+          message: "Order placed successfully!",
           severity: "success",
         });
       })
       .catch(() => {
         setNotification({
           open: true,
-          message: "Failed to place order.",
+          message: "Failed to place order. Please try again.",
           severity: "error",
         });
-      });
+      })
+      .finally(() => setPlacing(false));
   };
 
   return (
@@ -143,39 +161,36 @@ const CheckoutPage = () => {
               </div>
 
               <h3 className="step-heading">Your details</h3>
-              {detailsConfirmed ? (
-                <div className="guest-confirmed-card">
-                  <div className="confirmed-label">
-                    <span className="confirmed-check">✓</span>
-                    <div className="confirmed-details">
-                      <p>
-                        <strong>
-                          {customerInfo?.firstName} {customerInfo?.lastName}
-                        </strong>
-                      </p>
-                      <p>{customerInfo?.email}</p>
-                    </div>
+              <GuestCheckoutForm
+                formData={formData}
+                errors={errors}
+                onChange={handleFieldChange}
+              />
+
+              <h3 className="step-heading">Payment (demo only)</h3>
+              <div className="payment-options">
+                {PAYMENT_OPTIONS.map((option) => (
+                  <div
+                    key={option.id}
+                    className={`payment-option ${paymentMethod === option.id ? "selected" : ""}`}
+                    onClick={() => {
+                      setPaymentMethod(option.id);
+                      setPaymentError(false);
+                    }}
+                  >
+                    <span className="payment-icon">{option.icon}</span>
+                    {option.label}
                   </div>
-                  <button className="edit-details-btn" onClick={handleEditDetails}>
-                    Edit details
-                  </button>
-                </div>
-              ) : (
-                <GuestCheckout
-                  checkoutItems={checkoutItems}
-                  totalPrice={totalPrice}
-                  handleCustomerInfo={handleCustomerInfo}
-                />
+                ))}
+              </div>
+              {paymentError && (
+                <span className="pk-field-error">Please choose a payment method</span>
               )}
 
               <div className="order-checklist">
-                <div className={`checklist-item ${detailsConfirmed ? "done" : "pending"}`}>
-                  <span className="checklist-icon">{detailsConfirmed ? "✓" : "○"}</span>
-                  {detailsConfirmed ? "Your details are ready" : "Add your details to continue"}
-                </div>
                 <div className={`checklist-item ${!tooManyItemTypes ? "done" : "pending"}`}>
                   <span className="checklist-icon">{!tooManyItemTypes ? "✓" : "!"}</span>
-                  {!tooManyItemTypes ? "Order is ready to place" : "Only one dish type per order, for now"}
+                  {!tooManyItemTypes ? "Order is ready" : "Only one dish type per order, for now"}
                 </div>
               </div>
 
@@ -188,9 +203,9 @@ const CheckoutPage = () => {
                 <button
                   className="place-order-btn"
                   onClick={handlePlaceOrder}
-                  disabled={!readyToOrder}
+                  disabled={tooManyItemTypes || placing}
                 >
-                  Place Order
+                  {placing ? "Placing order..." : "Place Order"}
                 </button>
               </div>
             </>
