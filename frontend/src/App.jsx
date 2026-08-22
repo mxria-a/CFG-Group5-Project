@@ -1,6 +1,8 @@
 import React, { useContext } from "react";
 import { BrowserRouter, Routes, Route, Link, NavLink } from "react-router-dom";
 import { Box } from "@mui/material";
+import { ThemeProvider } from "@mui/material/styles";
+import pickierTheme from "./pickierTheme";
 import "./App.css";
 import Home from "./Pages/Homepage";
 import { StoreContextProvider, StoreContext } from "./Context/shop-context";
@@ -43,42 +45,44 @@ function NavBasketCount() {
 
 function App() {
   return (
-    <StoreContextProvider>
-      <BrowserRouter>
-        <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-          <nav className="navbar">
-            <Link to="/" className="nav-logo-group">
-              <ChiliMascot />
-              <span className="nav-logo">Pickier</span>
-            </Link>
-            <div className="nav-links">
-              <NavLink to="/" className={navLinkClass} end>Home</NavLink>
-              <NavLink to="/basket" className={navLinkClass}>
-                Basket <NavBasketCount />
-              </NavLink>
-              <NavLink to="/profile" className={navLinkClass}>Your account</NavLink>
-              <NavLink to="/about-us" className={navLinkClass}>About us</NavLink>
-            </div>
-          </nav>
+    <ThemeProvider theme={pickierTheme}>
+      <StoreContextProvider>
+        <BrowserRouter>
+          <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+            <nav className="navbar">
+              <Link to="/" className="nav-logo-group">
+                <ChiliMascot />
+                <span className="nav-logo">Pickier</span>
+              </Link>
+              <div className="nav-links">
+                <NavLink to="/" className={navLinkClass} end>Home</NavLink>
+                <NavLink to="/basket" className={navLinkClass}>
+                  Basket <NavBasketCount />
+                </NavLink>
+                <NavLink to="/profile" className={navLinkClass}>Your account</NavLink>
+                <NavLink to="/about-us" className={navLinkClass}>About us</NavLink>
+              </div>
+            </nav>
 
-          <Box component="main" sx={{ flexGrow: 1 }}>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/basket" element={<Basket />} />
-              <Route path="/checkout" element={<CheckoutPage />} />
-              <Route path="/profile" element={<CustomerProfile />} />
-              <Route path="/about-us" element={<TeamIntro />} />
-              <Route path="/terms" element={<TermsOfService />} />
-              <Route path="/privacy" element={<PrivacyPolicy />} />
-              {/* <Route path="/order-confirmation" element={<OrderConfirmation />} />
-              <Route path="/order-tracking" element={<OrderTracking />} /> */}
-            </Routes>
+            <Box component="main" sx={{ flexGrow: 1 }}>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/basket" element={<Basket />} />
+                <Route path="/checkout" element={<CheckoutPage />} />
+                <Route path="/profile" element={<CustomerProfile />} />
+                <Route path="/about-us" element={<TeamIntro />} />
+                <Route path="/terms" element={<TermsOfService />} />
+                <Route path="/privacy" element={<PrivacyPolicy />} />
+                {/* <Route path="/order-confirmation" element={<OrderConfirmation />} />
+                <Route path="/order-tracking" element={<OrderTracking />} /> */}
+              </Routes>
+            </Box>
+
+            <Footer />
           </Box>
-
-          <Footer />
-        </Box>
-      </BrowserRouter>
-    </StoreContextProvider>
+        </BrowserRouter>
+      </StoreContextProvider>
+    </ThemeProvider>
   );
 }
 export default App;
