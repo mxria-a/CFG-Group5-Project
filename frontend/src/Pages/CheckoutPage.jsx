@@ -133,7 +133,8 @@ const CheckoutPage = () => {
     <div className="checkout-container">
       {orderPlaced ? (
         <div className="order-success">
-          <h2>Thank you for your order</h2>
+          <h2>Thank you for your order!</h2>
+            <h2>Your food is on the way.</h2>
           <p>Your order number is {orderNumber}</p>
         </div>
       ) : (
