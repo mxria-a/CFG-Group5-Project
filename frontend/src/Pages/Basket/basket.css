@@ -5,6 +5,16 @@
   font-family: var(--font-body);
 }
 
+.basket-page-title {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--espresso);
+  margin: 0 0 20px;
+  padding-bottom: 12px;
+  border-bottom: 3px solid var(--espresso);
+}
+
 .basket h2 {
   font-family: var(--font-display);
 }
@@ -159,13 +169,6 @@
   background: var(--mustard);
   transform: translate(-2px, -2px);
   box-shadow: 5px 5px 0 var(--espresso);
-}
-
-.basket-total button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: var(--shadow-sm);
 }
 
 .basket-limit-warning {
