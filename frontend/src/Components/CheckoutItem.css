@@ -26,8 +26,15 @@
 .checkout-item-name {
   font-family: var(--font-display);
   font-weight: 600;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   color: var(--espresso);
+}
+
+.checkout-item-restaurant {
+  font-size: 0.78rem;
+  color: var(--espresso-soft);
+  font-style: italic;
+  margin-bottom: 4px;
 }
 
 .checkout-item-price {

@@ -11,6 +11,9 @@ const CheckoutItem = ({ item }) => {
 
       <div className="checkout-item-details">
         <p className="checkout-item-name">{item.name}</p>
+        {item.restaurantName && (
+          <p className="checkout-item-restaurant">{item.restaurantName}</p>
+        )}
         <p className="checkout-item-price">
           £{item.price.toFixed(2)} × {item.quantity}
         </p>
