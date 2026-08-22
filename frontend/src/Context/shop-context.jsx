@@ -6,7 +6,6 @@ export const StoreContextProvider = ({ children }) => {
   const [basketItems, setBasketItems] = useState({});
   const [foodList, setFoodList] = useState([]);
 
-  // fetch food list on mount
   useEffect(() => {
     const fetchFood = async () => {
       try {
@@ -29,7 +28,7 @@ export const StoreContextProvider = ({ children }) => {
     }));
   };
 
-  // REMOVE FROM BASKET
+  // Decrements by one (existing behavior — used by a quantity "-" control)
   const removeFromBasket = (itemId) => {
     setBasketItems((prev) => ({
       ...prev,
@@ -37,15 +36,21 @@ export const StoreContextProvider = ({ children }) => {
     }));
   };
 
-  // GET TOTAL BASKET AMOUNT
+  // Removes the item entirely regardless of quantity (used by the "x" / trash action)
+  const removeItemFromBasket = (itemId) => {
+    setBasketItems((prev) => {
+      const updated = { ...prev };
+      delete updated[itemId];
+      return updated;
+    });
+  };
+
+  // Get total basket amount
   const getTotalBasketAmount = () => {
     let totalAmount = 0;
     for (const itemId in basketItems) {
       if (basketItems[itemId] > 0) {
-        // Find the product in the foodList
-        
         const itemInfo = foodList.find((product) => product.itemID === Number(itemId));
-        
         if (itemInfo) {
           totalAmount += itemInfo.price * basketItems[itemId];
         }
@@ -54,14 +59,13 @@ export const StoreContextProvider = ({ children }) => {
     return totalAmount;
   };
 
-  console.log("Basket state:", basketItems);
-
   // pass down the state and functions via context
   const contextValue = {
     foodList,
     basketItems,
     addToBasket,
     removeFromBasket,
+    removeItemFromBasket,
     getTotalBasketAmount,
   };
 

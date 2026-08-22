@@ -11,7 +11,7 @@
 
 .basket-items-name {
   display: grid;
-  grid-template-columns: 1fr 1.5fr 1fr 1fr 1fr 0.5fr;
+  grid-template-columns: 1fr 1.5fr 1fr 1.2fr 1fr 0.5fr;
   padding: 10px 0;
   align-items: center;
   color: var(--espresso-soft);
@@ -33,19 +33,70 @@
 
 .basket-items-item img {
   width: 46px;
+  height: 46px;
+  object-fit: cover;
   border-radius: var(--radius-sm);
   border: 2px solid var(--espresso);
+}
+
+.basket-thumb-emoji {
+  width: 46px;
+  height: 46px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--espresso);
+  background: var(--paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
 }
 
 .basket hr {
   display: none;
 }
 
+.qty-stepper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.qty-stepper button {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid var(--espresso);
+  background: var(--cloud);
+  color: var(--espresso);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.qty-stepper button:hover {
+  background: var(--mustard);
+}
+
+.qty-stepper span {
+  min-width: 16px;
+  text-align: center;
+  font-weight: 600;
+}
+
 .basket-items-item .cross {
   cursor: pointer;
   color: var(--chili);
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
+  background: none;
+  border: none;
+  padding: 0;
 }
 
 .basket-bottom {
@@ -108,6 +159,24 @@
   background: var(--mustard);
   transform: translate(-2px, -2px);
   box-shadow: 5px 5px 0 var(--espresso);
+}
+
+.basket-total button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: var(--shadow-sm);
+}
+
+.basket-limit-warning {
+  background: var(--mustard);
+  border: 2px solid var(--espresso);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--espresso);
+  margin-top: 12px;
 }
 
 .basket-promocode {
