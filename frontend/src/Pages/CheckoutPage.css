@@ -207,6 +207,13 @@
   font-family: var(--font-display);
 }
 
+.order-success h3 {
+  border: none;
+  color: var(--basil);
+  font-family: var(--font-display);
+  font-size: 22px;
+}
+
 @keyframes slideUp {
   from { transform: translate(-50%, 100%); opacity: 0; }
   to { transform: translate(-50%, 0); opacity: 1; }

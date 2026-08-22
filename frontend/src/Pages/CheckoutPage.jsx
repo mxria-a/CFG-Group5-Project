@@ -134,7 +134,7 @@ const CheckoutPage = () => {
       {orderPlaced ? (
         <div className="order-success">
           <h2>Thank you for your order!</h2>
-            <h2>Your food is on the way.</h2>
+            <h3>Your food is closer than you think!</h3>
           <p>Your order number is {orderNumber}</p>
         </div>
       ) : (

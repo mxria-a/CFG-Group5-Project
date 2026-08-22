@@ -61,6 +61,22 @@
   font-size: 1.3rem;
 }
 
+.basket-item-name-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.basket-item-name {
+  font-weight: 600;
+}
+
+.basket-item-restaurant {
+  font-size: 0.78rem;
+  color: var(--espresso-soft);
+  font-style: italic;
+}
+
 .basket hr {
   display: none;
 }

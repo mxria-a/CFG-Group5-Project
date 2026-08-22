@@ -71,7 +71,13 @@ const Basket = () => {
                 </div>
               )}
 
-              <p>{item.itemName}</p>
+              <div className="basket-item-name-cell">
+                <p className="basket-item-name">{item.itemName}</p>
+                {item.restaurantName && (
+                  <p className="basket-item-restaurant">{item.restaurantName}</p>
+                )}
+              </div>
+
               <p>£{item.price}</p>
 
               <div className="qty-stepper">
