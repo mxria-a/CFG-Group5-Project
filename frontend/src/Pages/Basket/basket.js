@@ -5,14 +5,25 @@ import "./basket.css";
 import { StoreContext } from "../../Context/shop-context";
 
 const Basket = () => {
-  const { basketItems, foodList, removeFromBasket, getTotalBasketAmount } =
-    useContext(StoreContext);
+  const {
+    basketItems,
+    foodList,
+    addToBasket,
+    removeFromBasket,
+    removeItemFromBasket,
+    getTotalBasketAmount,
+  } = useContext(StoreContext);
 
   const navigate = useNavigate();
 
   const subtotal = getTotalBasketAmount() || 0;
   const deliveryFee = subtotal > 0 ? 2 : 0;
   const total = subtotal + deliveryFee;
+
+  const distinctItemCount = foodList.filter(
+    (item) => basketItems[item.itemID] > 0
+  ).length;
+  const tooManyItemTypes = distinctItemCount > 1;
 
   return (
     <div className="basket">
@@ -31,22 +42,49 @@ const Basket = () => {
             return (
               <div key={item.itemID}>
                 <div className="basket-items-name basket-items-item">
-                  <img
-                    src={item.image || "https://placehold.co/50"}
-                    alt={item.itemName}
-                  />
+                  {item.image ? (
+                    <img src={item.image} alt={item.itemName} />
+                  ) : (
+                    <div
+                      className="basket-thumb-emoji"
+                      role="img"
+                      aria-label={item.itemName}
+                    >
+                      🍽️
+                    </div>
+                  )}
 
                   <p>{item.itemName}</p>
                   <p>£{item.price}</p>
-                  <p>{basketItems[item.itemID]}</p>
+
+                  <div className="qty-stepper">
+                    <button
+                      type="button"
+                      aria-label={`Decrease quantity of ${item.itemName}`}
+                      onClick={() => removeFromBasket(item.itemID)}
+                    >
+                      −
+                    </button>
+                    <span>{basketItems[item.itemID]}</span>
+                    <button
+                      type="button"
+                      aria-label={`Increase quantity of ${item.itemName}`}
+                      onClick={() => addToBasket(item.itemID)}
+                    >
+                      +
+                    </button>
+                  </div>
+
                   <p>£{(item.price * basketItems[item.itemID]).toFixed(2)}</p>
 
-                  <p
-                    onClick={() => removeFromBasket(item.itemID)}
+                  <button
+                    type="button"
+                    onClick={() => removeItemFromBasket(item.itemID)}
                     className="cross"
+                    aria-label={`Remove ${item.itemName} from basket`}
                   >
                     x
-                  </p>
+                  </button>
                 </div>
               </div>
             );
@@ -75,6 +113,13 @@ const Basket = () => {
           <button onClick={() => navigate("/checkout")}>
             PROCEED TO CHECKOUT
           </button>
+          {tooManyItemTypes && (
+            <p className="basket-limit-warning">
+              Heads up — checkout currently only supports one dish at a time.
+              You can keep multiple of the same item, but please remove the
+              others before checking out.
+            </p>
+          )}
         </div>
 
         <div className="basket-promocode">
