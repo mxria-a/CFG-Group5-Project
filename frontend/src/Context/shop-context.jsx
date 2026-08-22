@@ -45,6 +45,11 @@ export const StoreContextProvider = ({ children }) => {
     });
   };
 
+  // Used after a successful order is placed
+  const clearBasket = () => {
+    setBasketItems({});
+  };
+
   // Get total basket amount
   const getTotalBasketAmount = () => {
     let totalAmount = 0;
@@ -66,6 +71,7 @@ export const StoreContextProvider = ({ children }) => {
     addToBasket,
     removeFromBasket,
     removeItemFromBasket,
+    clearBasket,
     getTotalBasketAmount,
   };
 
