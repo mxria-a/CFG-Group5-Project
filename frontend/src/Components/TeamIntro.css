@@ -13,14 +13,16 @@
 }
 
 .team-intro-grid {
-  max-width: var(--page-max-width);
+  width: 50%;
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 20px;
+  gap: 32px;
 }
 
 .teammate-card {
+  width: 50%;
+  margin: 24px auto;
   background: var(--cloud);
   border: 3px solid var(--espresso);
   border-radius: var(--radius-lg);
@@ -51,4 +53,17 @@
 
 .teammate-card p b {
   color: var(--espresso);
+}
+
+/* Below 900px 50% of the viewport gets too cramped, so widen it out again on smaller screens */
+@media (max-width: 900px) {
+  .team-intro-grid {
+    width: 85%;
+  }
+}
+
+@media (max-width: 600px) {
+  .team-intro-grid {
+    width: 100%;
+  }
 }
