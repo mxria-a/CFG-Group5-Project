@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
+import EditToggleButton from "./EditToggleButton";
 
 const Addresses = ({ customerId }) => {
   const [address, setAddress] = useState("");
+  const [editing, setEditing] = useState(false);
 
   useEffect(() => {
     if (!customerId) return;
@@ -14,15 +16,24 @@ const Addresses = ({ customerId }) => {
       .catch((err) => console.error(err));
   }, [customerId]);
 
+  const toggleEdit = () => setEditing((prev) => !prev);
+
   return (
     <>
-      <div className="section-heading">
-        <h2>Address</h2>
+      <div className="card-header-row">
+        <div className="section-heading">
+          <h2>Address</h2>
+        </div>
+        <EditToggleButton editing={editing} onClick={toggleEdit} />
       </div>
-      <div className="addresses">
+      <div className={`addresses${editing ? " editing" : ""}`}>
         <label>
           Address
-          <input value={address} readOnly />
+          <input
+            value={address}
+            readOnly={!editing}
+            onChange={(e) => setAddress(e.target.value)}
+          />
         </label>
       </div>
     </>

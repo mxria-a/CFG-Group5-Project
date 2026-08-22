@@ -3,15 +3,19 @@
   grid-template-columns: 60px 1fr auto;
   align-items: center;
   gap: 16px;
-  padding: 12px 0;
-  border-bottom: 1px solid #eee;
+  padding: 14px 16px;
+  background: var(--cloud);
+  border: 3px solid var(--espresso);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
 }
 
 .checkout-item-img {
-  width: 60px;
-  height: 60px;
+  width: 56px;
+  height: 56px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--espresso);
 }
 
 .checkout-item-details {
@@ -20,15 +24,26 @@
 }
 
 .checkout-item-name {
+  font-family: var(--font-display);
   font-weight: 600;
+  margin-bottom: 2px;
+  color: var(--espresso);
+}
+
+.checkout-item-restaurant {
+  font-size: 0.78rem;
+  color: var(--espresso-soft);
+  font-style: italic;
   margin-bottom: 4px;
 }
 
 .checkout-item-price {
   font-size: 0.9rem;
-  color: #666;
+  color: var(--espresso-soft);
 }
 
 .checkout-item-total {
-  font-weight: 600;
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--espresso);
 }

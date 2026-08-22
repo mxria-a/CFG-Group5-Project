@@ -1,147 +1,149 @@
 /*  Main Card Container */
 .compare-container {
-  background: white;
-  border-radius: 16px; 
-  box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
+  background: var(--cloud);
+  border: 3px solid var(--espresso);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
   margin: 20px auto;
   max-width: 1000px;
-  overflow: hidden; /* Keeps content inside the rounded corners */
-  border: 1px solid #f0f0f0;
+  overflow: hidden;
+  font-family: var(--font-body);
 }
 
 .table-title {
+  font-family: var(--font-display);
   text-align: center;
-  margin-bottom: 30px;
-  color: #2c3e50;
-  font-size: 1.8rem;
-  font-weight: 800;
-  letter-spacing: -0.5px;
+  margin: 22px 0 26px;
+  color: var(--espresso);
+  font-size: 1.7rem;
+  font-weight: 700;
 }
 
 /* The Scrollable Area */
 .comparison-scroll-wrapper {
   display: flex;
   flex-direction: column;
-  overflow-x: auto; /* Allows scrolling on small screens */
-  padding-bottom: 10px; /* Space for scrollbar */
+  overflow-x: auto;
+  padding-bottom: 10px;
 }
 
 /*  Row Styling */
 .table-row {
   display: flex;
-  border-bottom: 1px solid #f1f1f1;
-  transition: background-color 0.2s;
+  border-bottom: 2px solid var(--espresso);
 }
 
 .table-row:last-child {
   border-bottom: none;
 }
 
-/* Hover effect on rows for readability */
 .table-row:hover:not(.header-row) {
-  background-color: #fafbfc;
+  background-color: var(--paper);
 }
 
-/* The Header Row (Top) */
 .header-row {
-  background-color: #f8f9fa;
-  border-top: none;
-  border-bottom: 2px solid #e9ecef;
+  background: var(--mustard);
+  border-bottom: 3px solid var(--espresso);
 }
-
 /*  Column Styling */
 
-/* The "Feature" Label Column  */
 .col-label {
-  flex: 0 0 180px; /* Fixed width */
-  padding: 20px;
-  background-color: #fff; /* Opaque bg so it covers scrolling content */
+  flex: 0 0 170px;
+  padding: 18px;
+  background: var(--paper);
   font-weight: 700;
-  color: #555;
+  color: var(--espresso-soft);
   display: flex;
   align-items: center;
-  
-  /* STICKY MAGIC: Keeps this column visible when scrolling sideways */
+
   position: sticky;
   left: 0;
   z-index: 10;
-  border-right: 1px solid #f0f0f0;
-  box-shadow: 2px 0 5px rgba(0,0,0,0.02); /* Tiny shadow to separate it */
+  border-right: 2px solid var(--espresso);
+}
+
+.header-row .col-label {
+  background: transparent;
+  border-right: 3px solid var(--espresso);
 }
 
 /* The Data Columns (Item 1, Item 2...) */
 .col-item {
   flex: 1;
-  min-width: 200px; /* Ensures columns don't get too squished */
-  padding: 20px;
+  min-width: 190px;
+  padding: 18px;
   text-align: center;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border-right: 1px dashed #eee;
-  color: #444;
+  border-right: 2px solid var(--espresso);
+  color: var(--espresso);
 }
 
 .col-item:last-child {
   border-right: none;
 }
 
-/* Typography & Details */
 .option-tag {
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: #999;
-  margin-bottom: 8px;
+  color: var(--espresso-soft);
+  margin-bottom: 6px;
   font-weight: 600;
 }
 
 .item-name {
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: #222;
-  margin-bottom: 5px;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--espresso);
+  margin-bottom: 4px;
 }
 
 .price-tag {
-  font-size: 1.4rem;
-  color: #27ae60; /* Success Green */
-  font-weight: 800;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: var(--chili);
+  font-weight: 700;
 }
 
 /*  Badges (Yes/No/Rating) */
 .badge {
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 0.85rem;
+  padding: 5px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 0.8rem;
   font-weight: bold;
-  color: white;
+  border: 2px solid var(--espresso);
   text-transform: uppercase;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-.badge.yes { background-color: #2ecc71; }
-.badge.no  { background-color: #e74c3c; }
+.badge.yes { background: var(--basil); color: var(--cloud); }
+.badge.no { background: var(--paper); color: var(--espresso-soft); }
+
+.rating-star { color: var(--mustard); font-weight: bold; text-shadow: 0 0 1px var(--espresso); }
+.allergen-text { color: var(--chili); font-size: 0.85rem; }
 
 /*  Buttons & Links */
 .add-to-cart-btn {
-  background-color: #27ae60; /* Fresh Green */
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 8px;
+  background: var(--basil);
+  color: var(--cloud);
+  border: 2px solid var(--espresso);
+  padding: 11px 22px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
+  font-family: var(--font-display);
   font-weight: 700;
-  font-size: 0.9rem;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 6px rgba(39, 174, 96, 0.2); /* Green shadow */
+  font-size: 0.88rem;
+  box-shadow: 3px 3px 0 var(--espresso);
+  transition: all 0.15s ease;
 }
 
 .add-to-cart-btn:hover {
-  background-color: #219150;
-  transform: translateY(-2px); /* Moves up slightly on hover */
-  box-shadow: 0 6px 12px rgba(39, 174, 96, 0.3);
+  background: var(--basil-dark);
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--espresso);
 }
 
 .ingredients-cell {
@@ -154,8 +156,8 @@
 }
 
 .view-more-link {
-  color: #3498db;
-  font-weight: 600;
+  color: var(--chili);
+  font-weight: 700;
   font-size: 0.85rem;
   margin-top: 8px;
   text-decoration: none;
@@ -164,44 +166,13 @@
   cursor: pointer;
 }
 
-.view-more-link:hover {
-  text-decoration: underline;
-  color: #2980b9;
-}
+.view-more-link:hover { text-decoration: underline; }
 
-/* MOBILE OPTIMIZATION  */
 @media (max-width: 768px) {
-  
- 
-  .compare-container {
-    padding: 10px; 
-    margin: 10px;
-    border-radius: 12px;
-  }
-
-  .table-title {
-    font-size: 1.4rem; 
-    margin-bottom: 20px;
-  }
-
-  
-  .col-label {
-    flex: 0 0 110px; 
-    font-size: 0.85rem; 
-    padding: 10px; 
-  }
-
-  
-  .col-item {
-    min-width: 140px; 
-    padding: 10px;
-  }
-
-  .item-name {
-    font-size: 0.95rem;
-  }
-  
-  .price-tag {
-    font-size: 1.1rem;
-  }
+  .compare-container { margin: 10px; border-radius: var(--radius-md); }
+  .table-title { font-size: 1.35rem; margin-bottom: 18px; }
+  .col-label { flex: 0 0 110px; font-size: 0.85rem; padding: 10px; }
+  .col-item { min-width: 140px; padding: 10px; }
+  .item-name { font-size: 0.95rem; }
+  .price-tag { font-size: 1.1rem; }
 }

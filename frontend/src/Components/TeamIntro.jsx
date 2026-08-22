@@ -11,7 +11,7 @@ const TeamIntro = () => {
           <b>Favourite hobby:</b> Going to the cinema
         </p>
         <p>
-          I like the experience of switching off from everything else and getting immersed in a good story.
+          I like the experience of switching off from everything else and getting immersed in a good storyline.
         </p>
       </div>
       <div className="divider"></div>

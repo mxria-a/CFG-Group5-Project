@@ -1,14 +1,13 @@
 import { useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom"; 
 import ItemList from "../Components/ItemList";
 import ComparisonTable from "../Components/ComparisonTable";
 import "./FoodComparisonPage.css";
 
-import { Snackbar, Alert, Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography } from "@mui/material";
+import { Snackbar, Alert } from "@mui/material";
 import { fetchCoords } from "../utils/fetchCoords";
 import { getDistance } from "../utils/distanceCalculator";
 
-import { StoreContext } from "../Context/shop-context"; 
+import { StoreContext } from "../Context/shop-context";
 
 const FoodComparisonPage = ({ searchQuery, postcode, onBackToSearch }) => {
   const [allItems, setAllItems] = useState([]);
@@ -16,13 +15,10 @@ const FoodComparisonPage = ({ searchQuery, postcode, onBackToSearch }) => {
   const [view, setView] = useState("selection");
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
-  
-  // State for popups
+
   const [notification, setNotification] = useState({ open: false, message: "", severity: "success" });
-  const [openDialog, setOpenDialog] = useState(false);
 
   const { addToBasket } = useContext(StoreContext);
-  const navigate = useNavigate(); 
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,7 +44,7 @@ const FoodComparisonPage = ({ searchQuery, postcode, onBackToSearch }) => {
             setErrorMessage(`"${postcode}" is not a valid postcode.`);
             setAllItems([]);
             setLoading(false);
-            return; 
+            return;
           }
 
           const withDistance = currentData.map((item) => {
@@ -59,7 +55,7 @@ const FoodComparisonPage = ({ searchQuery, postcode, onBackToSearch }) => {
             };
           });
 
-          const maxDistance = 50; 
+          const maxDistance = 50;
           const nearbyItems = withDistance.filter((item) => item.distance <= maxDistance);
 
           if (nearbyItems.length === 0) {
@@ -78,57 +74,46 @@ const FoodComparisonPage = ({ searchQuery, postcode, onBackToSearch }) => {
     fetchData();
   }, [searchQuery, postcode]);
 
-  // Handlers
-  const handleToggle = (item) => { 
-      const isSelected = selectedItems.some(i => i.itemID === item.itemID);
-      if (isSelected) setSelectedItems(prev => prev.filter(i => i.itemID !== item.itemID));
-      else {
-          if (selectedItems.length >= 3) { setNotification({ open: true, message: "Max 3 items", severity: "error" }); return; }
-          setSelectedItems(prev => [...prev, item]);
-      }
+  const handleToggle = (item) => {
+    const isSelected = selectedItems.some((i) => i.itemID === item.itemID);
+    if (isSelected) setSelectedItems((prev) => prev.filter((i) => i.itemID !== item.itemID));
+    else {
+      if (selectedItems.length >= 3) { setNotification({ open: true, message: "Max 3 items", severity: "error" }); return; }
+      setSelectedItems((prev) => [...prev, item]);
+    }
   };
 
   const handleCompareClick = () => {
-      if (selectedItems.length < 2) { setNotification({ open: true, message: "Select 2 items", severity: "warning" }); return; }
-      setView("comparison");
+    if (selectedItems.length < 2) { setNotification({ open: true, message: "Select 2 items", severity: "warning" }); return; }
+    setView("comparison");
   };
 
   const areAllItemsSelected = () => { return allItems.length > 0 && selectedItems.length === allItems.length; };
   const handleSelectAll = () => {
-      if (areAllItemsSelected()) setSelectedItems([]);
-      else setSelectedItems(allItems.slice(0, 3));
+    if (areAllItemsSelected()) setSelectedItems([]);
+    else setSelectedItems(allItems.slice(0, 3));
   };
   const handleOrder = (item) => console.log(item);
 
   const handleCloseNotification = (event, reason) => {
     if (reason === "clickaway") return;
-    setNotification(prev => ({ ...prev, open: false }));
+    setNotification((prev) => ({ ...prev, open: false }));
   };
 
-  
   const handleAddToBasket = () => {
     if (selectedItems.length === 0) return;
 
-   
     selectedItems.forEach((item) => {
-      addToBasket(item.itemID); 
+      addToBasket(item.itemID);
     });
 
-    // Show Snackbar
-    setNotification({ 
-      open: true, 
-      message: `Added ${selectedItems.length} items to basket!`, 
-      severity: "success" 
+    setNotification({
+      open: true,
+      message: `Added ${selectedItems.length} item${selectedItems.length > 1 ? "s" : ""} to basket!`,
+      severity: "success",
     });
-    
-    // Clear selected items
-    setSelectedItems([]); 
 
-    // Wait 1.5 seconds, Close Snackbar, Open Dialog
-    setTimeout(() => {
-      setNotification(prev => ({ ...prev, open: false }));
-      setOpenDialog(true);
-    }, 1500);
+    setSelectedItems([]);
   };
 
   if (loading) return <div className="loading-state">Finding food near {postcode}...</div>;
@@ -137,14 +122,13 @@ const FoodComparisonPage = ({ searchQuery, postcode, onBackToSearch }) => {
     <div className="page-container">
       {view === "selection" ? (
         <div className="selection-wrapper">
-          <button onClick={onBackToSearch} className="back-btn" style={{ marginBottom: "15px" }}>&larr; Search Again</button>
+          <button onClick={onBackToSearch} className="back-btn">&larr; Search Again</button>
 
           <div className="header-row-flex">
             <h2>
-              {searchQuery 
-                ? `Results for "${searchQuery}" near ${postcode}` 
-                : `All Food near ${postcode}`
-              }
+              {searchQuery
+                ? `Results for "${searchQuery}" near ${postcode}`
+                : `All Food near ${postcode}`}
             </h2>
             <button className="select-all-link" onClick={handleSelectAll}>
               {areAllItemsSelected() ? "Deselect All" : "Select All"}
@@ -172,32 +156,15 @@ const FoodComparisonPage = ({ searchQuery, postcode, onBackToSearch }) => {
         </div>
       )}
 
-      {/* THE DIALOG POPUP */}
-      <Dialog 
-        open={openDialog} 
-        onClose={() => setOpenDialog(false)}
+      <Snackbar
+        open={notification.open}
+        autoHideDuration={2000}
+        onClose={handleCloseNotification}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
       >
-        <DialogTitle>Items Added!</DialogTitle>
-        <DialogContent>
-          <Typography>
-            Success! The selected items have been added to your basket.
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenDialog(false)}>Keep Shopping</Button>
-          <Button 
-            onClick={() => navigate("/basket")} 
-            variant="contained" 
-            color="success"
-          >
-            View Basket
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* THE SNACKBAR */}
-      <Snackbar open={notification.open} autoHideDuration={1500} onClose={handleCloseNotification}>
-        <Alert severity={notification.severity} variant="filled">{notification.message}</Alert>
+        <Alert severity={notification.severity} variant="filled" onClose={handleCloseNotification}>
+          {notification.message}
+        </Alert>
       </Snackbar>
     </div>
   );

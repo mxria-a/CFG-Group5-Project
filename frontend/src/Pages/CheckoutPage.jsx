@@ -1,24 +1,42 @@
 import { useContext, useState } from "react";
 import { StoreContext } from "../Context/shop-context";
 import { Snackbar, Alert } from "@mui/material";
+import { Link, useNavigate } from "react-router-dom";
 
 import CheckoutItem from "../Components/CheckoutItem";
-import GuestCheckout from "../Components/GuestCheckout";
+import GuestCheckoutForm from "../Components/GuestCheckoutForm";
 import "./CheckoutPage.css";
 
+const FIELD_LABELS = {
+  firstName: "your first name",
+  lastName: "your last name",
+  email: "your email",
+  address: "your address",
+  postcode: "your postcode",
+  phone: "your phone number",
+};
+
+const PAYMENT_OPTIONS = [
+  { id: "card", label: "Card", icon: "\u{1F4B3}" },
+  { id: "paypal", label: "PayPal", icon: "\u{1F17F}\uFE0F" },
+  { id: "cash", label: "Cash on delivery", icon: "\u{1F4B5}" },
+];
+
 const CheckoutPage = () => {
-  const { basketItems, foodList } = useContext(StoreContext);
+  const { basketItems, foodList, clearBasket } = useContext(StoreContext);
+  const navigate = useNavigate();
 
-const [, setCustomerInfo] = useState({
-  firstName: "",
-  lastName: "",
-  email: "",
-  address: "",
-  postcode: "",
-  phone: "",
-});
-
-  const [customerId, setCustomerId] = useState(null);
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    address: "",
+    postcode: "",
+    phone: "",
+  });
+  const [errors, setErrors] = useState({});
+  const [paymentMethod, setPaymentMethod] = useState(null);
+  const [paymentError, setPaymentError] = useState(false);
 
   const [notification, setNotification] = useState({
     open: false,
@@ -28,46 +46,18 @@ const [, setCustomerInfo] = useState({
 
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderNumber, setOrderNumber] = useState(null);
+  const [placing, setPlacing] = useState(false);
 
-  //Get customer details from the guest checkout
-  const handleCustomerInfo = (data) => {
-    //store info
-    setCustomerInfo(data);
-
-    //send guest details to backend
-    fetch("https://cfg-group5-backend.onrender.com/store-details", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to store customer details");
-        return res.json();
-      })
-      .then((resData) => {
-        setCustomerId(resData.id);
-        setNotification({
-          open: true,
-          message: "Customer details stored",
-          severity: "success",
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-        setNotification({
-          open: true,
-          message: "Failed to store customer details",
-          severity: "error",
-        });
-      });
+  const handleFieldChange = (name, value) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  //get checkout item
   const checkoutItems = foodList
     .filter((item) => basketItems[item.itemID] > 0)
     .map((item) => ({
       itemID: item.itemID,
       name: item.itemName,
+      restaurantName: item.restaurantName,
       price: Number(item.price),
       quantity: basketItems[item.itemID],
       image: item.image,
@@ -78,37 +68,45 @@ const [, setCustomerInfo] = useState({
     0
   );
 
-  //Place order -only works when one item in basket
+  const tooManyItemTypes = checkoutItems.length > 1;
+
   const handlePlaceOrder = () => {
-    if (!customerId) {
-      setNotification({
-        open: true,
-        message: "Please fill out the guest checkout first",
-        severity: "error",
-      });
-      return;
-    }
+    if (checkoutItems.length === 0 || tooManyItemTypes || placing) return;
 
-    //check basket length -it currently only works to push one item to the orders at a time
-    if (checkoutItems.length > 1) {
-      setNotification({
-        open: true,
-        message: "Please only checkout with one item at a time",
-        severity: "error",
-      });
-      return;
-    }
+    const newErrors = {};
+    Object.keys(formData).forEach((key) => {
+      if (!formData[key].trim()) {
+        newErrors[key] = `Please enter ${FIELD_LABELS[key]}`;
+      }
+    });
+    setErrors(newErrors);
 
-    const item = checkoutItems[0];
+    const missingPayment = !paymentMethod;
+    setPaymentError(missingPayment);
 
-    fetch("https://cfg-group5-backend.onrender.com/submit-order", {
+    if (Object.keys(newErrors).length > 0 || missingPayment) return;
+
+    setPlacing(true);
+
+    fetch("https://cfg-group5-backend.onrender.com/store-details", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        customerId: customerId,
-        item: item,
-      }),
+      body: JSON.stringify(formData),
     })
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to store customer details");
+        return res.json();
+      })
+      .then((resData) => {
+        const customerId = resData.id;
+        const item = checkoutItems[0];
+
+        return fetch("https://cfg-group5-backend.onrender.com/submit-order", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ customerId, item }),
+        });
+      })
       .then((res) => {
         if (!res.ok) throw new Error("Order failed");
         return res.json();
@@ -116,74 +114,115 @@ const [, setCustomerInfo] = useState({
       .then((data) => {
         setOrderPlaced(true);
         setOrderNumber(data.orderNumber);
-
+        clearBasket();
         setNotification({
           open: true,
-          message: `Order placed successfully!`,
+          message: "Order placed successfully!",
           severity: "success",
         });
       })
       .catch(() => {
         setNotification({
           open: true,
-          message: "Failed to place order.",
+          message: "Failed to place order. Please try again.",
           severity: "error",
         });
-      });
+      })
+      .finally(() => setPlacing(false));
   };
 
   return (
     <div className="checkout-container">
-      {/* SAVE FOR SUCCESS SCREEN */}
       {orderPlaced ? (
         <div className="order-success">
-          <h2>Thank you for your order</h2>
+          <h2>Thank you for your order!</h2>
+            <h3>Your food is closer than you think!</h3>
           <p>Your order number is {orderNumber}</p>
+          <button
+            className="pk-btn pk-btn-primary"
+            style={{ marginTop: "20px" }}
+            onClick={() => navigate("/")}
+          >
+            Still hungry for more?
+          </button>
         </div>
       ) : (
         <>
-          <h2>Your Basket</h2>
+          <h2>Checkout</h2>
 
-          {/* GUEST CHECKOUT */}
-          {checkoutItems.length > 0 && (
-            <GuestCheckout
-              checkoutItems={checkoutItems}
-              totalPrice={totalPrice}
-              handleCustomerInfo={handleCustomerInfo}
-            />
-          )}
-
-          {/* ERROR HANDLING */}
           {checkoutItems.length === 0 ? (
             <p className="empty-msg">Your basket is empty.</p>
           ) : (
-            <div className="basket-items">
-              {checkoutItems.map((item) => (
-                <CheckoutItem key={item.itemID} item={item} />
-              ))}
-            </div>
-          )}
+            <>
+              {tooManyItemTypes && (
+                <div className="checkout-limit-banner">
+                  Checkout currently only supports one dish at a time. Please{" "}
+                  <Link to="/basket">go back to your basket</Link> and remove
+                  the extra dish types before continuing (quantity of the
+                  same dish is fine).
+                </div>
+              )}
 
-          {/* TOTAL + BUTTON */}
-          {checkoutItems.length > 0 && (
-            <div className="checkout-summary">
-              <div className="total-row">
-                <span>Total:</span>
-                <span>£{totalPrice.toFixed(2)}</span>
+              <h3 className="step-heading">Your order</h3>
+              <div className="basket-items">
+                {checkoutItems.map((item) => (
+                  <CheckoutItem key={item.itemID} item={item} />
+                ))}
               </div>
 
-              <button
-                className="primary-btn place-order-btn"
-                onClick={handlePlaceOrder}
-              >
-                Place Order
-              </button>
-            </div>
+              <h3 className="step-heading">Your details</h3>
+              <GuestCheckoutForm
+                formData={formData}
+                errors={errors}
+                onChange={handleFieldChange}
+              />
+
+              <h3 className="step-heading">Payment (demo only)</h3>
+              <div className="payment-options">
+                {PAYMENT_OPTIONS.map((option) => (
+                  <div
+                    key={option.id}
+                    className={`payment-option ${paymentMethod === option.id ? "selected" : ""}`}
+                    onClick={() => {
+                      setPaymentMethod(option.id);
+                      setPaymentError(false);
+                    }}
+                  >
+                    <span className="payment-icon">{option.icon}</span>
+                    {option.label}
+                  </div>
+                ))}
+              </div>
+              {paymentError && (
+                <span className="pk-field-error">Please choose a payment method</span>
+              )}
+
+              <div className="order-checklist">
+                <div className={`checklist-item ${!tooManyItemTypes ? "done" : "pending"}`}>
+                  <span className="checklist-icon">{!tooManyItemTypes ? "✓" : "!"}</span>
+                  {!tooManyItemTypes ? "Order is ready" : "Only one dish type per order, for now"}
+                </div>
+              </div>
+
+              <div className="checkout-summary">
+                <div className="total-row">
+                  <span>Total:</span>
+                  <span>£{totalPrice.toFixed(2)}</span>
+                </div>
+
+                <button
+                  className="place-order-btn"
+                  onClick={handlePlaceOrder}
+                  disabled={tooManyItemTypes || placing}
+                >
+                  {placing ? "Placing order..." : "Place Order"}
+                </button>
+              </div>
+            </>
           )}
         </>
       )}
 
-      {/* Snackbar MUST be inside the same return */}
       <Snackbar
         open={notification.open}
         autoHideDuration={3000}

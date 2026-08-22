@@ -1,95 +1,36 @@
-import { useState } from "react";
 import "./GuestCheckoutForm.css";
 
-const GuestCheckoutForm = ({ handleCustomerInfo }) => {
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    address: "",
-    postcode: "",
-    phone: "",
-  });
+const FIELDS = [
+  { name: "firstName", label: "First name", type: "text" },
+  { name: "lastName", label: "Last name", type: "text" },
+  { name: "email", label: "Email address", type: "email", full: true },
+  { name: "address", label: "Address", type: "text", full: true },
+  { name: "postcode", label: "Postcode", type: "text" },
+  { name: "phone", label: "Phone number", type: "text" },
+];
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    handleCustomerInfo(formData);
-  };
+const GuestCheckoutForm = ({ formData, errors, onChange }) => {
   return (
-    <form onSubmit={handleSubmit} className="guest-checkout-form">
-      <div>
-        <label>First name:</label>
-        <input
-          type="text"
-          name="firstName"
-          value={formData.firstName}
-          onChange={handleChange}
-          required
-        />
+    <div className="guest-checkout-form">
+      <div className="guest-checkout-field-group">
+        {FIELDS.map((f) => (
+          <div key={f.name} className={f.full ? "field-full" : ""}>
+            <label htmlFor={f.name}>{f.label}</label>
+            <input
+              id={f.name}
+              type={f.type}
+              name={f.name}
+              value={formData[f.name]}
+              onChange={(e) => onChange(f.name, e.target.value)}
+              className={errors[f.name] ? "invalid" : ""}
+            />
+            {errors[f.name] && (
+              <span className="pk-field-error">{errors[f.name]}</span>
+            )}
+          </div>
+        ))}
       </div>
-
-      <div>
-        <label>Last name:</label>
-        <input
-          type="text"
-          name="lastName"
-          value={formData.lastName}
-          onChange={handleChange}
-          required
-        />
-      </div>
-
-      <div>
-        <label>Email address:</label>
-        <input
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-        />
-      </div>
-
-      <div>
-        <label>Address:</label>
-        <input
-          type="text"
-          name="address"
-          value={formData.address}
-          onChange={handleChange}
-          required
-        />
-      </div>
-
-      <div>
-        <label>Postcode:</label>
-        <input
-          type="text"
-          name="postcode"
-          value={formData.postcode}
-          onChange={handleChange}
-          required
-        />
-      </div>
-
-      <div>
-        <label>Phone number:</label>
-        <input
-          type="text"
-          name="phone"
-          value={formData.phone}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div className="submit-btn-wrapper">
-  <button type="submit">Confirm Details</button>
-</div>
-    </form>
+    </div>
   );
 };
 

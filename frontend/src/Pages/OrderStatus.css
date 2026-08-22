@@ -1,0 +1,59 @@
+.order-status-page {
+  max-width: 480px;
+  margin: 60px auto;
+  padding: 36px;
+  text-align: center;
+  background: var(--cloud);
+  border: 3px solid var(--espresso);
+  border-radius: var(--radius-lg);
+  box-shadow: 6px 6px 0 var(--basil);
+  font-family: var(--font-body);
+}
+
+.order-status-page .stamp-big {
+  display: inline-block;
+  background: var(--basil);
+  color: var(--cloud);
+  font-family: var(--font-display);
+  font-weight: 700;
+  padding: 8px 18px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--espresso);
+  transform: rotate(-3deg);
+  margin-bottom: 16px;
+}
+
+.order-status-page h1 {
+  font-family: var(--font-display);
+  color: var(--espresso);
+  font-size: 1.5rem;
+  margin-bottom: 12px;
+}
+
+.order-status-page p {
+  color: var(--espresso-soft);
+  line-height: 1.6;
+  margin: 8px 0;
+}
+
+.order-status-page .status-value {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 10px 24px;
+  background: var(--paper);
+  border: 2px solid var(--espresso);
+  border-radius: var(--radius-pill);
+  color: var(--espresso);
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+.order-status-page a {
+  color: var(--chili);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.order-status-page a:hover {
+  text-decoration: underline;
+}

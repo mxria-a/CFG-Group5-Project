@@ -50,10 +50,10 @@ function Home() {
 
   return (
     <div className="home-container">
-    
       {!hasSearched ? (
         <div className="search-wrapper">
-          <h1 className="home-title">Pickier</h1>
+          <h1 className="home-title">Craving something?</h1>
+          <p className="home-subtitle">Pick a dish, pop in your postcode, and compare every option.</p>
 
           <div className="input-group">
             <GetItem item={item} setItem={setItem} />
@@ -64,18 +64,20 @@ function Home() {
             <SubmitButton onClick={Search} />
           </div>
 
-          <div className="random-box-container">
-            {randomFoods.map((food, index) => (
-              <div
-                key={index}
-                className="random-box"
-                onClick={() => handleSuggestionClick(food)}
-              >
-                {food}
-              </div>
-            ))}
+          <div className="suggestions-section">
+            <p className="suggestions-title">Or try one of these</p>
+            <div className="random-box-container">
+              {randomFoods.map((food, index) => (
+                <div
+                  key={index}
+                  className="random-box"
+                  onClick={() => handleSuggestionClick(food)}
+                >
+                  {food}
+                </div>
+              ))}
+            </div>
           </div>
-          
         </div>
       ) : (
         <div className="results-wrapper">
@@ -93,13 +95,12 @@ function Home() {
         onClose={handleCloseError}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        <Alert 
-          onClose={handleCloseError} 
-          severity="error" 
-          variant="filled" 
+        <Alert
+          onClose={handleCloseError}
+          severity="error"
+          variant="filled"
           sx={{ width: "100%" }}
         >
-          {/* Updated Message */}
           Please enter a postcode to find takeaways near you!
         </Alert>
       </Snackbar>
