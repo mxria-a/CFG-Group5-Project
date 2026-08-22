@@ -20,13 +20,32 @@ const Basket = () => {
   const deliveryFee = subtotal > 0 ? 2 : 0;
   const total = subtotal + deliveryFee;
 
-  const distinctItemCount = foodList.filter(
-    (item) => basketItems[item.itemID] > 0
-  ).length;
+  const itemsInBasket = foodList.filter((item) => basketItems[item.itemID] > 0);
+  const distinctItemCount = itemsInBasket.length;
   const tooManyItemTypes = distinctItemCount > 1;
+
+  if (distinctItemCount === 0) {
+    return (
+      <div className="basket">
+        <h2 className="basket-page-title">Basket</h2>
+        <div className="pk-empty-state">
+          <h2>Your basket is empty</h2>
+          <p>Find something tasty and it'll show up here.</p>
+          <button
+            className="pk-btn pk-btn-primary"
+            style={{ marginTop: "16px" }}
+            onClick={() => navigate("/")}
+          >
+            Browse takeaways
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="basket">
+      <h2 className="basket-page-title">Basket</h2>
       <div className="basket-items">
         <div className="basket-items-name">
           <p>Items</p>
@@ -37,60 +56,55 @@ const Basket = () => {
           <p>Remove</p>
         </div>
 
-        {foodList.map((item) => {
-          if (basketItems[item.itemID] > 0) {
-            return (
-              <div key={item.itemID}>
-                <div className="basket-items-name basket-items-item">
-                  {item.image ? (
-                    <img src={item.image} alt={item.itemName} />
-                  ) : (
-                    <div
-                      className="basket-thumb-emoji"
-                      role="img"
-                      aria-label={item.itemName}
-                    >
-                      🍽️
-                    </div>
-                  )}
-
-                  <p>{item.itemName}</p>
-                  <p>£{item.price}</p>
-
-                  <div className="qty-stepper">
-                    <button
-                      type="button"
-                      aria-label={`Decrease quantity of ${item.itemName}`}
-                      onClick={() => removeFromBasket(item.itemID)}
-                    >
-                      −
-                    </button>
-                    <span>{basketItems[item.itemID]}</span>
-                    <button
-                      type="button"
-                      aria-label={`Increase quantity of ${item.itemName}`}
-                      onClick={() => addToBasket(item.itemID)}
-                    >
-                      +
-                    </button>
-                  </div>
-
-                  <p>£{(item.price * basketItems[item.itemID]).toFixed(2)}</p>
-
-                  <button
-                    type="button"
-                    onClick={() => removeItemFromBasket(item.itemID)}
-                    className="cross"
-                    aria-label={`Remove ${item.itemName} from basket`}
-                  >
-                    x
-                  </button>
+        {itemsInBasket.map((item) => (
+          <div key={item.itemID}>
+            <div className="basket-items-name basket-items-item">
+              {item.image ? (
+                <img src={item.image} alt={item.itemName} />
+              ) : (
+                <div
+                  className="basket-thumb-emoji"
+                  role="img"
+                  aria-label={item.itemName}
+                >
+                  🍽️
                 </div>
+              )}
+
+              <p>{item.itemName}</p>
+              <p>£{item.price}</p>
+
+              <div className="qty-stepper">
+                <button
+                  type="button"
+                  aria-label={`Decrease quantity of ${item.itemName}`}
+                  onClick={() => removeFromBasket(item.itemID)}
+                >
+                  −
+                </button>
+                <span>{basketItems[item.itemID]}</span>
+                <button
+                  type="button"
+                  aria-label={`Increase quantity of ${item.itemName}`}
+                  onClick={() => addToBasket(item.itemID)}
+                >
+                  +
+                </button>
               </div>
-            );
-          }
-          return null;
-        })}
+
+              <p>£{(item.price * basketItems[item.itemID]).toFixed(2)}</p>
+
+              <button
+                type="button"
+                onClick={() => removeItemFromBasket(item.itemID)}
+                className="cross"
+                aria-label={`Remove ${item.itemName} from basket`}
+              >
+                x
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
 
       <div className="basket-bottom">
