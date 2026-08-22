@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { StoreContext } from "../Context/shop-context";
 import { Snackbar, Alert } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import CheckoutItem from "../Components/CheckoutItem";
 import GuestCheckoutForm from "../Components/GuestCheckoutForm";
@@ -24,6 +24,7 @@ const PAYMENT_OPTIONS = [
 
 const CheckoutPage = () => {
   const { basketItems, foodList, clearBasket } = useContext(StoreContext);
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -56,6 +57,7 @@ const CheckoutPage = () => {
     .map((item) => ({
       itemID: item.itemID,
       name: item.itemName,
+      restaurantName: item.restaurantName,
       price: Number(item.price),
       quantity: basketItems[item.itemID],
       image: item.image,
@@ -133,9 +135,15 @@ const CheckoutPage = () => {
     <div className="checkout-container">
       {orderPlaced ? (
         <div className="order-success">
-          <h2>Thank you for your order!</h2>
-            <h3>Your food is closer than you think!</h3>
+          <h2>Thank you for your order</h2>
           <p>Your order number is {orderNumber}</p>
+          <button
+            className="pk-btn pk-btn-primary"
+            style={{ marginTop: "20px" }}
+            onClick={() => navigate("/")}
+          >
+            Still hungry for more?
+          </button>
         </div>
       ) : (
         <>
