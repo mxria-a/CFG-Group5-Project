@@ -1,25 +1,17 @@
 import React, { useState, useContext } from "react";
 import "./ComparisonTable.css";
 
-import {
-  Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography,
-  Snackbar, Alert
-} from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { Snackbar, Alert } from "@mui/material";
 import { StoreContext } from "../Context/shop-context";
 
 const ComparisonTable = ({ items, onSelectWinner }) => {
-  // State for the " Dialog Popup" and "Notification"
   const [showNotification, setShowNotification] = useState(false);
-  const [openDialog, setOpenDialog] = useState(false);
   const [expandedIngredients, setExpandedIngredients] = useState({});
 
   const { addToBasket } = useContext(StoreContext);
-  const navigate = useNavigate();
 
   if (!items || items.length === 0) return <div>No items selected</div>;
 
-  // Handler to close Snackbar
   const handleCloseNotification = (event, reason) => {
     if (reason === "clickaway") return;
     setShowNotification(false);
@@ -33,11 +25,6 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
     }
 
     setShowNotification(true);
-
-    setTimeout(() => {
-      setShowNotification(false);
-      setOpenDialog(true);
-    }, 1500);
   };
 
   const toggleIngredient = (id) => {
@@ -135,7 +122,7 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
             </div>
           ))}
         </div>
-
+        
         {/* Ingredients */}
         <div className="table-row">
           <div className="col-label">Ingredients</div>
@@ -183,37 +170,15 @@ const ComparisonTable = ({ items, onSelectWinner }) => {
         </div>
       </div>
 
-      {/* THE DIALOG POPUP (Decision) */}
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-        <DialogTitle>Success!</DialogTitle>
-        <DialogContent>
-          <Typography>
-            Item added to basket. What would you like to do next?
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenDialog(false)}>Keep Shopping</Button>
-          <Button
-            onClick={() => navigate("/basket")}
-            variant="contained"
-            sx={{ backgroundColor: "var(--basil)", "&:hover": { backgroundColor: "var(--basil-dark)" } }}
-          >
-            View Basket
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* THE SNACKBAR NOTIFICATION */}
       <Snackbar
         open={showNotification}
-        autoHideDuration={1500}
+        autoHideDuration={2000}
         onClose={handleCloseNotification}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
       >
         <Alert
           onClose={handleCloseNotification}
           severity="success"
-          sx={{ width: "100%" }}
           variant="filled"
         >
           Item added to cart!
