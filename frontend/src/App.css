@@ -1,91 +1,28 @@
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  padding: 14px 28px;
-  background: var(--chili);
-  border-bottom: 4px solid var(--espresso);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.nav-logo-group {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.nav-icon {
-  width: 36px;
-  height: 36px;
-  flex-shrink: 0;
-}
-
-.nav-logo {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.4rem;
-  color: var(--cloud);
-  letter-spacing: 0.3px;
-}
-
-.nav-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.nav-links a {
-  font-family: var(--font-body);
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 0.9rem;
-  padding: 8px 16px;
-  border-radius: var(--radius-pill);
-  border: 2px solid transparent;
-  color: var(--cloud);
-  transition: border-color 0.15s ease, background-color 0.15s ease;
-}
-
-.nav-links a:hover {
-  border-color: rgba(255, 255, 255, 0.6);
-}
-
-.nav-links a.active {
-  background: var(--mustard);
-  color: var(--espresso);
-  border-color: var(--espresso);
-  box-shadow: 2px 2px 0 var(--espresso);
-}
-
-.nav-basket-count {
-  background: var(--espresso);
-  color: var(--cloud);
-  border-radius: var(--radius-pill);
-  font-size: 0.7rem;
-  font-weight: 700;
-  padding: 1px 7px;
-  margin-left: 6px;
-}
-.nav-links a.active .nav-basket-count {
-  background: var(--cloud);
-  color: var(--espresso);
-}
-
-@media (max-width: 600px) {
-  .navbar {
-    justify-content: center;
-    text-align: center;
-    padding: 12px 16px;
-  }
-  .nav-links {
-    justify-content: center;
-    gap: 8px;
-    font-size: 0.85rem;
-  }
+.navbar { background: var(--pk-bg); min-height: 76px; padding: 0 clamp(22px, 4vw, 50px); display: flex; align-items: center; justify-content: space-between; gap: 24px; border-bottom: 1px solid rgba(255,243,230,.06); position: relative; z-index: 20; }
+.nav-logo-group { display: inline-flex; text-decoration: none; align-items: center; flex: 0 0 auto; }
+.nav-logo { font: 800 28px var(--pk-display-font); letter-spacing: -.045em; color: var(--pk-cream); }
+.nav-logo-dot { color: var(--pk-coral); }
+.nav-links { display: flex; align-items: center; justify-content: flex-end; gap: 26px; }
+.nav-links a { color: var(--pk-cream); font: 600 14px var(--pk-body-font); text-decoration: none; border-bottom: 2px solid transparent; padding: 8px 0; white-space: nowrap; }
+.nav-links a:hover { color: var(--pk-yellow); }
+.nav-links a.active { border-bottom-color: var(--pk-yellow); }
+.nav-basket-count { margin-left: 6px; display: inline-grid; place-items: center; min-width: 19px; height: 19px; border-radius: 50%; background: var(--pk-coral); color: var(--pk-bg); font-size: 11px; font-weight: 800; }
+.navbar a:focus-visible { outline: 2px solid var(--pk-yellow); outline-offset: 5px; }
+.pk-main { flex: 1; }
+.pk-legacy-route { min-height: 66vh; background: var(--paper); color: var(--espresso); padding: 2px 0 50px; }
+.pk-footer { background: var(--pk-bg); color: var(--pk-cream); border-top: 1px solid var(--pk-line); }
+.pk-footer-inner { max-width: 1184px; padding: 27px 32px 36px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+.pk-footer .nav-logo { font-size: 23px; }
+.pk-footer p { margin: 4px 0 0; font: 400 13px var(--pk-body-font); color: var(--pk-muted); }
+.pk-footer-note { font: 400 13px var(--pk-body-font); color: var(--pk-muted); text-align: right; }
+.pk-footer-links { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 15px; margin-bottom: 5px; }
+.pk-footer-links a { color: var(--pk-cream); text-decoration: none; }
+.pk-footer-links a:hover { color: var(--pk-yellow); }
+@media (max-width: 650px) {
+  .navbar { flex-wrap: wrap; gap: 10px; min-height: unset; padding: 14px 18px; }
+  .nav-links { width: 100%; justify-content: space-between; gap: 10px; }
+  .nav-links a { font-size: 12px; }
+  .pk-footer-inner { padding: 28px 22px 35px; align-items: flex-start; flex-direction: column; }
+  .pk-footer-note { text-align: left; }
+  .pk-footer-links { justify-content: flex-start; }
 }

@@ -1,6 +1,19 @@
-@import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600&display=swap");
 
 :root {
+  /* Claude homepage design tokens; scoped to the new interface. */
+  --pk-bg: #170F12;
+  --pk-panel: #241619;
+  --pk-coral: #FF4B4B;
+  --pk-yellow: #FFC93C;
+  --pk-green: #7BD389;
+  --pk-cream: #FFF3E6;
+  --pk-muted: #CDB7B0;
+  --pk-line: #43303A;
+  --pk-outline: #6B4B54;
+  --pk-display-font: "Bricolage Grotesque", "DM Sans", sans-serif;
+  --pk-body-font: "DM Sans", -apple-system, sans-serif;
+
   --chili: #e8462a;
   --chili-dark: #c4361d;
   --mustard: #f5b701;
@@ -32,7 +45,7 @@
 }
 
 body {
-  background: var(--paper);
+  background: var(--pk-bg);
   font-family: var(--font-body);
   color: var(--espresso);
 }
