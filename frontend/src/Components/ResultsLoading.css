@@ -1,0 +1,94 @@
+/* Results loading: food illustration and placeholders share the results page styling. */
+.pk-results-page .pk-results-loading { width: 100%; padding-bottom: 16px; }
+.pk-results-page .pk-loading-header {
+  text-align: center; display: flex; flex-direction: column; align-items: center;
+  max-width: 650px; margin: 4px auto 43px;
+}
+.pk-results-page .pk-loading-art-frame {
+  position: relative; display: grid; place-items: center; width: 156px; height: 142px; margin-bottom: 6px;
+}
+.pk-results-page .pk-loading-art-orbit {
+  width: 134px; height: 134px; position: absolute; inset: 4px auto auto 11px;
+  background: #573341; border-radius: 50%; border: 1px dashed #A16B7A;
+}
+.pk-results-page .pk-loading-art-food {
+  position: relative; width: 115px; height: 104px; display: grid; place-items: center;
+  filter: drop-shadow(0 8px 0 rgba(0,0,0,.09));
+  animation: pk-loading-bob 1.6s ease-in-out infinite;
+}
+.pk-results-page .pk-loading-art-food .pk-food-art { display: block; width: 100%; height: 100%; }
+.pk-results-page .pk-loading-art-star { position: absolute; color: var(--pk-yellow); font-size: 19px; }
+.pk-results-page .pk-loading-art-star-one { top: 7px; right: -4px; animation: pk-loading-twinkle 1.8s ease-in-out infinite; }
+.pk-results-page .pk-loading-art-star-two { bottom: 6px; left: -12px; font-size: 13px; animation: pk-loading-twinkle 1.8s ease-in-out .65s infinite; }
+.pk-results-page .pk-loading-kicker {
+  margin: 4px 0 9px; display: inline-flex; gap: 8px; align-items: center;
+  color: var(--pk-yellow); font: 800 11px var(--pk-body-font); letter-spacing: .18em;
+}
+.pk-results-page .pk-loading-pulse {
+  display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--pk-yellow);
+  box-shadow: 0 0 0 5px rgba(255,201,60,.12); animation: pk-loading-pulse 1.4s ease-in-out infinite;
+}
+.pk-results-page .pk-loading-header h2 {
+  color: var(--pk-cream); margin: 0;
+  font: 800 clamp(26px, 4vw, 40px)/1.12 var(--pk-display-font);
+  letter-spacing: -.035em;
+}
+.pk-results-page .pk-loading-ellipsis { display: inline-block; color: var(--pk-coral); }
+.pk-results-page .pk-loading-description {
+  color: var(--pk-muted); font-size: 14px; line-height: 1.65;
+  margin: 13px 0 0; max-width: 470px;
+}
+.pk-results-page .pk-loading-description strong { color: var(--pk-cream); }
+.pk-results-page .pk-loading-skeleton-header {
+  display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+  margin-bottom: 15px;
+}
+.pk-results-page .pk-loading-section-label { font: 800 16px var(--pk-display-font); color: var(--pk-cream); }
+.pk-results-page .pk-loading-section-detail { font-size: 12px; color: var(--pk-muted); }
+.pk-results-page .pk-loading-grid {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px;
+}
+@media (min-width: 1200px) {
+  .pk-results-page .pk-loading-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+.pk-results-page .pk-loading-card { min-width: 0; background: var(--pk-panel); border: 1px solid var(--pk-line); border-radius: 18px; overflow: hidden; }
+.pk-results-page .pk-loading-card-top { height: 47px; background: var(--pk-bg); border-bottom: 1px solid var(--pk-line); padding: 17px 16px; }
+.pk-results-page .pk-loading-shimmer {
+  position: relative; overflow: hidden; display: block; background: #533841;
+}
+.pk-results-page .pk-loading-shimmer::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(100deg, transparent 15%, rgba(255,243,230,.16) 48%, transparent 82%);
+  transform: translateX(-110%); animation: pk-loading-shimmer 1.55s ease-in-out infinite;
+}
+.pk-results-page .pk-loading-line { height: 12px; border-radius: 8px; }
+.pk-results-page .pk-loading-restaurant { width: 43%; }
+.pk-results-page .pk-loading-card-picture { height: 204px; display: grid; place-items: center; }
+.pk-results-page .pk-loading-card-picture-0 { background: #803944; }
+.pk-results-page .pk-loading-card-picture-1 { background: #305D4A; }
+.pk-results-page .pk-loading-card-picture-2 { background: #664574; }
+.pk-results-page .pk-loading-food-placeholder { width: 100px; height: 100px; border-radius: 32% 68% 45% 55%; background: rgba(255,243,230,.20); transform: rotate(-15deg); }
+.pk-results-page .pk-loading-card-copy { padding: 20px 17px 17px; display: flex; flex-direction: column; gap: 15px; }
+.pk-results-page .pk-loading-title { width: 74%; height: 22px; }
+.pk-results-page .pk-loading-meta { width: 62%; height: 11px; }
+.pk-results-page .pk-loading-button { width: 100%; height: 43px; margin-top: 7px; border-radius: 11px; background: #48303A; }
+@keyframes pk-loading-shimmer { to { transform: translateX(110%); } }
+@keyframes pk-loading-bob { 0%, 100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-9px) rotate(3deg); } }
+@keyframes pk-loading-twinkle { 0%, 100% { opacity: .55; transform: scale(.8); } 50% { opacity: 1; transform: scale(1.2); } }
+@keyframes pk-loading-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
+@media (max-width: 699px) {
+  .pk-results-page .pk-loading-header { margin: 0 auto 31px; }
+  .pk-results-page .pk-loading-grid { grid-template-columns: 1fr; gap: 16px; }
+  .pk-results-page .pk-loading-card-picture { height: 158px; }
+  .pk-results-page .pk-loading-art-frame { width: 128px; height: 118px; }
+  .pk-results-page .pk-loading-art-orbit { width: 111px; height: 111px; left: 9px; top: 3px; }
+  .pk-results-page .pk-loading-art-food { width: 100px; height: 95px; }
+  .pk-results-page .pk-loading-description { font-size: 13px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pk-results-page .pk-loading-art-food,
+  .pk-results-page .pk-loading-art-star,
+  .pk-results-page .pk-loading-pulse,
+  .pk-results-page .pk-loading-shimmer::after { animation: none; }
+  .pk-results-page .pk-loading-shimmer::after { display: none; }
+}

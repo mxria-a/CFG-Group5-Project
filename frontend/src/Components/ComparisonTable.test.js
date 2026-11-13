@@ -1,87 +1,75 @@
-import { render, screen, fireEvent, within } from '@testing-library/react';
-import ComparisonTable from './ComparisonTable';
-import { StoreContext } from '../Context/shop-context';
+import { render, screen, fireEvent, within } from "@testing-library/react";
+import ComparisonTable from "./ComparisonTable";
+import { StoreContext } from "../Context/shop-context";
 
-// Mock data
-const mockItems = [
-  {
-    itemID: 1,
-    itemName: 'Burger A',
-    price: 10.50,
-    restaurantName: 'Burger King',
-    deliveryTime: 30,
-    avRating: 4.5,
-    calories: 800,
-    allergens: 'Gluten',
-    isVegan: false,
-    ingredients: 'Bun, Meat, Cheese, Ketchup'
-  },
-  {
-    itemID: 2,
-    itemName: 'Vegan Burger',
-    price: 12.00,
-    restaurantName: 'Green Eats',
-    deliveryTime: 45,
-    avRating: 4.8,
-    calories: 500,
-    allergens: 'Soy',
-    isVegan: true,
-    ingredients: 'Plant patty, lettuce, tomato, cucumber, special vegan sauce, sesame bun, onion rings, pickles, avocado, mushrooms, spinach, kale, extra toppings'
-  }
+const items = [
+  { itemID: 1, itemName: "Burger A", restaurantName: "Burger King", price: 10.5,
+    deliveryTime: 30, avRating: 4.5, distance: 4.3, calories: 800,
+    allergens: "Gluten", isVegan: false, ingredients: "Bun, Meat, Cheese, Ketchup" },
+  { itemID: 2, itemName: "Vegan Burger", restaurantName: "Green Eats", price: 12,
+    deliveryTime: 45, avRating: 4.8, calories: 500, allergens: "Soy", isVegan: true,
+    ingredients: "Plant patty, lettuce, tomato, cucumber, special vegan sauce, sesame bun, onion rings, pickles, avocado, mushrooms, spinach, kale" }
 ];
 
-const renderWithContext = (component, mockAddToBasket = jest.fn()) => {
-  return render(
-    <StoreContext.Provider value={{ addToBasket: mockAddToBasket }}>
-      {component}
-    </StoreContext.Provider>
-  );
-};
+const withStore = (component, addToBasket = jest.fn()) => render(
+  <StoreContext.Provider value={{ addToBasket }}>{component}</StoreContext.Provider>
+);
 
-describe('ComparisonTable Component', () => {
-
-  test('renders "No items selected" when list is empty', () => {
-    renderWithContext(<ComparisonTable items={[]} />);
-    expect(screen.getByText(/no items selected/i)).toBeInTheDocument();
+describe("Showdown comparison", () => {
+  test("explains an empty comparison", () => {
+    withStore(<ComparisonTable items={[]} />);
+    expect(screen.getByText(/no dishes selected for comparison/i)).toBeInTheDocument();
   });
 
-  test('renders item details (price, restaurant, vegan badge)', () => {
-    renderWithContext(<ComparisonTable items={mockItems} />);
-
-    expect(screen.getByText('Compare Options')).toBeInTheDocument();
-    expect(screen.getByText('Burger A')).toBeInTheDocument();
-    expect(screen.getByText(/£10\.50?/)).toBeInTheDocument();
-    expect(screen.getByText('Burger King')).toBeInTheDocument();
-
-    const veganBadges = screen.getAllByText('Yes');
-    expect(veganBadges.length).toBeGreaterThan(0);
+  test("shows winners together with their restaurant names, without inventing an overall winner", () => {
+    withStore(<ComparisonTable items={items} />);
+    const glance = screen.getByRole("region", { name: "At a glance" });
+    expect(within(glance).getByText("Lowest dish price")).toBeInTheDocument();
+    expect(within(glance).getByText("Fastest delivery")).toBeInTheDocument();
+    expect(within(glance).getByText("Top rated")).toBeInTheDocument();
+    expect(within(glance).getAllByText("Burger A")).toHaveLength(2);
+    expect(within(glance).getAllByText("Burger King")).toHaveLength(2);
+    expect(within(glance).getByText("Vegan Burger")).toBeInTheDocument();
+    expect(within(glance).getByText("Green Eats")).toBeInTheDocument();
+    expect(screen.getByText(/dish prices shown exclude/i)).toBeInTheDocument();
+    expect(screen.getAllByText("£10.50")).toHaveLength(1);
   });
 
-  test('toggles "View More" and "View Less" for long ingredients', () => {
-    renderWithContext(<ComparisonTable items={mockItems} />);
-
-    const ingredientCell = screen.getByTestId('ingredients-2');
-    const viewMoreBtn = within(ingredientCell).getByRole('button', { name: /view more/i });
-    fireEvent.click(viewMoreBtn);
-
-    expect(within(ingredientCell).getByRole('button', { name: /view less/i })).toBeInTheDocument();
-    expect(within(ingredientCell).getByText(/spinach/i)).toBeInTheDocument();
+  test("shows tied winners without picking one arbitrarily", () => {
+    withStore(<ComparisonTable items={[items[0], { ...items[1], deliveryTime: 30 }]} />);
+    const glance = screen.getByRole("region", { name: "At a glance" });
+    expect(within(glance).getByText("Joint fastest delivery")).toBeInTheDocument();
+    expect(within(glance).getAllByText("Burger A")).toHaveLength(2);
+    expect(within(glance).getAllByText("Vegan Burger")).toHaveLength(2);
   });
 
-  test('adds item to basket and shows snackbar on click', () => {
-    const mockAddToBasket = jest.fn();
-    const mockOnSelectWinner = jest.fn();
+  test("expands ingredients and keeps control state accessible", () => {
+    withStore(<ComparisonTable items={items} />);
+    const section = screen.getByTestId("ingredients-2");
+    const button = within(section).getByRole("button", { name: /view all ingredients/i });
+    expect(button).toHaveAttribute("aria-expanded", "false");
+    fireEvent.click(button);
+    expect(within(section).getByRole("button", { name: /show fewer/i })).toHaveAttribute("aria-expanded", "true");
+    expect(within(section).getByText("kale")).toBeInTheDocument();
+  });
 
-    renderWithContext(
-      <ComparisonTable items={mockItems} onSelectWinner={mockOnSelectWinner} />,
-      mockAddToBasket
-    );
+  test("choosing a dish adds it to the existing basket", () => {
+    const addToBasket = jest.fn();
+    const onSelectWinner = jest.fn();
+    withStore(<ComparisonTable items={items} onSelectWinner={onSelectWinner} />, addToBasket);
+    fireEvent.click(screen.getByTestId("add-to-cart-1"));
+    expect(addToBasket).toHaveBeenCalledWith(1);
+    expect(onSelectWinner).toHaveBeenCalledWith(items[0]);
+    expect(screen.getByText(/added to basket/i)).toBeInTheDocument();
+  });
 
-    const addButton = screen.getByTestId('add-to-cart-1');
-    fireEvent.click(addButton);
-
-    expect(mockAddToBasket).toHaveBeenCalledWith(1);
-    expect(mockOnSelectWinner).toHaveBeenCalledWith(mockItems[0]);
-    expect(screen.getByText(/item added to cart!/i)).toBeInTheDocument();
+  test("missing data is explicit and never treated as allergen-free", () => {
+    const unknown = { itemID: 3, itemName: "Mystery dish" };
+    withStore(<ComparisonTable items={[items[0], unknown]} />);
+    expect(screen.getByText("Allergen information unavailable")).toBeInTheDocument();
+    expect(screen.getByText("Ingredient information unavailable")).toBeInTheDocument();
+    expect(screen.getAllByText("Not enough data").length).toBeGreaterThan(0);
+    expect(screen.getByText(/missing information does not mean/i)).toBeInTheDocument();
+    expect(screen.getByText("Vegan status not provided")).toBeInTheDocument();
   });
 });

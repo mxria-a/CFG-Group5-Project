@@ -29,7 +29,7 @@ describe('ItemList Component', () => {
     expect(screen.getByText('Chicken Wrap')).toBeInTheDocument();
     
     expect(screen.getByText(/£12\.50?/)).toBeInTheDocument();
-    expect(screen.getByText(/from Pizza Hut/i)).toBeInTheDocument();
+    expect(screen.getByText(/Pizza Hut/i)).toBeInTheDocument();
   });
 
   test('applies "selected" class only to selected items', () => {

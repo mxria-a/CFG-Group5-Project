@@ -1,0 +1,106 @@
+/* Dish details are rendered in a portal so the overlay stays above the comparison tray. */
+.pk-detail-backdrop, .pk-detail-backdrop * { box-sizing: border-box; }
+.pk-detail-backdrop {
+  position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center;
+  padding: 20px; background: rgba(13, 7, 10, .78); backdrop-filter: blur(7px);
+  animation: pk-detail-backdrop-in .2s ease-out;
+}
+.pk-detail-dialog {
+  position: relative; width: min(880px, 100%); max-height: calc(100dvh - 40px);
+  display: grid; grid-template-columns: minmax(0, .86fr) minmax(0, 1.14fr);
+  grid-template-rows: minmax(0, 1fr);
+  overflow: hidden; border: 1px solid #6A4148; border-radius: 22px;
+  background: #29191E; color: #FFF3E6;
+  box-shadow: 0 30px 100px rgba(0,0,0,.5); font-family: var(--pk-body-font, system-ui, sans-serif);
+  animation: pk-detail-dialog-in .24s cubic-bezier(.2,.75,.2,1);
+}
+.pk-detail-close {
+  position: absolute; z-index: 2; top: 14px; right: 14px; width: 38px; height: 38px;
+  border: 1px solid rgba(255,243,230,.35); border-radius: 50%; background: #3B272B;
+  color: #FFF3E6; font-size: 26px; line-height: 1; cursor: pointer;
+}
+.pk-detail-close:hover { background: #FF625F; color: #241519; border-color: #FF625F; }
+.pk-detail-dialog button:focus-visible { outline: 3px solid #FFC93C; outline-offset: 3px; }
+.pk-detail-illustration {
+  display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 10px;
+  min-height: 430px; padding: 46px 24px 25px; background: #2F6B4F; color: #FFF3E6;
+}
+.pk-detail-illustration-label { font-size: 11px; font-weight: 800; letter-spacing: .16em; text-align: center; opacity: .9; }
+.pk-detail-illustration .pk-food-art { display: block; width: min(95%, 350px); height: auto; max-height: 245px; filter: drop-shadow(0 10px 0 rgba(0,0,0,.08)); }
+.pk-detail-art-caption { margin-top: 2px; font-size: 10px; opacity: .78; text-align: center; }
+.pk-detail-content { padding: 40px 33px 30px; min-width: 0; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+.pk-detail-restaurant { margin: 0 28px 13px 0; color: #FFC93C; font-size: 12px; line-height: 1.35; font-weight: 850; letter-spacing: .18em; text-transform: uppercase; overflow-wrap: anywhere; }
+.pk-detail-content h2 { margin: 0 40px 9px 0; color: #FFF3E6; font: 800 clamp(28px, 3vw, 38px)/1.06 var(--pk-display-font, system-ui); letter-spacing: -.03em; overflow-wrap: anywhere; }
+.pk-detail-price { margin: 0 0 15px; color: #FFB24D; font: 800 27px var(--pk-display-font, system-ui); }
+.pk-detail-description { margin: 0 0 16px; color: #E4D2D1; font-size: 14px; line-height: 1.5; }
+.pk-detail-facts { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 20px; }
+.pk-detail-facts span { display: inline-flex; align-items: center; gap: 4px; border: 1px solid #6A454E; border-radius: 9px; padding: 6px 9px; font-size: 12px; color: #FFF3E6; }
+.pk-detail-facts span span { color: #FFC93C; padding: 0; border: 0; font-size: 15px; }
+.pk-detail-info-section { padding-top: 16px; margin-top: 12px; border-top: 1px solid #654049; }
+.pk-detail-info-section h3 { margin: 0 0 8px; color: #FFF3E6; font: 800 16px var(--pk-display-font, system-ui); }
+.pk-detail-info-section p { margin: 0; color: #E5D5D4; font-size: 13px; line-height: 1.6; overflow-wrap: anywhere; }
+.pk-detail-info-section small { display: block; margin-top: 8px; color: #CDB8BB; font-size: 11px; line-height: 1.45; }
+.pk-detail-inline-note, .pk-detail-added-note { margin: 18px 0 0; padding: 11px 13px; border-radius: 10px; font: 700 12px/1.5 var(--pk-body-font, system-ui); }
+.pk-detail-inline-note { background: #42252C; border-left: 3px solid #FF625F; color: #FFF3E6; }
+.pk-detail-added-note { background: #234C3C; border-left: 3px solid #84D99B; color: #FFF3E6; }
+.pk-detail-actions { display: grid; grid-template-columns: minmax(0, .82fr) minmax(0, 1.4fr); gap: 10px; margin-top: 24px; }
+.pk-detail-actions button { min-height: 48px; padding: 12px 8px; border-radius: 11px; font: 800 12.5px/1.2 var(--pk-body-font, system-ui); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; }
+.pk-detail-compare:not(.is-selected) {
+  border: 1.5px solid rgba(255, 156, 160, .68);
+  background-color: rgba(185, 51, 63, .68);
+  color: #FFF3E6;
+  box-shadow: inset 0 1px 0 rgba(255, 245, 241, .22), inset 0 -1px 0 rgba(73, 13, 24, .20), 0 5px 14px rgba(15, 5, 9, .13);
+  -webkit-backdrop-filter: blur(10px) saturate(135%);
+  backdrop-filter: blur(10px) saturate(135%);
+  transition: background-color .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+.pk-detail-compare:not(.is-selected):hover {
+  background-color: rgba(199, 61, 72, .90);
+  border-color: rgba(255, 179, 178, .9);
+  box-shadow: inset 0 1px 0 rgba(255, 245, 241, .31), 0 7px 18px rgba(15, 5, 9, .22);
+}
+.pk-detail-compare.is-selected { background: #FFC93C; border-color: #FFC93C; color: #241519; }
+.pk-detail-basket { border: 1.5px solid #FF625F; background: #FF625F; color: #241519; }
+.pk-detail-basket:hover { background: #FF8682; border-color: #FF8682; }
+.pk-detail-basket span { margin-left: 4px; }
+@keyframes pk-detail-backdrop-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pk-detail-dialog-in { from { opacity: 0; transform: translateY(12px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@media (max-width: 680px) {
+  .pk-detail-backdrop { padding: 10px; align-items: center; }
+  .pk-detail-dialog { width: 100%; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto; max-height: calc(100dvh - 20px); overflow-y: auto; }
+  .pk-detail-illustration { min-height: 180px; padding: 20px 50px 12px; gap: 4px; }
+  .pk-detail-illustration-label { font-size: 9px; }
+  .pk-detail-illustration .pk-food-art { height: 130px; width: min(200px, 70%); }
+  .pk-detail-art-caption { font-size: 9px; }
+  .pk-detail-content { overflow: visible; padding: 21px 21px 24px; }
+  .pk-detail-content h2 { font-size: 28px; }
+  .pk-detail-close { top: 12px; right: 12px; background: #29191E; }
+}
+@media (max-width: 500px) {
+  .pk-detail-actions { grid-template-columns: 1fr; }
+  .pk-detail-restaurant { font-size: 11px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pk-detail-backdrop, .pk-detail-dialog { animation: none; }
+}
+/* Other dishes from the same restaurant. */
+.pk-detail-similar-caption { margin:0 0 12px !important; color:#D7BFC1; font-size:12px; }
+.pk-detail-similar-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+.pk-detail-similar-card { background:#35232A; border:1px solid #67434E; color:#FFF3E6; border-radius:11px; display:flex; align-items:center; gap:9px; padding:9px; text-align:left; min-width:0; cursor:pointer; }
+.pk-detail-similar-card:hover { border-color:#FFC93C; background:#412A33; }
+.pk-detail-similar-art { display:flex; align-items:center; justify-content:center; flex:0 0 66px; width:66px; height:68px; border-radius:8px; background:#A44B50; }
+.pk-detail-similar-art .pk-food-art { width:65px; height:58px; }
+.pk-detail-similar-meta { display:flex; flex-direction:column; gap:4px; min-width:0; }
+.pk-detail-similar-meta strong { font-size:12px; line-height:1.25; overflow-wrap:anywhere; }
+.pk-detail-similar-meta small { color:#FFC93C; font-size:12px; font-weight:800; }
+.pk-detail-similar-meta em { color:#E3C5CA; font-size:11px; font-style:normal; }
+@media(max-width:500px){ .pk-detail-similar-grid{grid-template-columns:1fr;} }
+
+.pk-detail-similar-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.pk-detail-similar-heading span { font-size: 10px; letter-spacing: .08em; font-weight: 800; color: #FFC93C; }
+.pk-detail-similar-empty { display: flex; gap: 12px; align-items: flex-start; padding: 14px; border-radius: 12px; background: #34242A; border: 1px solid #6A444F; color: #FFF3E6; }
+.pk-detail-similar-empty-icon { flex: 0 0 auto; color: #FFC93C; font-size: 22px; line-height: 1; }
+.pk-detail-similar-empty strong { display: block; font-size: 12px; line-height: 1.45; }
+.pk-detail-similar-empty p { margin: 5px 0 8px; color: #DFC8CD; font-size: 12px; line-height: 1.55; }
+.pk-detail-similar-browse { padding: 3px 0; border: 0; background: transparent; color: #FFC93C; text-align: left; font-size: 12px; font-weight: 750; cursor: pointer; }
+.pk-detail-similar-browse:hover { text-decoration: underline; }

@@ -1,4 +1,4 @@
-/** Decorative illustration recreated as SVG from the supplied Claude homepage mockup. */
+/** Layered SVG burger illustration for the homepage. */
 export default function BurgerIllustration({ small = false, className = "" }) {
   if (small) {
     return (

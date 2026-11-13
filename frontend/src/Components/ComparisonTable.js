@@ -1,190 +1,221 @@
-import React, { useState, useContext } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
+import FoodCardIllustration from "./FoodCardIllustration";
+import { StoreContext } from "../Context/shop-context";
 import "./ComparisonTable.css";
 
-import { Snackbar, Alert } from "@mui/material";
-import { StoreContext } from "../Context/shop-context";
+const PALETTE = ["#C93F45", "#2F6B4F", "#7A4A8C"];
 
-const ComparisonTable = ({ items, onSelectWinner }) => {
-  const [showNotification, setShowNotification] = useState(false);
-  const [expandedIngredients, setExpandedIngredients] = useState({});
+const hasValue = (value) => value !== null && value !== undefined && String(value).trim() !== "";
+const hasNumber = (value) => hasValue(value) && Number.isFinite(Number(value));
+const formattedPrice = (price) => hasNumber(price) ? `£${Number(price).toFixed(2)}` : "Not available";
+const formattedMinutes = (minutes) => hasNumber(minutes) ? `${Number(minutes)} mins` : "Not available";
+const formattedRating = (rating) => hasNumber(rating) ? Number(rating).toFixed(1) : "Not available";
+const formattedMiles = (distance) => hasNumber(distance) ? `${(Number(distance) * 0.621371).toFixed(1)} mi` : "Not available";
+const formattedCalories = (calories) => hasNumber(calories) ? `${Number(calories).toLocaleString("en-GB")} kcal` : "Not provided";
 
-  const { addToBasket } = useContext(StoreContext);
+const getDietaryStatus = (value) => {
+  if (!hasValue(value)) return null;
+  const normalized = String(value).toLowerCase();
+  if (value === true || value === 1 || normalized === "true" || normalized === "1") return true;
+  if (value === false || value === 0 || normalized === "false" || normalized === "0") return false;
+  return null;
+};
 
-  if (!items || items.length === 0) return <div>No items selected</div>;
+const ingredientList = (value) => {
+  if (!hasValue(value)) return [];
+  const pieces = Array.isArray(value) ? value : String(value).split(/[,;]+/);
+  return pieces.map((part) => String(part).trim()).filter(Boolean);
+};
 
-  const handleCloseNotification = (event, reason) => {
-    if (reason === "clickaway") return;
-    setShowNotification(false);
-  };
+const getWinners = (items, field, direction = "min") => {
+  const withValues = items.filter((item) => hasNumber(item[field]));
+  if (withValues.length < 2) return [];
+  const numbers = withValues.map((item) => Number(item[field]));
+  const target = direction === "max" ? Math.max(...numbers) : Math.min(...numbers);
+  return withValues.filter((item) => Number(item[field]) === target).map((item) => item.itemID);
+};
 
-  const handleAddToCartClick = (item) => {
-    addToBasket(item.itemID);
+function FactTile({ label, value, highlighted = false, highlightLabel, icon, fullWidth = false }) {
+  return (
+    <div className={`pk-showdown-fact${highlighted ? " is-highlighted" : ""}${fullWidth ? " is-wide" : ""}`}>
+      <span className="pk-showdown-fact-label"><span aria-hidden="true">{icon}</span> {label}</span>
+      <strong>{value}</strong>
+      {highlighted && <small>{highlightLabel}</small>}
+    </div>
+  );
+}
 
-    if (onSelectWinner) {
-      onSelectWinner(item);
-    }
-
-    setShowNotification(true);
-  };
-
-  const toggleIngredient = (id) => {
-    setExpandedIngredients((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  };
+function IngredientSection({ label, values, itemID, expandable = false, expanded, onToggle }) {
+  const shouldCollapse = expandable && values.length > 4;
+  const displayed = shouldCollapse && !expanded ? values.slice(0, 4) : values;
+  const listID = `pk-showdown-ingredients-${itemID}`;
+  const emptyMessage = label === "Reported allergens"
+    ? "Allergen information unavailable"
+    : "Ingredient information unavailable";
 
   return (
-    <div className="compare-container">
-      <h2 className="table-title">Compare Options</h2>
-
-      <div className="comparison-scroll-wrapper">
-        <div className="table-row header-row">
-          <div className="col-label">Feature</div>
-          {items.map((item, index) => (
-            <div key={item.itemID} className="col-item">
-              <span className="option-tag">Option {index + 1}</span>
-              <span className="item-name">{item.itemName}</span>
-            </div>
-          ))}
+    <div className="pk-showdown-info" data-testid={expandable ? `ingredients-${itemID}` : undefined}>
+      <h3>{label}</h3>
+      {values.length ? (
+        <div className="pk-showdown-tags" id={listID}>
+          {displayed.map((entry, i) => <span key={`${entry}-${i}`}>{entry}</span>)}
         </div>
-
-        {/* Price */}
-        <div className="table-row">
-          <div className="col-label">Price</div>
-          {items.map((item) => (
-            <div key={item.itemID} className="col-item price-tag">
-              £{item.price}
-            </div>
-          ))}
-        </div>
-
-        {/* Delivery */}
-        <div className="table-row">
-          <div className="col-label">Delivery</div>
-          {items.map((item) => (
-            <div key={item.itemID} className="col-item">
-              {item.deliveryTime} mins
-            </div>
-          ))}
-        </div>
-
-        {/* Restaurant */}
-        <div className="table-row">
-          <div className="col-label">Restaurant</div>
-          {items.map((item) => (
-            <div key={item.itemID} className="col-item">
-              {item.restaurantName}
-            </div>
-          ))}
-        </div>
-
-        {/* Rating */}
-        <div className="table-row">
-          <div className="col-label">Rating</div>
-          {items.map((item) => (
-            <div key={item.itemID} className="col-item">
-              <span className="rating-star">
-                {item.avRating ? `★ ${item.avRating}` : "N/A"}
-              </span>
-            </div>
-          ))}
-        </div>
-
-        {/* Calories */}
-        <div className="table-row">
-          <div className="col-label">Calories</div>
-          {items.map((item) => (
-            <div key={item.itemID} className="col-item">
-              {item.calories ? `${item.calories} kcal` : "N/A"}
-            </div>
-          ))}
-        </div>
-
-        {/* Allergens */}
-        <div className="table-row">
-          <div className="col-label">Allergens</div>
-          {items.map((item) => (
-            <div key={item.itemID} className="col-item allergen-text">
-              {item.allergens ? item.allergens : "None"}
-            </div>
-          ))}
-        </div>
-
-        {/* Vegan Status */}
-        <div className="table-row">
-          <div className="col-label">Vegan?</div>
-          {items.map((item) => (
-            <div key={item.itemID} className="col-item">
-              <span className={`badge ${item.isVegan ? "yes" : "no"}`}>
-                {item.isVegan ? "Yes" : "No"}
-              </span>
-            </div>
-          ))}
-        </div>
-        
-        {/* Ingredients */}
-        <div className="table-row">
-          <div className="col-label">Ingredients</div>
-          {items.map((item) => {
-            const fullText = item.ingredients || "View details";
-            const isExpanded = expandedIngredients[item.itemID];
-            const textLimit = 50;
-            const shouldTruncate = fullText.length > textLimit;
-
-            return (
-              <div key={item.itemID} className="col-item ingredients-cell"
-                data-testid={`ingredients-${item.itemID}`}>
-                <span style={{ fontStyle: "italic" }}>
-                  {isExpanded || !shouldTruncate
-                    ? fullText
-                    : `${fullText.substring(0, textLimit)}...`}
-                </span>
-                {shouldTruncate && (
-                  <button
-                    className="view-more-link"
-                    onClick={() => toggleIngredient(item.itemID)}
-                  >
-                    {isExpanded ? "View Less" : "View More"}
-                  </button>
-                )}
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Action Buttons */}
-        <div className="table-row">
-          <div className="col-label"></div>
-          {items.map((item) => (
-            <div key={item.itemID} className="col-item">
-              <button
-                className="add-to-cart-btn"
-                onClick={() => handleAddToCartClick(item)}
-                data-testid={`add-to-cart-${item.itemID}`}
-              >
-                Add to Cart &#128722;
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <Snackbar
-        open={showNotification}
-        autoHideDuration={2000}
-        onClose={handleCloseNotification}
-        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-      >
-        <Alert
-          onClose={handleCloseNotification}
-          severity="success"
-          variant="filled"
+      ) : <p className="pk-showdown-unknown">{emptyMessage}</p>}
+      {shouldCollapse && (
+        <button
+          type="button"
+          className="pk-showdown-view-more"
+          aria-controls={listID}
+          aria-expanded={Boolean(expanded)}
+          onClick={onToggle}
         >
-          Item added to cart!
-        </Alert>
-      </Snackbar>
+          {expanded ? "Show fewer" : "View all ingredients"}
+        </button>
+      )}
     </div>
+  );
+}
+
+const ComparisonTable = ({ items = [], onSelectWinner, onCustomiseDish }) => {
+  const { addToBasket } = useContext(StoreContext);
+  const [expandedIngredients, setExpandedIngredients] = useState({});
+  const [basketNotice, setBasketNotice] = useState(null);
+
+  const winners = useMemo(() => ({
+    price: getWinners(items, "price"),
+    delivery: getWinners(items, "deliveryTime"),
+    rating: getWinners(items, "avRating", "max"),
+  }), [items]);
+
+  useEffect(() => {
+    if (!basketNotice) return undefined;
+    const timer = window.setTimeout(() => setBasketNotice(null), 4200);
+    return () => window.clearTimeout(timer);
+  }, [basketNotice]);
+
+  const chooseDish = (item) => {
+    if (onCustomiseDish) { onCustomiseDish(item); return; }
+    addToBasket(item.itemID);
+    if (onSelectWinner) onSelectWinner(item);
+    setBasketNotice({ name: item.itemName, time: Date.now() });
+  };
+
+  const highlightSummary = [
+    { field: "price", text: "Lowest dish price", icon: "◇" },
+    { field: "delivery", text: "Fastest delivery", icon: "◷" },
+    { field: "rating", text: "Top rated", icon: "☆" },
+  ];
+
+  const winnerItems = (ids) => items.filter((item) => ids.includes(item.itemID));
+
+  if (!items.length) return <div className="pk-showdown-empty">No dishes selected for comparison.</div>;
+
+  return (
+    <section className="pk-showdown" aria-labelledby="pk-showdown-heading">
+      <header className="pk-showdown-heading-area">
+        <h1 id="pk-showdown-heading">The showdown</h1>
+        <p>{items.length} dishes side by side · Your picks, your decision</p>
+        <div className="pk-showdown-insights" role="region" aria-label="At a glance">
+          <h2 className="pk-showdown-insights-heading">
+            At a glance <span>· The standouts from your picks</span>
+          </h2>
+          <div className="pk-showdown-insights-list">
+            {highlightSummary.map(({ field, text, icon }) => {
+              const selectedWinners = winnerItems(winners[field]);
+              return (
+                <div className="pk-showdown-insight" key={field}>
+                  <span className="pk-showdown-insight-label">
+                    <span aria-hidden="true">{icon}</span>
+                    {selectedWinners.length > 1 ? `Joint ${text.toLowerCase()}` : text}
+                  </span>
+                  {selectedWinners.length ? (
+                    <div className="pk-showdown-insight-dishes">
+                      {selectedWinners.map((item) => (
+                        <div className="pk-showdown-insight-dish" key={item.itemID}>
+                          <strong>{item.itemName || "Unnamed dish"}</strong>
+                          <span className="pk-showdown-insight-restaurant">
+                            {item.restaurantName || "Restaurant unavailable"}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : <strong>Not enough data</strong>}
+                </div>
+              );
+            })}
+          </div>
+          <p className="pk-showdown-explainer">
+            Based on available dish prices, estimated delivery times and ratings. No overall winner — that's your call.
+          </p>
+        </div>
+      </header>
+
+      <div className={`pk-showdown-grid ${items.length === 2 ? "has-two" : ""}`}>
+        {items.map((item, index) => {
+          const ingredients = ingredientList(item.ingredients);
+          const allergens = ingredientList(item.allergens);
+          const vegan = getDietaryStatus(item.isVegan);
+          const isExpanded = !!expandedIngredients[item.itemID];
+          return (
+            <article className="pk-showdown-card" key={item.itemID}>
+              <div className="pk-showdown-restaurant">
+                <span className="pk-showdown-letter" aria-hidden="true">{String.fromCharCode(65 + index)}</span>
+                <span>{item.restaurantName || "Restaurant name unavailable"}</span>
+              </div>
+              <div className="pk-showdown-art" style={{ backgroundColor: PALETTE[index % PALETTE.length] }}>
+                <FoodCardIllustration name={item.itemName} />
+              </div>
+              <div className="pk-showdown-body">
+                <h2>{item.itemName || "Unnamed dish"}</h2>
+                <div className="pk-showdown-facts">
+                  <FactTile label="Dish price" icon="◇" value={formattedPrice(item.price)} highlighted={winners.price.includes(item.itemID)} highlightLabel={winners.price.length > 1 ? "Joint lowest dish price" : "Lowest dish price"} />
+                  <FactTile label="Delivery" icon="◷" value={formattedMinutes(item.deliveryTime)} highlighted={winners.delivery.includes(item.itemID)} highlightLabel={winners.delivery.length > 1 ? "Joint fastest" : "Fastest"} />
+                  <FactTile label="Rating" icon="☆" value={formattedRating(item.avRating)} highlighted={winners.rating.includes(item.itemID)} highlightLabel={winners.rating.length > 1 ? "Joint top rated" : "Top rated"} />
+                  <FactTile label="Distance" icon="⌖" value={formattedMiles(item.distance)} />
+                  <FactTile label="Calories" icon="♨" value={formattedCalories(item.calories)} fullWidth />
+                </div>
+
+                <IngredientSection label="Reported allergens" values={allergens} itemID={item.itemID} />
+                {vegan === true && <p className="pk-showdown-dietary">Vegan · <strong>Yes</strong></p>}
+                {vegan === false && <p className="pk-showdown-dietary">Not vegan</p>}
+                {vegan === null && <p className="pk-showdown-dietary">Vegan status not provided</p>}
+                <IngredientSection
+                  label="What's inside"
+                  values={ingredients}
+                  itemID={item.itemID}
+                  expandable
+                  expanded={isExpanded}
+                  onToggle={() => setExpandedIngredients((prev) => ({ ...prev, [item.itemID]: !prev[item.itemID] }))}
+                />
+                <div className="pk-showdown-spacer" />
+                <button
+                  type="button"
+                  className="pk-showdown-choose"
+                  onClick={() => chooseDish(item)}
+                  aria-label={`Choose ${item.itemName} and add to basket`}
+                  data-testid={`add-to-cart-${item.itemID}`}
+                >
+                  Choose &amp; add to basket <span aria-hidden="true">↗</span>
+                </button>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+      <p className="pk-showdown-pricing-note">
+        <span aria-hidden="true">ⓘ</span> Dish prices shown exclude any delivery, service or other fees.
+      </p>
+      <p className="pk-showdown-allergen-note">
+        Allergen and ingredient details are reported by restaurants where available. Missing information does not mean a dish is allergen-free. Always confirm directly with the restaurant before ordering.
+      </p>
+      {basketNotice && (
+        <div className="pk-showdown-toast" role="status" key={basketNotice.time}>
+          <span className="pk-showdown-toast-icon" aria-hidden="true">✓</span>
+          <span><strong>Added to basket!</strong><small>{basketNotice.name} is in your basket.</small></span>
+          <button type="button" aria-label="Dismiss basket message" onClick={() => setBasketNotice(null)}>×</button>
+        </div>
+      )}
+    </section>
   );
 };
 

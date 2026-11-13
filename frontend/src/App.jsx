@@ -17,8 +17,9 @@ import PrivacyPolicy from "./Components/PrivacyPolicy";
 const navLinkClass = ({ isActive }) => (isActive ? "active" : undefined);
 
 function NavBasketCount() {
-  const { basketItems } = useContext(StoreContext);
-  const count = Object.values(basketItems || {}).reduce((a, b) => a + b, 0);
+  const { basketItems, demoCustomLines } = useContext(StoreContext);
+  const count = Object.values(basketItems || {}).reduce((a, b) => a + b, 0)
+    + Object.values(demoCustomLines || {}).reduce((a, line) => a + line.quantity, 0);
   if (!count) return null;
   return <span className="nav-basket-count">{count}</span>;
 }

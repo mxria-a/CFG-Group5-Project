@@ -1,58 +1,78 @@
-import React from 'react';
-import './ItemList.css';
+import React from "react";
+import FoodCardIllustration from "./FoodCardIllustration";
+import "./ItemList.css";
 
-const ItemList = ({ items, selectedItems, onToggle }) => {
+const IMAGE_COLOURS = ["#C93F45", "#2F6B4F", "#7A4A8C", "#C27A1E", "#3F5E91", "#8B3D2D"];
+const priceLabel = (price) => {
+  const number = Number(price);
+  return price !== null && price !== undefined && price !== "" && Number.isFinite(number)
+    ? `£${number.toFixed(2)}` : "Price unavailable";
+};
+const hasNumber = (value) => value !== null && value !== undefined && value !== "" && Number.isFinite(Number(value));
 
+function FoodPicture({ item, index }) {
   return (
-    <div className="item-list-container">
-      {items.map((item) => {
-        const isSelected = selectedItems.some((i) => i.itemID === item.itemID);
+    <div className="pk-result-picture" style={{ background: IMAGE_COLOURS[index % IMAGE_COLOURS.length] }}>
+      <FoodCardIllustration name={item.itemName} />
+      <span className="pk-result-price">{priceLabel(item.price)}</span>
+      {item.highlight && <span className={`pk-result-highlight pk-result-highlight-${item.highlight.kind}`}>{item.highlight.text}</span>}
+    </div>
+  );
+}
 
+/**
+ * Opening details and selecting for comparison are separate actions.
+ * The card's main button opens details; the comparison button only toggles selection.
+ */
+export default function ItemList({ items = [], selectedItems = [], onToggle, onViewDetails }) {
+  return (
+    <div className="item-list-container pk-result-grid">
+      {items.map((item, index) => {
+        const isSelected = selectedItems.some((selected) => selected.itemID === item.itemID);
         return (
-          <div
+          <article
             key={item.itemID}
             data-testid={`food-card-${item.itemID}`}
-            className={`item-card ${isSelected ? 'selected' : ''}`}
-            onClick={() => {
-              // Call onToggle to select the item for comparison
-              onToggle(item);
-            }}
+            className={`item-card pk-result-card${isSelected ? " selected" : ""}`}
           >
-            <div className="card-content">
-              <h3>{item.itemName}</h3>
-
-              <div className="card-details-row">
-                <span className="label">Price:</span>
-                <span className="value">£{Number(item.price).toFixed(2)}</span>
-              </div>
-
-              <div className="card-details-row">
-                <span className="label">Delivery:</span>
-                <span className="value">{item.deliveryTime} mins</span>
-              </div>
-
-              {item.distance && (
-                <div className="card-details-row">
-                  <span className="label">Distance:</span>
-                  <span className="value">{item.distance.toFixed(1)} km</span>
+            <button
+              type="button"
+              className="pk-result-card-main"
+              onClick={() => onViewDetails?.(item)}
+              aria-label={`View details for ${item.itemName} from ${item.restaurantName || "restaurant"}`}
+            >
+              <div className="pk-result-restaurant">{item.restaurantName || "Restaurant"}</div>
+              <FoodPicture item={item} index={index} />
+              <div className="pk-result-card-body">
+                <h3>{item.itemName}</h3>
+                <div className="pk-result-meta">
+                  {hasNumber(item.deliveryTime) && <span><span aria-hidden="true">◷</span> {item.deliveryTime} mins</span>}
+                  {hasNumber(item.distance) && <span><span aria-hidden="true">⌖</span> {(Number(item.distance) * 0.621371).toFixed(1)} mi</span>}
+                  {hasNumber(item.avRating) && <span><span aria-hidden="true">☆</span> {Number(item.avRating).toFixed(1)}</span>}
                 </div>
-              )}
-
-              <div className="restaurant-subtext">
-                from {item.restaurantName}
               </div>
+            </button>
+            <div className="pk-result-card-actions">
+              <button
+                type="button"
+                className="pk-result-view-details"
+                onClick={() => onViewDetails?.(item)}
+              >
+                View details <span aria-hidden="true">↗</span>
+              </button>
+              <button
+                type="button"
+                className={`pk-result-select${isSelected ? " is-selected" : ""}`}
+                onClick={() => onToggle(item)}
+                aria-pressed={isSelected}
+                aria-label={`${isSelected ? "Remove" : "Add"} ${item.itemName} ${isSelected ? "from" : "to"} comparison`}
+              >
+                <span aria-hidden="true">{isSelected ? "✓" : "+"}</span> {isSelected ? "Selected" : "Add to compare"}
+              </button>
             </div>
-
-            <div className="card-action">
-              <div
-                className={`custom-checkbox ${isSelected ? 'checked' : ''}`}
-              ></div>
-            </div>
-          </div>
+          </article>
         );
       })}
     </div>
   );
-};
-
-export default ItemList;
+}

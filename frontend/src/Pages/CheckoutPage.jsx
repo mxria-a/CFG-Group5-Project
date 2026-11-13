@@ -23,7 +23,7 @@ const PAYMENT_OPTIONS = [
 ];
 
 const CheckoutPage = () => {
-  const { basketItems, foodList, clearBasket } = useContext(StoreContext);
+  const { basketItems, demoCustomLines = {}, foodList, clearBasket } = useContext(StoreContext);
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -63,15 +63,20 @@ const CheckoutPage = () => {
       image: item.image,
     }));
 
-  const totalPrice = checkoutItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
-
-  const tooManyItemTypes = checkoutItems.length > 1;
+  const demoLines = Object.values(demoCustomLines);
+  const hasDemoCustomisations = demoLines.length > 0;
+  const shownCheckoutItems = [
+    ...checkoutItems,
+    ...demoLines.map((line) => ({
+      itemID: line.key, name: line.itemName, restaurantName: line.restaurantName,
+      price: line.unitPrice, quantity: line.quantity, image: line.image,
+    })),
+  ];
+  const totalPrice = shownCheckoutItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const tooManyItemTypes = shownCheckoutItems.length > 1;
 
   const handlePlaceOrder = () => {
-    if (checkoutItems.length === 0 || tooManyItemTypes || placing) return;
+    if (shownCheckoutItems.length === 0 || tooManyItemTypes || hasDemoCustomisations || placing) return;
 
     const newErrors = {};
     Object.keys(formData).forEach((key) => {
@@ -150,10 +155,15 @@ const CheckoutPage = () => {
         <>
           <h2>Checkout</h2>
 
-          {checkoutItems.length === 0 ? (
+          {shownCheckoutItems.length === 0 ? (
             <p className="empty-msg">Your basket is empty.</p>
           ) : (
             <>
+              {hasDemoCustomisations && (
+                <div className="checkout-limit-banner" role="alert">
+                  Customisation options in this preview are examples only, so they cannot be submitted to a restaurant yet. Please <Link to="/basket">return to your basket</Link> and remove the demo customisation lines to checkout ordinary items.
+                </div>
+              )}
               {tooManyItemTypes && (
                 <div className="checkout-limit-banner">
                   Checkout currently only supports one dish at a time. Please{" "}
@@ -165,7 +175,7 @@ const CheckoutPage = () => {
 
               <h3 className="step-heading">Your order</h3>
               <div className="basket-items">
-                {checkoutItems.map((item) => (
+                {shownCheckoutItems.map((item) => (
                   <CheckoutItem key={item.itemID} item={item} />
                 ))}
               </div>
@@ -198,9 +208,9 @@ const CheckoutPage = () => {
               )}
 
               <div className="order-checklist">
-                <div className={`checklist-item ${!tooManyItemTypes ? "done" : "pending"}`}>
-                  <span className="checklist-icon">{!tooManyItemTypes ? "✓" : "!"}</span>
-                  {!tooManyItemTypes ? "Order is ready" : "Only one dish type per order, for now"}
+                <div className={`checklist-item ${!tooManyItemTypes && !hasDemoCustomisations ? "done" : "pending"}`}>
+                  <span className="checklist-icon">{!tooManyItemTypes && !hasDemoCustomisations ? "✓" : "!"}</span>
+                  {hasDemoCustomisations ? "Demo customisations cannot be checked out yet" : !tooManyItemTypes ? "Order is ready" : "Only one dish type per order, for now"}
                 </div>
               </div>
 
@@ -213,7 +223,7 @@ const CheckoutPage = () => {
                 <button
                   className="place-order-btn"
                   onClick={handlePlaceOrder}
-                  disabled={tooManyItemTypes || placing}
+                  disabled={tooManyItemTypes || hasDemoCustomisations || placing}
                 >
                   {placing ? "Placing order..." : "Place Order"}
                 </button>
