@@ -18,6 +18,7 @@ pool.getConnection((err, connection) => {
 
 // Import routes
 app.use("/", require("./routes/comparisonTable"));
+app.use("/", require("./routes/restaurantMenus"));
 app.use("/", require("./routes/callCoordinates"));
 app.use("/", require("./routes/customers"));
 app.use("/", require("./routes/allergens"));

@@ -6,6 +6,8 @@ router.get("/comparison-table-items", (req, res) => {
   const sql = `
     SELECT 
         i.itemID, 
+        i.restaurantID,
+        i.category,
         i.itemName, 
         i.price, 
         i.avRating, 
