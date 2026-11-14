@@ -1,5 +1,6 @@
 import React from "react";
 import FoodCardIllustration from "./FoodCardIllustration";
+import RestaurantLogo from "./RestaurantLogo";
 import "./ItemList.css";
 
 const IMAGE_COLOURS = ["#C93F45", "#2F6B4F", "#7A4A8C", "#C27A1E", "#3F5E91", "#8B3D2D"];
@@ -41,7 +42,7 @@ export default function ItemList({ items = [], selectedItems = [], onToggle, onV
               onClick={() => onViewDetails?.(item)}
               aria-label={`View details for ${item.itemName} from ${item.restaurantName || "restaurant"}`}
             >
-              <div className="pk-result-restaurant">{item.restaurantName || "Restaurant"}</div>
+              <div className="pk-result-restaurant"><RestaurantLogo name={item.restaurantName} /><span className="pk-result-restaurant-name">{item.restaurantName || "Restaurant"}</span></div>
               <FoodPicture item={item} index={index} />
               <div className="pk-result-card-body">
                 <h3>{item.itemName}</h3>

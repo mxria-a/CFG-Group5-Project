@@ -92,3 +92,7 @@
 @media (max-width: 350px) {
   .pk-results-page .pk-result-card-actions { grid-template-columns: 1fr; }
 }
+
+/* Restaurant identity in the existing card header. */
+.pk-results-page .pk-result-restaurant { gap: 10px; padding-top: 6px; padding-bottom: 6px; min-height: 49px; }
+.pk-results-page .pk-result-restaurant-name { min-width: 0; overflow-wrap: anywhere; }

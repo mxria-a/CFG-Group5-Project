@@ -1,9 +1,9 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import ItemList from "../Components/ItemList";
 import FoodCardIllustration from "../Components/FoodCardIllustration";
 import DishDetailsModal from "../Components/DishDetailsModal";
 import DishCustomisationModal from "../Components/DishCustomisationModal";
-import { findSimilarDishes, getDishCategory, getRestaurantCategoryItems, pluralCategory } from "../utils/menuDiscovery";
+import { getSimilarDishRecommendations, getDishCategory, getRestaurantCategoryItems, pluralCategory } from "../utils/menuDiscovery";
 import ResultsLoading from "../Components/ResultsLoading";
 import ComparisonTable from "../Components/ComparisonTable";
 import { StoreContext } from "../Context/shop-context";
@@ -11,10 +11,28 @@ import { fetchCoords } from "../utils/fetchCoords";
 import { getDistance } from "../utils/distanceCalculator";
 import "./FoodComparisonPage.css";
 import "./RestaurantFilter.css";
+import "./CompactCravings.css";
 
 const API = "https://cfg-group5-backend.onrender.com/comparison-table-items";
 const MAX_DISTANCE_KM = 50;
 const MAX_COMPARISON_ITEMS = 3;
+const CRAVING_CATEGORIES = [
+  { slug: "burger", label: "Burgers", icon: "🍔" },
+  { slug: "sushi", label: "Sushi", icon: "🍣" },
+  { slug: "pizza", label: "Pizzas", icon: "🍕" },
+  { slug: "noodles", label: "Noodles", icon: "🍜" },
+  { slug: "chicken", label: "Chicken", icon: "🍗" },
+  { slug: "curry", label: "Curry", icon: "🍛" },
+  { slug: "burrito", label: "Burritos", icon: "🌯" },
+  { slug: "waffle", label: "Waffles", icon: "🧇" },
+];
+const CATEGORY_SEARCH_ALIASES = {
+  burger: "burger", burgers: "burger", pizza: "pizza", pizzas: "pizza",
+  sushi: "sushi", chicken: "chicken", noodles: "noodles", noodle: "noodles",
+  curry: "curry", curries: "curry", waffle: "waffle", waffles: "waffle",
+  burrito: "burrito", burritos: "burrito",
+};
+const scrollToResultsTop = () => window.scrollTo?.({ top: 0, behavior: "smooth" });
 
 // Use the same flat vector art in the selected-dish tray as the cards.
 const selectionHint = (count) => {
@@ -37,8 +55,16 @@ const isVegan = (value) => value === true || value === 1 || value === "1" || Str
 const titleCase = (value) => String(value).trim().replace(/\b\w/g, (letter) => letter.toUpperCase());
 
 function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
-  const [allItems, setAllItems] = useState([]);
   const [menuItems, setMenuItems] = useState([]);
+  const [activeQuery, setActiveQuery] = useState(String(searchQuery || "").trim());
+  const [activePostcode, setActivePostcode] = useState(String(postcode || "").trim().toUpperCase());
+  const [searchExpanded, setSearchExpanded] = useState(false);
+  const [searchDraft, setSearchDraft] = useState(String(searchQuery || ""));
+  const [editingPostcode, setEditingPostcode] = useState(false);
+  const [postcodeDraft, setPostcodeDraft] = useState(String(postcode || "").trim().toUpperCase());
+  const [postcodeError, setPostcodeError] = useState("");
+  const [postcodeChecking, setPostcodeChecking] = useState(false);
+  const searchInputRef = useRef(null);
   const [restaurantFilter, setRestaurantFilter] = useState(null);
   const [selectedItems, setSelectedItems] = useState([]);
   const [detailItem, setDetailItem] = useState(null);
@@ -53,30 +79,25 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
   const [noticeLeaving, setNoticeLeaving] = useState(false);
   const { addToBasket, addDemoCustomLine } = useContext(StoreContext);
 
+  // Keep the complete nearby menu so a new food search does not require going home.
+  // Only the postcode changes which dishes are nearby; selecting a category does not refetch.
   useEffect(() => {
     let active = true;
     const load = async () => {
       setLoading(true);
       setErrorMessage("");
-      setAllItems([]);
-      setMenuItems([]);
-      setRestaurantFilter(null);
-      setSelectedItems([]);
-      setDetailItem(null);
-      setView("selection");
       try {
         const res = await fetch(API);
         if (!res.ok) throw new Error("Unable to load dishes");
         const data = await res.json();
         if (!Array.isArray(data)) throw new Error("Unexpected dishes response");
-        const query = String(searchQuery || "").trim().toLowerCase();
         let nearby = data;
-        if (postcode) {
-          const coords = await fetchCoords(postcode);
+        if (activePostcode) {
+          const coords = await fetchCoords(activePostcode);
           const lat = coords?.latitude;
           const lon = coords?.longitude;
           if (!isNumeric(lat) || !isNumeric(lon)) {
-            if (active) setErrorMessage(`We couldn't find the postcode “${postcode}”. Please try another.`);
+            if (active) setErrorMessage(`We couldn't find the postcode “${activePostcode}”. Please try another.`);
             return;
           }
           nearby = data
@@ -88,12 +109,7 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
             })
             .filter((item) => item.distance <= MAX_DISTANCE_KM);
         }
-        const matches = query
-          ? nearby.filter((item) =>
-              String(item.itemName || "").toLowerCase().includes(query) ||
-              String(item.restaurantName || "").toLowerCase().includes(query))
-          : nearby;
-        if (active) { setMenuItems(nearby); setAllItems(matches); }
+        if (active) setMenuItems(nearby);
       } catch (error) {
         console.error("Could not load search results:", error);
         if (active) setErrorMessage("We couldn't load dishes right now. Please try again.");
@@ -103,7 +119,67 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
     };
     load();
     return () => { active = false; };
-  }, [searchQuery, postcode]);
+  }, [activePostcode]);
+
+  const allItems = useMemo(() => {
+    const query = activeQuery.trim().toLowerCase();
+    if (!query) return menuItems;
+    const category = CATEGORY_SEARCH_ALIASES[query];
+    if (category) return menuItems.filter((item) => getDishCategory(item) === category);
+    return menuItems.filter((item) =>
+      String(item.itemName || "").toLowerCase().includes(query) ||
+      String(item.restaurantName || "").toLowerCase().includes(query)
+    );
+  }, [menuItems, activeQuery]);
+
+  const chooseCraving = (category) => {
+    setActiveQuery(category);
+    setSearchDraft(category);
+    setRestaurantFilter(null);
+    setDetailItem(null);
+    setSearchExpanded(false);
+    setPostcodeError("");
+    scrollToResultsTop();
+  };
+  const handleSearchSubmit = (event) => {
+    event.preventDefault();
+    setActiveQuery(searchDraft.trim());
+    setRestaurantFilter(null);
+    setDetailItem(null);
+    setSearchExpanded(false);
+    scrollToResultsTop();
+  };
+  const handlePostcodeSubmit = async (event) => {
+    event.preventDefault();
+    const next = postcodeDraft.trim().toUpperCase().replace(/\s+/g, " ");
+    if (!next) {
+      setPostcodeError("Enter a postcode to search nearby.");
+      return;
+    }
+    if (next === activePostcode) {
+      setEditingPostcode(false);
+      setPostcodeError("");
+      return;
+    }
+    setPostcodeChecking(true);
+    setPostcodeError("");
+    try {
+      const coords = await fetchCoords(next);
+      if (!isNumeric(coords?.latitude) || !isNumeric(coords?.longitude)) {
+        setPostcodeError("We couldn't find that postcode. Please check and try again.");
+        return;
+      }
+      setActivePostcode(next);
+      setRestaurantFilter(null);
+      setDetailItem(null);
+      setEditingPostcode(false);
+      scrollToResultsTop();
+    } catch (error) {
+      setPostcodeError("We couldn't check that postcode. Please try again.");
+    } finally {
+      setPostcodeChecking(false);
+    }
+  };
 
   const restaurantItems = useMemo(() => (
     restaurantFilter
@@ -208,6 +284,8 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
     if (!category) return;
     dismissNotice();
     setRestaurantFilter({ item, category });
+    setActiveQuery(category);
+    setSearchDraft(category);
     setDetailItem(null);
     setVeganOnly(false);
     setSortBy("best");
@@ -216,7 +294,7 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
   };
   const restaurantCount = new Set(visibleItems.map((item) => item.restaurantName).filter(Boolean)).size;
   const DISPLAY_NAMES = { burger: "Burgers", pizza: "Pizzas", sushi: "Sushi", chicken: "Chicken", noodle: "Noodles", noodles: "Noodles", curry: "Curry", waffle: "Waffles", burrito: "Burritos" };
-  const cleanedQuery = String(searchQuery || "").trim();
+  const cleanedQuery = activeQuery.trim();
   const heading = restaurantFilter
     ? `${pluralCategory(restaurantFilter.category)} at ${restaurantFilter.item.restaurantName}`
     : cleanedQuery ? `${DISPLAY_NAMES[cleanedQuery.toLowerCase()] || titleCase(cleanedQuery)} near you` : "Food near you";
@@ -237,6 +315,77 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
             {restaurantFilter ? "← Back to all results" : "← Back to search"}
           </button>
           <h1 className="pk-results-heading">{heading}</h1>
+          <section className="pk-cravings-bar" aria-label="Switch food category or search again">
+            <div className="pk-cravings-row">
+              <span className="pk-cravings-label">Switch to</span>
+              <div className="pk-cravings-categories" role="group" aria-label="Food categories">
+                {CRAVING_CATEGORIES.map(({ slug, label, icon }) => (
+                  <button
+                    type="button"
+                    key={slug}
+                    className={`pk-cravings-chip${!restaurantFilter && CATEGORY_SEARCH_ALIASES[cleanedQuery.toLowerCase()] === slug ? " is-active" : ""}`}
+                    aria-pressed={!restaurantFilter && CATEGORY_SEARCH_ALIASES[cleanedQuery.toLowerCase()] === slug}
+                    onClick={() => chooseCraving(slug)}
+                  >
+                    <span aria-hidden="true">{icon}</span> {label}
+                  </button>
+                ))}
+              </div>
+              <div className="pk-cravings-tools">
+                <button
+                  type="button"
+                  className="pk-cravings-search-toggle"
+                  aria-expanded={searchExpanded}
+                  aria-controls="pk-cravings-search-form"
+                  onClick={() => {
+                    setSearchExpanded((open) => !open);
+                    if (!searchExpanded) window.requestAnimationFrame?.(() => searchInputRef.current?.focus());
+                  }}
+                ><span aria-hidden="true">⌕</span> Search</button>
+                <div className="pk-cravings-location">
+                  <span aria-hidden="true">⌖</span>
+                  {editingPostcode ? (
+                    <form className="pk-cravings-postcode-form" onSubmit={handlePostcodeSubmit}>
+                      <label className="pk-visually-hidden" htmlFor="pk-cravings-postcode">Postcode</label>
+                      <input
+                        id="pk-cravings-postcode"
+                        value={postcodeDraft}
+                        onChange={(event) => { setPostcodeDraft(event.target.value); setPostcodeError(""); }}
+                        maxLength={12}
+                        autoComplete="postal-code"
+                        required
+                      />
+                      <button type="submit" disabled={postcodeChecking}>{postcodeChecking ? "Checking…" : "Save"}</button>
+                      <button type="button" onClick={() => { setEditingPostcode(false); setPostcodeDraft(activePostcode); setPostcodeError(""); }}>Cancel</button>
+                    </form>
+                  ) : (
+                    <>
+                      <strong>{activePostcode || "No postcode"}</strong>
+                      <button type="button" onClick={() => { setPostcodeDraft(activePostcode); setEditingPostcode(true); setPostcodeError(""); }}>Change</button>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+            {searchExpanded && (
+              <form id="pk-cravings-search-form" className="pk-cravings-search-form" onSubmit={handleSearchSubmit}>
+                <label className="pk-cravings-search-field">
+                  <span className="pk-visually-hidden">Search for a dish or restaurant</span>
+                  <span aria-hidden="true">⌕</span>
+                  <input
+                    ref={searchInputRef}
+                    type="search"
+                    value={searchDraft}
+                    onChange={(event) => setSearchDraft(event.target.value)}
+                    placeholder="Search any dish or restaurant…"
+                    autoComplete="off"
+                  />
+                </label>
+                <button type="submit" className="pk-cravings-search-submit">Search →</button>
+              </form>
+            )}
+            {postcodeError && <p className="pk-cravings-error" role="alert">{postcodeError}</p>}
+          </section>
           {restaurantFilter && (
             <div className="pk-results-restaurant-context" role="group" aria-label="Restaurant filter">
               <span>Browsing one restaurant</span>
@@ -255,19 +404,19 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
             <button type="button" className={`pk-results-filter pk-vegan-filter${veganOnly ? " is-active" : ""}`} aria-pressed={veganOnly} onClick={() => setVeganOnly((value) => !value)}>Vegan only</button>
           </div>}
           {!loading && <div className="pk-results-info">
-            <p>{`${visibleItems.length} dish${visibleItems.length === 1 ? "" : "es"} from ${restaurantCount} restaurant${restaurantCount === 1 ? "" : "s"}`} {postcode && <span>· Near {postcode.toUpperCase()}</span>}</p>
+            <p>{`${visibleItems.length} dish${visibleItems.length === 1 ? "" : "es"} from ${restaurantCount} restaurant${restaurantCount === 1 ? "" : "s"}`} {activePostcode && <span>· Near {activePostcode}</span>}</p>
             {visibleItems.length > 0 && <button className="pk-results-select-all" type="button" onClick={selectFirstThree}>Select up to 3</button>}
           </div>}
           {loading ? (
-            <ResultsLoading dish={cleanedQuery} postcode={postcode} />
+            <ResultsLoading dish={cleanedQuery} postcode={activePostcode} />
           ) : errorMessage ? (
             <div className="pk-results-empty" role="alert"><h2>Something went wrong</h2><p>{errorMessage}</p><button type="button" className="pk-results-empty-btn" onClick={onBackToSearch}>Try another search</button></div>
           ) : visibleItems.length === 0 ? (
             <div className="pk-results-empty">
               <h2>No dishes found</h2>
-              <p>{veganOnly ? "No vegan options match this search. Try switching off the vegan filter." : restaurantFilter ? `No other ${pluralCategory(restaurantFilter.category).toLowerCase()} are listed for ${restaurantFilter.item.restaurantName} in the available demo menu.` : "We couldn't find matching dishes nearby. Try a different dish or postcode."}</p>
-              <button type="button" className="pk-results-empty-btn" onClick={veganOnly ? () => setVeganOnly(false) : restaurantFilter ? () => setRestaurantFilter(null) : onBackToSearch}>
-                {veganOnly ? "Show all dishes" : restaurantFilter ? "See all results" : "Search again"}
+              <p>{veganOnly ? "No vegan options match this search. Try switching off the vegan filter." : restaurantFilter ? `No other ${pluralCategory(restaurantFilter.category).toLowerCase()} are listed for ${restaurantFilter.item.restaurantName} in the available demo menu.` : "We couldn't find matching dishes nearby. Try another food category or search term above."}</p>
+              <button type="button" className="pk-results-empty-btn" onClick={veganOnly ? () => setVeganOnly(false) : restaurantFilter ? () => setRestaurantFilter(null) : () => { setSearchExpanded(true); window.requestAnimationFrame?.(() => searchInputRef.current?.focus()); }}>
+                {veganOnly ? "Show all dishes" : restaurantFilter ? "See all results" : "Try another search"}
               </button>
             </div>
           ) : (
@@ -286,9 +435,15 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
       {detailItem && (
         <DishDetailsModal
           item={detailItem}
-          similarItems={findSimilarDishes(detailItem, menuItems)}
+          similarItems={getSimilarDishRecommendations(detailItem, menuItems).items}
+          similarSource={getSimilarDishRecommendations(detailItem, menuItems).source}
           onViewSimilar={setDetailItem}
-          onBrowseSimilar={() => setDetailItem(null)}
+          onBrowseSimilar={() => {
+            setDetailItem(null);
+            if (restaurantFilter) setRestaurantFilter(null);
+            setView("selection");
+            window.scrollTo?.({ top: 0, behavior: "smooth" });
+          }}
           onViewAllSimilar={() => openRestaurantMenu(detailItem)}
           onCustomise={openCustomisation}
           onClose={() => setDetailItem(null)}

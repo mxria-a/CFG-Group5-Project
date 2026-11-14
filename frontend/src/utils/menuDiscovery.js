@@ -43,6 +43,21 @@ export function findSimilarDishes(current, menu = [], limit = 3) {
     .slice(0, limit);
 }
 
+// Recommend same-category items from this restaurant first; otherwise use other restaurants.
+// If no category matches exist, let the details panel show its empty state.
+export function getSimilarDishRecommendations(current, menu = [], limit = 3) {
+  if (!current || current.itemID == null || limit <= 0) return { items: [], source: "none" };
+  const category = getDishCategory(current);
+  if (!category) return { items: [], source: "none" };
+  const matching = (menu || []).filter((item) =>
+    item && String(item.itemID) !== String(current.itemID) && getDishCategory(item) === category
+  );
+  const same = matching.filter((item) => sameRestaurant(item, current));
+  if (same.length) return { items: same.slice(0, limit), source: "same" };
+  const other = matching.filter((item) => !sameRestaurant(item, current));
+  return other.length ? { items: other.slice(0, limit), source: "other" } : { items: [], source: "none" };
+}
+
 // Frontend-only example options. These are NOT confirmed restaurant offerings.
 const OPTION_GROUPS = {
   burger: {

@@ -1,0 +1,97 @@
+/* Compact, responsive browsing controls on the existing results page. */
+.pk-results-page .pk-cravings-bar {
+  margin: -1px 0 15px;
+  padding: 0 0 12px;
+  border-bottom: 1px solid var(--pk-line);
+  color: var(--pk-cream);
+}
+.pk-results-page .pk-cravings-row { display: flex; align-items: center; gap: 11px; min-width: 0; }
+.pk-results-page .pk-cravings-label { flex: 0 0 auto; color: var(--pk-muted); font-size: 12px; font-weight: 800; white-space: nowrap; }
+.pk-results-page .pk-cravings-categories {
+  display: flex; flex: 1 1 auto; align-items: center; gap: 6px; min-width: 0;
+  overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: thin; padding: 3px 0 5px;
+}
+.pk-results-page .pk-cravings-chip {
+  appearance: none; flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px;
+  min-height: 34px; padding: 7px 11px; border: 1.5px solid var(--pk-outline);
+  border-radius: 999px; background: transparent; color: var(--pk-cream);
+  font: 800 12px/1.2 var(--pk-body-font); white-space: nowrap; cursor: pointer;
+  transition: border-color .18s ease, background-color .18s ease;
+}
+.pk-results-page .pk-cravings-chip:hover { border-color: var(--pk-yellow); }
+.pk-results-page .pk-cravings-chip.is-active { border-color: var(--pk-cream); background: var(--pk-cream); color: var(--pk-bg); }
+.pk-results-page .pk-cravings-chip span { font-size: 14px; line-height: 1; }
+.pk-results-page .pk-cravings-tools { flex: 0 0 auto; display: flex; align-items: center; gap: 9px; min-width: 0; }
+.pk-results-page .pk-cravings-search-toggle {
+  appearance: none; min-height: 36px; padding: 7px 10px; border: 1px solid var(--pk-outline);
+  border-radius: 9px; background: transparent; color: var(--pk-cream);
+  display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+  font: 800 12px/1.2 var(--pk-body-font); cursor: pointer;
+}
+.pk-results-page .pk-cravings-search-toggle:hover,
+.pk-results-page .pk-cravings-search-toggle[aria-expanded="true"] { border-color: var(--pk-yellow); color: var(--pk-yellow); }
+.pk-results-page .pk-cravings-search-toggle span { font-size: 20px; line-height: .7; }
+.pk-results-page .pk-cravings-location {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 36px;
+  padding: 4px 6px 4px 9px; border: 1px solid var(--pk-line);
+  background: var(--pk-bg); border-radius: 9px; white-space: nowrap;
+  color: var(--pk-muted); font-size: 12px;
+}
+.pk-results-page .pk-cravings-location strong { color: var(--pk-cream); font-weight: 800; }
+.pk-results-page .pk-cravings-location button {
+  background: none; color: var(--pk-yellow); border: 0; padding: 3px 5px;
+  font: 800 11px/1.2 var(--pk-body-font); cursor: pointer;
+}
+.pk-results-page .pk-cravings-postcode-form { display: flex; align-items: center; gap: 3px; }
+.pk-results-page .pk-cravings-postcode-form input {
+  min-width: 0; width: 99px; border: 1px solid var(--pk-outline); border-radius: 6px;
+  padding: 6px 7px; background: var(--pk-cream); color: var(--pk-bg);
+  font: 700 12px var(--pk-body-font); text-transform: uppercase;
+}
+.pk-results-page .pk-cravings-postcode-form button:disabled { opacity: .5; cursor: wait; }
+.pk-results-page .pk-cravings-search-form { display: flex; gap: 9px; margin-top: 11px; }
+.pk-results-page .pk-cravings-search-field {
+  display: flex; flex: 1; gap: 9px; align-items: center; min-width: 0;
+  border: 1.5px solid var(--pk-outline); border-radius: 12px;
+  padding: 0 13px; background: var(--pk-bg); color: var(--pk-muted);
+}
+.pk-results-page .pk-cravings-search-field:focus-within { border-color: var(--pk-coral); }
+.pk-results-page .pk-cravings-search-field input {
+  flex: 1; min-width: 0; width: 100%; border: 0; outline: 0; background: transparent;
+  color: var(--pk-cream); padding: 11px 0; font: 500 14px var(--pk-body-font);
+}
+.pk-results-page .pk-cravings-search-field input::placeholder { color: var(--pk-muted); opacity: .78; }
+.pk-results-page .pk-cravings-search-submit {
+  flex: 0 0 auto; padding: 9px 18px; border: 1.5px solid var(--pk-outline);
+  border-radius: 11px; background: rgba(185,51,63,.85); color: var(--pk-cream);
+  font: 800 13px var(--pk-body-font); cursor: pointer;
+}
+.pk-results-page .pk-cravings-search-submit:hover { background: rgba(199,61,72,.98); }
+.pk-results-page .pk-cravings-error { margin: 8px 0 0; color: var(--pk-coral); font-size: 12px; }
+.pk-results-page .pk-visually-hidden {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+/* Slightly tighter spacing below the slim navigation. */
+.pk-results-page .pk-cravings-bar + .pk-results-toolbar { margin-top: 0; }
+@media (max-width: 1090px) {
+  .pk-results-page .pk-cravings-row { flex-wrap: wrap; }
+  .pk-results-page .pk-cravings-label { order: 1; }
+  .pk-results-page .pk-cravings-tools { order: 2; margin-left: auto; }
+  .pk-results-page .pk-cravings-categories { order: 3; flex: 1 0 100%; }
+}
+@media (max-width: 699px) {
+  .pk-results-page .pk-cravings-row { gap: 7px; }
+  .pk-results-page .pk-cravings-chip { padding: 8px 10px; }
+  .pk-results-page .pk-cravings-search-toggle { padding: 8px 9px; }
+  .pk-results-page .pk-cravings-search-form { gap: 7px; }
+  .pk-results-page .pk-cravings-search-submit { padding: 8px 10px; }
+  .pk-results-page .pk-cravings-location { padding: 3px 5px 3px 7px; }
+}
+@media (max-width: 380px) {
+  .pk-results-page .pk-cravings-search-toggle { font-size: 11px; }
+  .pk-results-page .pk-cravings-location { gap: 3px; font-size: 11px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pk-results-page .pk-cravings-chip { transition: none; }
+}

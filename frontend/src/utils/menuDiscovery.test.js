@@ -1,4 +1,4 @@
-import { findSimilarDishes, getDemoOptions, getDishCategory, getRestaurantCategoryItems, pluralCategory } from "./menuDiscovery";
+import { findSimilarDishes, getSimilarDishRecommendations, getDemoOptions, getDishCategory, getRestaurantCategoryItems, pluralCategory } from "./menuDiscovery";
 
 const menu = [
   { itemID: 1, restaurantName: "Sunday Brunch", itemName: "Classic Belgian Waffle" },
@@ -29,4 +29,15 @@ test("restaurant menu uses stable IDs and explicit category for non-keyword name
   expect(getRestaurantCategoryItems(menu, menu[0])).toEqual([menu[0], menu[1]]);
   expect(findSimilarDishes(menu[0], menu)).toEqual([menu[1]]);
   expect(pluralCategory("curry")).toBe("Curries");
+});
+
+
+test("recommends the same restaurant first when its category matches", () => {
+  expect(getSimilarDishRecommendations(menu[0], menu)).toEqual({ items: [menu[1]], source: "same" });
+});
+test("falls back to other restaurants when there are no local alternatives", () => {
+  expect(getSimilarDishRecommendations(menu[2], menu)).toEqual({ items: [menu[0], menu[1]], source: "other" });
+});
+test("shows the empty state when no matching category exists", () => {
+  expect(getSimilarDishRecommendations({ itemID: 8, restaurantName: "Pho", itemName: "Chef special" }, menu)).toEqual({ items: [], source: "none" });
 });

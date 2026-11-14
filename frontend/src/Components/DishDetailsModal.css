@@ -116,3 +116,12 @@
 .pk-detail-view-all span { color: #FFC93C; font-size: 18px; flex: 0 0 auto; }
 .pk-detail-view-all:hover { background: rgba(185, 51, 63, .28); border-color: #FFC93C; }
 .pk-detail-view-all:focus-visible { outline: 3px solid #FFC93C; outline-offset: 3px; }
+
+.pk-detail-similar-restaurant-name {
+  display: flex; align-items: center; gap: 6px; min-width: 0;
+  color: #D7BFC1; font-size: 11px; line-height: 1.35;
+}
+.pk-detail-similar-restaurant-name .pk-restaurant-logo { flex-basis: 21px; width: 21px; height: 21px; border-radius: 6px; }
+.pk-detail-similar-restaurant-name .pk-restaurant-logo img { width: 16px; height: 16px; }
+.pk-detail-similar-restaurant-name .pk-restaurant-logo-initials { font-size: 8px; }
+.pk-detail-similar-browse-after { margin-top: 8px; }

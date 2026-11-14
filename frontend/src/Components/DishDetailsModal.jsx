@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import FoodCardIllustration from "./FoodCardIllustration";
+import RestaurantLogo from "./RestaurantLogo";
 import { getDishCategory, pluralCategory } from "../utils/menuDiscovery";
 import "./DishDetailsModal.css";
 
@@ -17,7 +18,7 @@ const veganStatus = (value) => {
 };
 
 /** Details shown here are taken directly from the selected backend item. */
-export default function DishDetailsModal({ item, onClose, onAddToBasket, onCustomise, similarItems = [], onViewSimilar, onBrowseSimilar, onViewAllSimilar, onToggleCompare, selected, selectedCount, maxCompare = 3 }) {
+export default function DishDetailsModal({ item, onClose, onAddToBasket, onCustomise, similarItems = [], similarSource = "same", onViewSimilar, onBrowseSimilar, onViewAllSimilar, onToggleCompare, selected, selectedCount, maxCompare = 3 }) {
   const dialogRef = useRef(null);
   const closeRef = useRef(null);
   const onCloseRef = useRef(onClose);
@@ -109,19 +110,24 @@ export default function DishDetailsModal({ item, onClose, onAddToBasket, onCusto
           <div className="pk-detail-similar pk-detail-info-section">
             <div className="pk-detail-similar-heading">
               <h3>More like this</h3>
-              <span>SAME RESTAURANT</span>
+              <span>{similarSource === "other" ? "OTHER RESTAURANTS" : similarSource === "none" ? "NO CLOSE MATCHES" : "SAME RESTAURANT"}</span>
             </div>
             {similarItems.length > 0 ? (
               <>
-                <p className="pk-detail-similar-caption">Other dishes from {item.restaurantName || "this restaurant"}</p>
+                <p className="pk-detail-similar-caption">{similarSource === "other"
+                  ? `No other similar dishes are listed at ${item.restaurantName || "this restaurant"}. Here are options from other restaurants.`
+                  : `Other similar dishes from ${item.restaurantName || "this restaurant"}`}</p>
                 <div className="pk-detail-similar-grid">
                   {similarItems.map((similar) => (
                     <button type="button" key={similar.itemID} className="pk-detail-similar-card" onClick={() => onViewSimilar?.(similar)} aria-label={`View details for ${similar.itemName}`}>
                       <span className="pk-detail-similar-art"><FoodCardIllustration name={similar.itemName} /></span>
-                      <span className="pk-detail-similar-meta"><strong>{similar.itemName}</strong><small>{similar.price != null && Number.isFinite(Number(similar.price)) ? `£${Number(similar.price).toFixed(2)}` : "Price unavailable"}</small><em>View details ↗</em></span>
+                      <span className="pk-detail-similar-meta"><strong>{similar.itemName}</strong><span className="pk-detail-similar-restaurant-name"><RestaurantLogo name={similar.restaurantName} />{similar.restaurantName || "Restaurant"}</span><small>{similar.price != null && Number.isFinite(Number(similar.price)) ? `£${Number(similar.price).toFixed(2)}` : "Price unavailable"}</small><em>View details ↗</em></span>
                     </button>
                   ))}
                 </div>
+                {similarSource === "other" && onBrowseSimilar && (
+                  <button type="button" className="pk-detail-similar-browse pk-detail-similar-browse-after" onClick={onBrowseSimilar}>Explore other results →</button>
+                )}
               </>
             ) : (
               <div className="pk-detail-similar-empty">

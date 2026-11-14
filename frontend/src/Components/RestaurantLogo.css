@@ -1,0 +1,8 @@
+.pk-restaurant-logo {
+  flex: 0 0 36px; width: 36px; height: 36px; border-radius: 9px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: #fff3e6; color: #56313a; overflow: hidden;
+  box-shadow: 0 1px 0 rgba(255,255,255,.16);
+}
+.pk-restaurant-logo img { display: block; width: 30px; height: 30px; object-fit: contain; }
+.pk-restaurant-logo-initials { font: 850 11px/1 var(--pk-body-font, system-ui, sans-serif); letter-spacing: .02em; }
