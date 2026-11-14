@@ -9,6 +9,7 @@ import ComparisonTable from "../Components/ComparisonTable";
 import { StoreContext } from "../Context/shop-context";
 import { fetchCoords } from "../utils/fetchCoords";
 import { getDistance } from "../utils/distanceCalculator";
+import { getDishRefinementOptions, matchesDishRefinement } from "../utils/foodRefinements";
 import "./FoodComparisonPage.css";
 import "./RestaurantFilter.css";
 import "./CompactCravings.css";
@@ -60,6 +61,7 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
   const [activePostcode, setActivePostcode] = useState(String(postcode || "").trim().toUpperCase());
   const [searchExpanded, setSearchExpanded] = useState(false);
   const [searchDraft, setSearchDraft] = useState(String(searchQuery || ""));
+  const [activeRefinement, setActiveRefinement] = useState("");
   const [editingPostcode, setEditingPostcode] = useState(false);
   const [postcodeDraft, setPostcodeDraft] = useState(String(postcode || "").trim().toUpperCase());
   const [postcodeError, setPostcodeError] = useState("");
@@ -127,8 +129,9 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
     const category = CATEGORY_SEARCH_ALIASES[query];
     if (category) return menuItems.filter((item) => getDishCategory(item) === category);
     return menuItems.filter((item) =>
-      String(item.itemName || "").toLowerCase().includes(query) ||
-      String(item.restaurantName || "").toLowerCase().includes(query)
+      query.split(/\s+/).every((token) =>
+        `${item.itemName || ""} ${item.restaurantName || ""}`.toLowerCase().includes(token)
+      )
     );
   }, [menuItems, activeQuery]);
 
@@ -136,6 +139,7 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
     setActiveQuery(category);
     setSearchDraft(category);
     setRestaurantFilter(null);
+    setActiveRefinement("");
     setDetailItem(null);
     setSearchExpanded(false);
     setPostcodeError("");
@@ -144,6 +148,7 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
   const handleSearchSubmit = (event) => {
     event.preventDefault();
     setActiveQuery(searchDraft.trim());
+    setActiveRefinement("");
     setRestaurantFilter(null);
     setDetailItem(null);
     setSearchExpanded(false);
@@ -187,8 +192,22 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
       : allItems
   ), [allItems, menuItems, restaurantFilter]);
 
+  const activeCategory = restaurantFilter?.category || CATEGORY_SEARCH_ALIASES[activeQuery.trim().toLowerCase()] || null;
+  const availableToRefine = useMemo(() => (
+    veganOnly ? restaurantItems.filter((item) => isVegan(item.isVegan)) : restaurantItems
+  ), [restaurantItems, veganOnly]);
+  // Counts reflect nearby dishes and any restaurant/vegan filter already applied.
+  const refinementOptions = useMemo(() => (
+    activeCategory ? getDishRefinementOptions(activeCategory, availableToRefine, activeRefinement) : []
+  ), [activeCategory, availableToRefine, activeRefinement]);
+  const refinedItems = useMemo(() => (
+    activeCategory && activeRefinement
+      ? restaurantItems.filter((item) => matchesDishRefinement(item, activeCategory, activeRefinement))
+      : restaurantItems
+  ), [restaurantItems, activeCategory, activeRefinement]);
+
   const visibleItems = useMemo(() => {
-    const filtered = veganOnly ? restaurantItems.filter((item) => isVegan(item.isVegan)) : restaurantItems;
+    const filtered = veganOnly ? refinedItems.filter((item) => isVegan(item.isVegan)) : refinedItems;
     const sorted = [...filtered];
     switch (sortBy) {
       case "cheapest": sorted.sort((a, b) => metric(a.price) - metric(b.price)); break;
@@ -209,7 +228,7 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
       else if (isNumeric(item.avRating) && Number(item.avRating) === highest) highlight = { kind: "rated", text: "Top rated" };
       return { ...item, highlight };
     });
-  }, [restaurantItems, sortBy, veganOnly]);
+  }, [refinedItems, sortBy, veganOnly]);
 
   const notify = (message, severity = "success") => {
     setNoticeLeaving(false);
@@ -284,6 +303,7 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
     if (!category) return;
     dismissNotice();
     setRestaurantFilter({ item, category });
+    setActiveRefinement("");
     setActiveQuery(category);
     setSearchDraft(category);
     setDetailItem(null);
@@ -295,8 +315,12 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
   const restaurantCount = new Set(visibleItems.map((item) => item.restaurantName).filter(Boolean)).size;
   const DISPLAY_NAMES = { burger: "Burgers", pizza: "Pizzas", sushi: "Sushi", chicken: "Chicken", noodle: "Noodles", noodles: "Noodles", curry: "Curry", waffle: "Waffles", burrito: "Burritos" };
   const cleanedQuery = activeQuery.trim();
+  const refinementHeading = activeCategory && activeRefinement
+    ? `${activeRefinement} ${pluralCategory(activeCategory).toLowerCase()}`
+    : null;
   const heading = restaurantFilter
-    ? `${pluralCategory(restaurantFilter.category)} at ${restaurantFilter.item.restaurantName}`
+    ? `${refinementHeading || pluralCategory(restaurantFilter.category)} at ${restaurantFilter.item.restaurantName}`
+    : refinementHeading ? `${refinementHeading} near you`
     : cleanedQuery ? `${DISPLAY_NAMES[cleanedQuery.toLowerCase()] || titleCase(cleanedQuery)} near you` : "Food near you";
   const hasTray = view === "selection" && selectedItems.length > 0;
   const notice = notification.open && (
@@ -384,6 +408,37 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
                 <button type="submit" className="pk-cravings-search-submit">Search →</button>
               </form>
             )}
+            {!loading && !errorMessage && activeCategory && (
+              <div className="pk-cravings-refine-row" role="group" aria-label={`Narrow ${pluralCategory(activeCategory).toLowerCase()} by type`}>
+                <span className="pk-cravings-refine-label">Narrow it down</span>
+                <div className="pk-cravings-refine-options">
+                  <button
+                    type="button"
+                    className={`pk-cravings-refine-chip${!activeRefinement ? " is-active" : ""}`}
+                    aria-pressed={!activeRefinement}
+                    onClick={() => setActiveRefinement("")}
+                  >
+                    All {pluralCategory(activeCategory).toLowerCase()}
+                    <span className="pk-cravings-refine-count">{availableToRefine.length}</span>
+                  </button>
+                  {refinementOptions.map(({ label, count }) => (
+                    <button
+                      type="button"
+                      key={label}
+                      className={`pk-cravings-refine-chip${activeRefinement === label ? " is-active" : ""}`}
+                      aria-pressed={activeRefinement === label}
+                      onClick={() => {
+                        setActiveRefinement(label);
+                        scrollToResultsTop();
+                      }}
+                    >
+                      {label} <span className="pk-cravings-refine-count">{count}</span>
+                    </button>
+                  ))}
+                </div>
+                <span className="pk-cravings-refine-hint">Only available dishes shown</span>
+              </div>
+            )}
             {postcodeError && <p className="pk-cravings-error" role="alert">{postcodeError}</p>}
           </section>
           {restaurantFilter && (
@@ -414,9 +469,9 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
           ) : visibleItems.length === 0 ? (
             <div className="pk-results-empty">
               <h2>No dishes found</h2>
-              <p>{veganOnly ? "No vegan options match this search. Try switching off the vegan filter." : restaurantFilter ? `No other ${pluralCategory(restaurantFilter.category).toLowerCase()} are listed for ${restaurantFilter.item.restaurantName} in the available demo menu.` : "We couldn't find matching dishes nearby. Try another food category or search term above."}</p>
-              <button type="button" className="pk-results-empty-btn" onClick={veganOnly ? () => setVeganOnly(false) : restaurantFilter ? () => setRestaurantFilter(null) : () => { setSearchExpanded(true); window.requestAnimationFrame?.(() => searchInputRef.current?.focus()); }}>
-                {veganOnly ? "Show all dishes" : restaurantFilter ? "See all results" : "Try another search"}
+              <p>{veganOnly ? "No vegan options match this search. Try switching off the vegan filter." : activeRefinement ? `We couldn't find any ${activeRefinement.toLowerCase()} ${pluralCategory(activeCategory).toLowerCase()} in the available menu for this search.` : restaurantFilter ? `No other ${pluralCategory(restaurantFilter.category).toLowerCase()} are listed for ${restaurantFilter.item.restaurantName} in the available demo menu.` : "We couldn't find matching dishes nearby. Try another food category or search term above."}</p>
+              <button type="button" className="pk-results-empty-btn" onClick={veganOnly ? () => setVeganOnly(false) : activeRefinement ? () => setActiveRefinement("") : restaurantFilter ? () => setRestaurantFilter(null) : () => { setSearchExpanded(true); window.requestAnimationFrame?.(() => searchInputRef.current?.focus()); }}>
+                {veganOnly ? "Show all dishes" : activeRefinement ? `Show all ${pluralCategory(activeCategory).toLowerCase()}` : restaurantFilter ? "See all results" : "Try another search"}
               </button>
             </div>
           ) : (

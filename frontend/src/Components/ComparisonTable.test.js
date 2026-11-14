@@ -63,6 +63,22 @@ describe("Showdown comparison", () => {
     expect(screen.getByText(/added to basket/i)).toBeInTheDocument();
   });
 
+  test("shows restaurant logos instead of A/B/C badges", () => {
+    const { container } = withStore(<ComparisonTable items={items} />);
+    expect(container.querySelectorAll(".pk-showdown-restaurant .pk-restaurant-logo")).toHaveLength(2);
+    expect(container.querySelectorAll(".pk-showdown-letter")).toHaveLength(0);
+  });
+
+  test("opens the existing customisation modal through the supplied callback", () => {
+    const onCustomiseDish = jest.fn();
+    const addToBasket = jest.fn();
+    withStore(<ComparisonTable items={items} onCustomiseDish={onCustomiseDish} />, addToBasket);
+    fireEvent.click(screen.getByRole("button", { name: /customise burger a and add to basket/i }));
+    expect(onCustomiseDish).toHaveBeenCalledWith(items[0]);
+    expect(addToBasket).not.toHaveBeenCalled();
+    expect(screen.getAllByText(/customise & add to basket/i)).toHaveLength(2);
+  });
+
   test("missing data is explicit and never treated as allergen-free", () => {
     const unknown = { itemID: 3, itemName: "Mystery dish" };
     withStore(<ComparisonTable items={[items[0], unknown]} />);

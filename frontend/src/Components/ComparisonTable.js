@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import FoodCardIllustration from "./FoodCardIllustration";
+import RestaurantLogo from "./RestaurantLogo";
 import { StoreContext } from "../Context/shop-context";
 import "./ComparisonTable.css";
 
@@ -159,7 +160,7 @@ const ComparisonTable = ({ items = [], onSelectWinner, onCustomiseDish }) => {
           return (
             <article className="pk-showdown-card" key={item.itemID}>
               <div className="pk-showdown-restaurant">
-                <span className="pk-showdown-letter" aria-hidden="true">{String.fromCharCode(65 + index)}</span>
+                <RestaurantLogo name={item.restaurantName} />
                 <span>{item.restaurantName || "Restaurant name unavailable"}</span>
               </div>
               <div className="pk-showdown-art" style={{ backgroundColor: PALETTE[index % PALETTE.length] }}>
@@ -192,10 +193,10 @@ const ComparisonTable = ({ items = [], onSelectWinner, onCustomiseDish }) => {
                   type="button"
                   className="pk-showdown-choose"
                   onClick={() => chooseDish(item)}
-                  aria-label={`Choose ${item.itemName} and add to basket`}
+                  aria-label={onCustomiseDish ? `Customise ${item.itemName} and add to basket` : `Choose ${item.itemName} and add to basket`}
                   data-testid={`add-to-cart-${item.itemID}`}
                 >
-                  Choose &amp; add to basket <span aria-hidden="true">↗</span>
+                  {onCustomiseDish ? "Customise & add to basket" : "Choose & add to basket"} <span aria-hidden="true">↗</span>
                 </button>
               </div>
             </article>

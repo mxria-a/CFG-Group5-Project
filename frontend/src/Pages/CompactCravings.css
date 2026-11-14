@@ -95,3 +95,57 @@
 @media (prefers-reduced-motion: reduce) {
   .pk-results-page .pk-cravings-chip { transition: none; }
 }
+
+/* The second-level dish filters stay smaller and quieter than the category switcher. */
+.pk-results-page .pk-cravings-refine-row {
+  display: flex; align-items: center; gap: 12px; min-width: 0;
+  border-top: 1px solid var(--pk-line); margin-top: 8px; padding-top: 10px;
+}
+.pk-results-page .pk-cravings-refine-label {
+  flex: 0 0 auto; color: var(--pk-muted); font: 800 12px/1.3 var(--pk-body-font);
+  white-space: nowrap;
+}
+.pk-results-page .pk-cravings-refine-options {
+  display: flex; flex: 1 1 auto; align-items: center; min-width: 0; gap: 6px;
+  overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: thin;
+  padding: 2px 0 4px;
+}
+.pk-results-page .pk-cravings-refine-chip {
+  appearance: none; display: inline-flex; align-items: center; gap: 7px;
+  flex: 0 0 auto; min-height: 32px; padding: 6px 10px;
+  border: 1px solid var(--pk-outline); border-radius: 9px;
+  background: rgba(255,255,255,.035); color: var(--pk-cream);
+  white-space: nowrap; cursor: pointer;
+  font: 700 12px/1.3 var(--pk-body-font);
+  transition: background .15s ease, border-color .15s ease;
+}
+.pk-results-page .pk-cravings-refine-chip:hover { border-color: var(--pk-coral); }
+.pk-results-page .pk-cravings-refine-chip.is-active {
+  border-color: var(--pk-coral); background: rgba(185,51,63,.26);
+}
+.pk-results-page .pk-cravings-refine-count {
+  min-width: 20px; padding: 2px 5px; border-radius: 6px;
+  background: rgba(255,255,255,.085); color: var(--pk-muted);
+  font: 800 10px/1.2 var(--pk-body-font); text-align: center;
+}
+.pk-results-page .pk-cravings-refine-chip.is-active .pk-cravings-refine-count {
+  color: var(--pk-cream); background: rgba(255,255,255,.15);
+}
+.pk-results-page .pk-cravings-refine-hint {
+  flex: 0 0 auto; margin-left: auto; color: var(--pk-muted);
+  font: 500 11px/1.3 var(--pk-body-font); white-space: nowrap;
+}
+.pk-results-page .pk-cravings-refine-chip:focus-visible {
+  outline: 2px solid var(--pk-yellow); outline-offset: 2px;
+}
+@media (max-width: 1090px) {
+  .pk-results-page .pk-cravings-refine-hint { display: none; }
+}
+@media (max-width: 699px) {
+  .pk-results-page .pk-cravings-refine-row { gap: 8px; }
+  .pk-results-page .pk-cravings-refine-label { font-size: 11px; }
+  .pk-results-page .pk-cravings-refine-chip { padding: 7px 9px; font-size: 11px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pk-results-page .pk-cravings-refine-chip { transition: none; }
+}
