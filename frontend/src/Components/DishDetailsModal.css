@@ -104,3 +104,15 @@
 .pk-detail-similar-empty p { margin: 5px 0 8px; color: #DFC8CD; font-size: 12px; line-height: 1.55; }
 .pk-detail-similar-browse { padding: 3px 0; border: 0; background: transparent; color: #FFC93C; text-align: left; font-size: 12px; font-weight: 750; cursor: pointer; }
 .pk-detail-similar-browse:hover { text-decoration: underline; }
+
+/* Browse the full menu category for the current restaurant. */
+.pk-detail-view-all {
+  display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 12px;
+  margin-top: 13px; padding: 12px 14px; border-radius: 11px;
+  border: 1px solid #C85860; background: rgba(185, 51, 63, .17);
+  color: #FFF3E6; font: 750 12px/1.4 var(--pk-body-font, system-ui); text-align: left;
+  cursor: pointer; transition: background-color .2s ease, border-color .2s ease;
+}
+.pk-detail-view-all span { color: #FFC93C; font-size: 18px; flex: 0 0 auto; }
+.pk-detail-view-all:hover { background: rgba(185, 51, 63, .28); border-color: #FFC93C; }
+.pk-detail-view-all:focus-visible { outline: 3px solid #FFC93C; outline-offset: 3px; }

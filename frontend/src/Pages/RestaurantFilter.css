@@ -1,0 +1,10 @@
+/* Single-restaurant results context; the standard results cards remain unchanged. */
+.pk-results-restaurant-context { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: -5px 0 20px; }
+.pk-results-restaurant-context > span { color: #D2BFC2; font-size: 12px; }
+.pk-results-restaurant-context button {
+  border: 1px solid #FFC93C; background: rgba(255,201,60,.10); color: #FFC93C;
+  padding: 7px 11px; border-radius: 999px; font: 750 12px/1.4 var(--pk-body-font, system-ui);
+  cursor: pointer; display: inline-flex; align-items: center; gap: 10px;
+}
+.pk-results-restaurant-context button:hover { background: rgba(255,201,60,.20); }
+.pk-results-restaurant-context button:focus-visible { outline: 3px solid #FFC93C; outline-offset: 3px; }

@@ -3,13 +3,14 @@ import ItemList from "../Components/ItemList";
 import FoodCardIllustration from "../Components/FoodCardIllustration";
 import DishDetailsModal from "../Components/DishDetailsModal";
 import DishCustomisationModal from "../Components/DishCustomisationModal";
-import { findSimilarDishes } from "../utils/menuDiscovery";
+import { findSimilarDishes, getDishCategory, getRestaurantCategoryItems, pluralCategory } from "../utils/menuDiscovery";
 import ResultsLoading from "../Components/ResultsLoading";
 import ComparisonTable from "../Components/ComparisonTable";
 import { StoreContext } from "../Context/shop-context";
 import { fetchCoords } from "../utils/fetchCoords";
 import { getDistance } from "../utils/distanceCalculator";
 import "./FoodComparisonPage.css";
+import "./RestaurantFilter.css";
 
 const API = "https://cfg-group5-backend.onrender.com/comparison-table-items";
 const MAX_DISTANCE_KM = 50;
@@ -38,6 +39,7 @@ const titleCase = (value) => String(value).trim().replace(/\b\w/g, (letter) => l
 function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
   const [allItems, setAllItems] = useState([]);
   const [menuItems, setMenuItems] = useState([]);
+  const [restaurantFilter, setRestaurantFilter] = useState(null);
   const [selectedItems, setSelectedItems] = useState([]);
   const [detailItem, setDetailItem] = useState(null);
   const [customiseItem, setCustomiseItem] = useState(null);
@@ -58,6 +60,7 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
       setErrorMessage("");
       setAllItems([]);
       setMenuItems([]);
+      setRestaurantFilter(null);
       setSelectedItems([]);
       setDetailItem(null);
       setView("selection");
@@ -102,8 +105,14 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
     return () => { active = false; };
   }, [searchQuery, postcode]);
 
+  const restaurantItems = useMemo(() => (
+    restaurantFilter
+      ? getRestaurantCategoryItems(menuItems, restaurantFilter.item, restaurantFilter.category)
+      : allItems
+  ), [allItems, menuItems, restaurantFilter]);
+
   const visibleItems = useMemo(() => {
-    const filtered = veganOnly ? allItems.filter((item) => isVegan(item.isVegan)) : allItems;
+    const filtered = veganOnly ? restaurantItems.filter((item) => isVegan(item.isVegan)) : restaurantItems;
     const sorted = [...filtered];
     switch (sortBy) {
       case "cheapest": sorted.sort((a, b) => metric(a.price) - metric(b.price)); break;
@@ -124,7 +133,7 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
       else if (isNumeric(item.avRating) && Number(item.avRating) === highest) highlight = { kind: "rated", text: "Top rated" };
       return { ...item, highlight };
     });
-  }, [allItems, sortBy, veganOnly]);
+  }, [restaurantItems, sortBy, veganOnly]);
 
   const notify = (message, severity = "success") => {
     setNoticeLeaving(false);
@@ -187,11 +196,30 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
     setCustomiseItem(null);
     notify(`Added ${choices.quantity} × ${item.itemName} to your basket${choices.removed.length || choices.extras.length ? " (demo customisations)" : ""}.`);
   };
-  const selectFirstThree = () => { dismissNotice(); setSelectedItems(visibleItems.slice(0, MAX_COMPARISON_ITEMS)); };
+  const selectFirstThree = () => {
+    dismissNotice();
+    setSelectedItems((previous) => {
+      const available = visibleItems.filter((item) => !previous.some((picked) => picked.itemID === item.itemID));
+      return [...previous, ...available].slice(0, MAX_COMPARISON_ITEMS);
+    });
+  };
+  const openRestaurantMenu = (item) => {
+    const category = getDishCategory(item);
+    if (!category) return;
+    dismissNotice();
+    setRestaurantFilter({ item, category });
+    setDetailItem(null);
+    setVeganOnly(false);
+    setSortBy("best");
+    setView("selection");
+    window.scrollTo?.({ top: 0, behavior: "smooth" });
+  };
   const restaurantCount = new Set(visibleItems.map((item) => item.restaurantName).filter(Boolean)).size;
   const DISPLAY_NAMES = { burger: "Burgers", pizza: "Pizzas", sushi: "Sushi", chicken: "Chicken", noodle: "Noodles", noodles: "Noodles", curry: "Curry", waffle: "Waffles", burrito: "Burritos" };
   const cleanedQuery = String(searchQuery || "").trim();
-  const heading = cleanedQuery ? `${DISPLAY_NAMES[cleanedQuery.toLowerCase()] || titleCase(cleanedQuery)} near you` : "Food near you";
+  const heading = restaurantFilter
+    ? `${pluralCategory(restaurantFilter.category)} at ${restaurantFilter.item.restaurantName}`
+    : cleanedQuery ? `${DISPLAY_NAMES[cleanedQuery.toLowerCase()] || titleCase(cleanedQuery)} near you` : "Food near you";
   const hasTray = view === "selection" && selectedItems.length > 0;
   const notice = notification.open && (
     <div className={`pk-results-notice pk-results-notice-${notification.severity}${noticeLeaving ? " is-leaving" : ""}`} role={notification.severity === "warning" ? "alert" : "status"}>
@@ -205,8 +233,18 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
     <div className="pk-results-page">
       {view === "selection" ? (
         <div className="pk-results-inner">
-          <button type="button" className="pk-results-back" onClick={onBackToSearch}>← Back to search</button>
+          <button type="button" className="pk-results-back" onClick={restaurantFilter ? () => setRestaurantFilter(null) : onBackToSearch}>
+            {restaurantFilter ? "← Back to all results" : "← Back to search"}
+          </button>
           <h1 className="pk-results-heading">{heading}</h1>
+          {restaurantFilter && (
+            <div className="pk-results-restaurant-context" role="group" aria-label="Restaurant filter">
+              <span>Browsing one restaurant</span>
+              <button type="button" onClick={() => setRestaurantFilter(null)} aria-label={`Remove ${restaurantFilter.item.restaurantName} filter`}>
+                {restaurantFilter.item.restaurantName} <span aria-hidden="true">×</span>
+              </button>
+            </div>
+          )}
           {!loading && <div className="pk-results-toolbar" aria-label="Sort and filter dishes">
             <span className="pk-results-sort-label">Sort by</span>
             <div className="pk-results-sort-options">
@@ -225,7 +263,13 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
           ) : errorMessage ? (
             <div className="pk-results-empty" role="alert"><h2>Something went wrong</h2><p>{errorMessage}</p><button type="button" className="pk-results-empty-btn" onClick={onBackToSearch}>Try another search</button></div>
           ) : visibleItems.length === 0 ? (
-            <div className="pk-results-empty"><h2>No dishes found</h2><p>{veganOnly ? "No vegan options match this search. Try switching off the vegan filter." : "We couldn't find matching dishes nearby. Try a different dish or postcode."}</p><button type="button" className="pk-results-empty-btn" onClick={veganOnly ? () => setVeganOnly(false) : onBackToSearch}>{veganOnly ? "Show all dishes" : "Search again"}</button></div>
+            <div className="pk-results-empty">
+              <h2>No dishes found</h2>
+              <p>{veganOnly ? "No vegan options match this search. Try switching off the vegan filter." : restaurantFilter ? `No other ${pluralCategory(restaurantFilter.category).toLowerCase()} are listed for ${restaurantFilter.item.restaurantName} in the available demo menu.` : "We couldn't find matching dishes nearby. Try a different dish or postcode."}</p>
+              <button type="button" className="pk-results-empty-btn" onClick={veganOnly ? () => setVeganOnly(false) : restaurantFilter ? () => setRestaurantFilter(null) : onBackToSearch}>
+                {veganOnly ? "Show all dishes" : restaurantFilter ? "See all results" : "Search again"}
+              </button>
+            </div>
           ) : (
             <ItemList items={visibleItems} selectedItems={selectedItems} onToggle={handleToggle} onViewDetails={setDetailItem} />
           )}
@@ -245,6 +289,7 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
           similarItems={findSimilarDishes(detailItem, menuItems)}
           onViewSimilar={setDetailItem}
           onBrowseSimilar={() => setDetailItem(null)}
+          onViewAllSimilar={() => openRestaurantMenu(detailItem)}
           onCustomise={openCustomisation}
           onClose={() => setDetailItem(null)}
           onAddToBasket={(item) => addToBasket(item.itemID)}

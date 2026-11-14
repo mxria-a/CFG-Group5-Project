@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import FoodCardIllustration from "./FoodCardIllustration";
+import { getDishCategory, pluralCategory } from "../utils/menuDiscovery";
 import "./DishDetailsModal.css";
 
 const available = (value) => value !== undefined && value !== null && String(value).trim() !== "";
@@ -16,7 +17,7 @@ const veganStatus = (value) => {
 };
 
 /** Details shown here are taken directly from the selected backend item. */
-export default function DishDetailsModal({ item, onClose, onAddToBasket, onCustomise, similarItems = [], onViewSimilar, onBrowseSimilar, onToggleCompare, selected, selectedCount, maxCompare = 3 }) {
+export default function DishDetailsModal({ item, onClose, onAddToBasket, onCustomise, similarItems = [], onViewSimilar, onBrowseSimilar, onViewAllSimilar, onToggleCompare, selected, selectedCount, maxCompare = 3 }) {
   const dialogRef = useRef(null);
   const closeRef = useRef(null);
   const onCloseRef = useRef(onClose);
@@ -133,6 +134,12 @@ export default function DishDetailsModal({ item, onClose, onAddToBasket, onCusto
               </div>
             )}
           </div>
+          {getDishCategory(item) && onViewAllSimilar && (
+            <button type="button" className="pk-detail-view-all" onClick={onViewAllSimilar}>
+              View all {pluralCategory(getDishCategory(item)).toLowerCase()} at {item.restaurantName || "this restaurant"}
+              <span aria-hidden="true">→</span>
+            </button>
+          )}
           {limitReached && <p className="pk-detail-inline-note" role="alert">Full plate! 🍽️ You've already picked {maxCompare} dishes. Remove one to make room for this one.</p>}
           {added && <p className="pk-detail-added-note" role="status">✓ Added to your basket! You can add another if you'd like.</p>}
           <div className="pk-detail-actions">

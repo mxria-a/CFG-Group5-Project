@@ -1,16 +1,46 @@
-const CATEGORY_TERMS = ["waffle", "burger", "pizza", "sushi", "ramen", "noodle", "chicken", "burrito", "wrap", "pasta", "curry", "salad", "sandwich", "taco", "pancake", "cookie", "rice", "fries"];
+const CATEGORY_TERMS = [
+  ["burger", ["burger", "cheeseburger"]],
+  ["waffle", ["waffle"]],
+  ["pizza", ["pizza"]],
+  ["sushi", ["sushi", "maki", "nigiri", "sashimi"]],
+  ["noodles", ["noodle", "ramen", "udon", "pho"]],
+  ["chicken", ["chicken", "wing", "tender"]],
+  ["burrito", ["burrito", "quesarito"]],
+  ["curry", ["curry", "masala"]],
+];
 const normalise = (value) => String(value ?? "").trim().toLowerCase();
+const VALID_CATEGORIES = new Set(CATEGORY_TERMS.map(([category]) => category));
+const PLURALS = { burger: "Burgers", waffle: "Waffles", pizza: "Pizzas", sushi: "Sushi", noodles: "Noodles", chicken: "Chicken", burrito: "Burritos", curry: "Curries" };
+
+export function getDishCategory(item) {
+  const explicit = normalise(item?.category);
+  if (VALID_CATEGORIES.has(explicit)) return explicit;
+  const name = normalise(item?.itemName);
+  return CATEGORY_TERMS.find(([, keywords]) => keywords.some((word) => name.includes(word)))?.[0] || null;
+}
+
+export function pluralCategory(category) {
+  return PLURALS[category] || "Dishes";
+}
+
+export function sameRestaurant(a, b) {
+  if (!a || !b) return false;
+  if (a.restaurantID != null && b.restaurantID != null) {
+    return String(a.restaurantID) === String(b.restaurantID);
+  }
+  return Boolean(normalise(a.restaurantName)) && normalise(a.restaurantName) === normalise(b.restaurantName);
+}
+
+export function getRestaurantCategoryItems(menu = [], current, category = getDishCategory(current)) {
+  if (!current || !category) return [];
+  return menu.filter((item) => sameRestaurant(item, current) && getDishCategory(item) === category);
+}
+
 export function findSimilarDishes(current, menu = [], limit = 3) {
-  if (!current || !current.restaurantName || !current.itemName) return [];
-  const restaurant = normalise(current.restaurantName);
-  const itemName = normalise(current.itemName);
-  const category = CATEGORY_TERMS.find((term) => itemName.includes(term));
-  if (!category) return [];
-  return menu.filter((item) =>
-    String(item.itemID) !== String(current.itemID) &&
-    normalise(item.restaurantName) === restaurant &&
-    normalise(item.itemName).includes(category)
-  ).slice(0, limit);
+  if (!current || current.itemID == null) return [];
+  return getRestaurantCategoryItems(menu, current)
+    .filter((item) => String(item.itemID) !== String(current.itemID))
+    .slice(0, limit);
 }
 
 // Frontend-only example options. These are NOT confirmed restaurant offerings.
