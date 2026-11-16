@@ -96,3 +96,21 @@
 /* Restaurant identity in the existing card header. */
 .pk-results-page .pk-result-restaurant { gap: 10px; padding-top: 6px; padding-bottom: 6px; min-height: 49px; }
 .pk-results-page .pk-result-restaurant-name { min-width: 0; overflow-wrap: anywhere; }
+
+/* Reserve the upper portion of every illustration panel for the price and highlights.
+   A longer "From £7.50" badge must never collide with the food artwork. */
+.pk-results-page .pk-result-picture {
+  align-items: flex-end;
+  padding: 57px 12px 10px;
+}
+.pk-results-page .pk-result-picture .pk-food-art {
+  width: min(205px, 58%);
+  height: min(134px, 100%);
+  flex: 0 1 auto;
+}
+.pk-results-page .pk-result-price { z-index: 1; white-space: nowrap; }
+.pk-results-page .pk-result-highlight { z-index: 1; }
+@media (max-width: 699px) {
+  .pk-results-page .pk-result-picture { padding-top: 56px; }
+  .pk-results-page .pk-result-picture .pk-food-art { height: min(120px, 100%); }
+}

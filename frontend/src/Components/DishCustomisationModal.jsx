@@ -1,27 +1,93 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import FoodCardIllustration from "./FoodCardIllustration";
-import { getDemoOptions } from "../utils/menuDiscovery";
+import { formatStartingPrice, getLowestPricedSize } from "../utils/itemStartingPrice";
 import "./DishCustomisationModal.css";
 
-const pounds = (amount) => `£${amount.toFixed(2)}`;
-const validPrice = (amount) => amount !== "" && amount !== null && amount !== undefined && Number.isFinite(Number(amount));
+const API_BASE = "https://cfg-group5-backend.onrender.com";
+const pounds = (value) => `£${Number(value).toFixed(2)}`;
+
+function selectionKey(itemId, sizeId, removalIds, extraIds, quantity) {
+  return JSON.stringify([
+    Number(itemId), sizeId == null ? null : Number(sizeId),
+    [...removalIds].sort((a, b) => a - b), [...extraIds].sort((a, b) => a - b), quantity,
+  ]);
+}
 
 export default function DishCustomisationModal({ item, onClose, onBack, onAddToBasket, backLabel = "Back to dish details" }) {
-  const [removed, setRemoved] = useState([]);
-  const [chosenExtras, setChosenExtras] = useState([]);
+  const [catalogue, setCatalogue] = useState(null);
+  const [loadState, setLoadState] = useState("loading");
+  const [loadError, setLoadError] = useState("");
+  const [reloadCount, setReloadCount] = useState(0);
+  const [sizeId, setSizeId] = useState(null);
+  const [removalIds, setRemovalIds] = useState([]);
+  const [extraIds, setExtraIds] = useState([]);
   const [quantity, setQuantity] = useState(1);
+  const [quoteState, setQuoteState] = useState({ key: "", value: null, error: "" });
+  const [adding, setAdding] = useState(false);
   const dialogRef = useRef(null);
   const closeRef = useRef(null);
   const closeCallback = useRef(onClose);
   closeCallback.current = onClose;
-  const options = useMemo(() => getDemoOptions(item), [item]);
-  const basePrice = validPrice(item?.price) ? Number(item.price) : null;
-  const extras = options.extras.filter((option) => chosenExtras.includes(option.id));
-  const unitPrice = basePrice === null ? null : basePrice + extras.reduce((sum, option) => sum + option.price, 0);
-  const isDemo = removed.length > 0 || extras.length > 0;
+  const itemId = item?.itemID;
 
-  useEffect(() => { setRemoved([]); setChosenExtras([]); setQuantity(1); }, [item?.itemID]);
+  useEffect(() => {
+    if (!itemId) return undefined;
+    const controller = new AbortController();
+    setCatalogue(null);
+    setLoadState("loading");
+    setLoadError("");
+    setSizeId(null);
+    setRemovalIds([]);
+    setExtraIds([]);
+    setQuantity(1);
+    setQuoteState({ key: "", value: null, error: "" });
+    fetch(`${API_BASE}/items/${encodeURIComponent(itemId)}/customisation-options`, { signal: controller.signal })
+      .then(async (response) => {
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "Could not load your options.");
+        return result;
+      })
+      .then((result) => {
+        setCatalogue(result);
+        const defaultSize = getLowestPricedSize(result.sizes);
+        setSizeId(defaultSize ? Number(defaultSize.id) : null);
+        setLoadState("ready");
+      })
+      .catch((error) => {
+        if (error.name === "AbortError") return;
+        setLoadError(error.message || "Could not load your options. Try again.");
+        setLoadState("error");
+      });
+    return () => controller.abort();
+  }, [itemId, reloadCount]);
+
+  const currentKey = selectionKey(itemId, sizeId, removalIds, extraIds, quantity);
+  useEffect(() => {
+    if (loadState !== "ready" || !catalogue) return undefined;
+    if (catalogue.sizes?.length && !sizeId) return undefined;
+    const controller = new AbortController();
+    const key = selectionKey(itemId, sizeId, removalIds, extraIds, quantity);
+    setQuoteState({ key: "", value: null, error: "" });
+    fetch(`${API_BASE}/customisations/quote`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ itemId: Number(itemId), sizeId, removalIds, extraIds, quantity }),
+      signal: controller.signal,
+    })
+      .then(async (response) => {
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "Unable to calculate price.");
+        return result;
+      })
+      .then((value) => setQuoteState({ key, value, error: "" }))
+      .catch((error) => {
+        if (error.name === "AbortError") return;
+        setQuoteState({ key, value: null, error: error.message || "Could not calculate the price." });
+      });
+    return () => controller.abort();
+  }, [itemId, catalogue, loadState, sizeId, removalIds, extraIds, quantity]);
+
   useEffect(() => {
     const prevFocus = document.activeElement;
     const prevOverflow = document.body.style.overflow;
@@ -40,10 +106,22 @@ export default function DishCustomisationModal({ item, onClose, onBack, onAddToB
   }, []);
 
   if (!item) return null;
-  const toggle = (value, selected, setter) => setter(selected.includes(value) ? selected.filter((entry) => entry !== value) : [...selected, value]);
+  const toggle = (id, setter) => setter((previous) => (
+    previous.includes(id) ? previous.filter((value) => value !== id) : [...previous, id]
+  ));
+  const quoteReady = loadState === "ready" && quoteState.key === currentKey && Boolean(quoteState.value);
+  const quote = quoteReady ? quoteState.value : null;
+  const selectedSize = catalogue?.sizes?.find((size) => Number(size.id) === sizeId);
+  const selectedExtras = catalogue?.extras?.filter((extra) => extraIds.includes(Number(extra.id))) || [];
+  const selectedRemovals = catalogue?.removals?.filter((removal) => removalIds.includes(Number(removal.id))) || [];
   const submit = () => {
-    if (unitPrice === null) return;
-    onAddToBasket(item, { removed, extras, quantity });
+    if (!quote || adding) return;
+    setAdding(true);
+    try {
+      onAddToBasket(item, quote);
+    } finally {
+      setAdding(false);
+    }
   };
 
   return createPortal(
@@ -62,51 +140,69 @@ export default function DishCustomisationModal({ item, onClose, onBack, onAddToB
             <div>
               <div className="pk-customise-restaurant">{item.restaurantName || "Restaurant"}</div>
               <h3>{item.itemName}</h3>
-              <p>Base dish price: {basePrice === null ? "Unavailable" : pounds(basePrice)}</p>
+              <p className="pk-customise-from-price">{loadState === "loading" ? "Checking price…" : formatStartingPrice(catalogue?.item?.basePrice ?? item.price, catalogue?.sizes)}</p>
             </div>
           </div>
-          <div className="pk-customise-demo-disclaimer" role="note">
-            <strong>Customisation preview · demo options</strong>
-            <p>These removals, extras and extra prices are examples, not confirmed restaurant options. Customised demo items can be viewed in your basket but cannot be submitted at checkout yet.</p>
-          </div>
-          <div className="pk-customise-section">
-            <h3>Leave something out</h3>
-            <p className="pk-customise-hint">Not a fan of something? Test removing it. No price change.</p>
-            {options.removals.length ? <div className="pk-customise-option-list">
-              {options.removals.map((name) => <label className="pk-customise-option" key={name}>
-                <span><input type="checkbox" checked={removed.includes(name)} onChange={() => toggle(name, removed, setRemoved)} /> No {name.toLowerCase()}</span>
-                <small>Included</small>
-              </label>)}
-            </div> : <p className="pk-customise-muted">No sample ingredient removal options for this type of dish.</p>}
-          </div>
-          <div className="pk-customise-section">
-            <h3>Fancy an extra?</h3>
-            <p className="pk-customise-hint">Experiment with example add-ons and watch the price change.</p>
-            {options.extras.length ? <div className="pk-customise-option-list">
-              {options.extras.map((extra) => <label className="pk-customise-option" key={extra.id}>
-                <span><input type="checkbox" checked={chosenExtras.includes(extra.id)} onChange={() => toggle(extra.id, chosenExtras, setChosenExtras)} /> {extra.name}</span>
-                <small className="pk-customise-extra-price">+{pounds(extra.price)}</small>
-              </label>)}
-            </div> : <p className="pk-customise-muted">No sample extras for this type of dish.</p>}
-          </div>
-          <div className="pk-customise-section pk-customise-quantity">
-            <div><h3>Quantity</h3><p className="pk-customise-hint">How many would you like?</p></div>
-            <div className="pk-customise-stepper">
-              <button type="button" aria-label="Decrease quantity" disabled={quantity <= 1} onClick={() => setQuantity((q) => Math.max(1, q - 1))}>−</button>
-              <strong aria-live="polite">{quantity}</strong>
-              <button type="button" aria-label="Increase quantity" disabled={quantity >= 10} onClick={() => setQuantity((q) => Math.min(10, q + 1))}>+</button>
+          {loadState === "loading" && <p className="pk-customise-feedback" role="status">Loading your options…</p>}
+          {loadState === "error" && <div className="pk-customise-feedback" role="alert">
+            <p>{loadError}</p>
+            <button type="button" className="pk-customise-retry" onClick={() => setReloadCount((value) => value + 1)}>Try again</button>
+          </div>}
+          {loadState === "ready" && catalogue && <>
+            {catalogue.sizes?.length > 0 && <div className="pk-customise-section">
+              <h3>Choose your size</h3>
+              <p className="pk-customise-hint">Pick the size that suits your appetite.</p>
+              <div className="pk-customise-size-grid">
+                {catalogue.sizes.map((size) => (
+                  <label className={`pk-customise-size${sizeId === Number(size.id) ? " is-selected" : ""}`} key={size.id}>
+                    <input type="radio" name="pk-dish-size" value={size.id} checked={sizeId === Number(size.id)} onChange={() => setSizeId(Number(size.id))} />
+                    <strong>{size.name}</strong>
+                    <span>{pounds(size.price)}</span>
+                    {size.isDefault && <small>Regular size</small>}
+                  </label>
+                ))}
+              </div>
+            </div>}
+            <div className="pk-customise-section">
+              <h3>Leave something out</h3>
+              <p className="pk-customise-hint">Not a fan of something? Leave it out at no extra charge.</p>
+              {catalogue.removals?.length ? <div className="pk-customise-option-list">
+                {catalogue.removals.map((option) => <label className="pk-customise-option" key={option.id}>
+                  <span><input type="checkbox" checked={removalIds.includes(Number(option.id))} onChange={() => toggle(Number(option.id), setRemovalIds)} /> No {option.name.toLowerCase()}</span>
+                  <small>Included</small>
+                </label>)}
+              </div> : <p className="pk-customise-muted">No removable ingredients listed for this dish.</p>}
             </div>
-          </div>
-          {(removed.length > 0 || extras.length > 0) && <p className="pk-customise-selection-summary">Your picks: {[
-            ...removed.map((name) => `No ${name.toLowerCase()}`), ...extras.map((extra) => extra.name)
-          ].join(" · ")}</p>}
-          <p className="pk-customise-allergy-note">Removing an ingredient does not guarantee a dish is safe for allergies. Always confirm with the restaurant.</p>
+            <div className="pk-customise-section">
+              <h3>Fancy an extra?</h3>
+              <p className="pk-customise-hint">Add something delicious to make it yours.</p>
+              {catalogue.extras?.length ? <div className="pk-customise-option-list">
+                {catalogue.extras.map((extra) => <label className="pk-customise-option" key={extra.id}>
+                  <span><input type="checkbox" checked={extraIds.includes(Number(extra.id))} onChange={() => toggle(Number(extra.id), setExtraIds)} /> {extra.name}</span>
+                  <small className="pk-customise-extra-price">+{pounds(extra.price)}</small>
+                </label>)}
+              </div> : <p className="pk-customise-muted">No extras listed for this dish.</p>}
+            </div>
+            <div className="pk-customise-section pk-customise-quantity">
+              <div><h3>Quantity</h3><p className="pk-customise-hint">How many would you like?</p></div>
+              <div className="pk-customise-stepper">
+                <button type="button" aria-label="Decrease quantity" disabled={quantity <= 1} onClick={() => setQuantity((q) => Math.max(1, q - 1))}>−</button>
+                <strong aria-live="polite">{quantity}</strong>
+                <button type="button" aria-label="Increase quantity" disabled={quantity >= 10} onClick={() => setQuantity((q) => Math.min(10, q + 1))}>+</button>
+              </div>
+            </div>
+            {(selectedSize || selectedRemovals.length || selectedExtras.length) ? <p className="pk-customise-selection-summary">
+              Your picks: {[selectedSize && `${selectedSize.name} size`, ...selectedRemovals.map((choice) => `No ${choice.name.toLowerCase()}`), ...selectedExtras.map((choice) => choice.name)].filter(Boolean).join(" · ")}
+            </p> : null}
+          </>}
+          <p className="pk-customise-allergy-note">Removing an ingredient does not guarantee a dish is safe for allergies. Always confirm allergens with the restaurant.</p>
         </div>
         <footer className="pk-customise-footer">
-          <span>{unitPrice === null ? "Price unavailable" : `${quantity} × ${pounds(unitPrice)}${isDemo ? " · Demo price" : ""}`}</span>
-          <button className="pk-customise-submit" type="button" disabled={unitPrice === null} onClick={submit}>
-            Add {quantity} to basket · {unitPrice === null ? "—" : pounds(unitPrice * quantity)}
+          <span aria-live="polite">{quote ? `${quantity} × ${pounds(quote.unitPrice)}` : loadState === "error" ? "Price unavailable" : "Calculating price…"}</span>
+          <button className="pk-customise-submit" type="button" disabled={!quoteReady || adding} onClick={submit}>
+            {quote ? `Add ${quantity} to basket · ${pounds(quote.totalPrice)}` : loadState === "error" ? "Price unavailable" : "Updating price…"}
           </button>
+          {quoteState.error && loadState === "ready" && <p className="pk-customise-quote-error" role="alert">{quoteState.error}</p>}
         </footer>
       </section>
     </div>, document.body

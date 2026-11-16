@@ -1,21 +1,17 @@
 import React from "react";
 import FoodCardIllustration from "./FoodCardIllustration";
 import RestaurantLogo from "./RestaurantLogo";
+import { getItemDisplayPrice } from "../utils/menuDisplayPrice";
 import "./ItemList.css";
 
 const IMAGE_COLOURS = ["#C93F45", "#2F6B4F", "#7A4A8C", "#C27A1E", "#3F5E91", "#8B3D2D"];
-const priceLabel = (price) => {
-  const number = Number(price);
-  return price !== null && price !== undefined && price !== "" && Number.isFinite(number)
-    ? `£${number.toFixed(2)}` : "Price unavailable";
-};
 const hasNumber = (value) => value !== null && value !== undefined && value !== "" && Number.isFinite(Number(value));
 
 function FoodPicture({ item, index }) {
   return (
     <div className="pk-result-picture" style={{ background: IMAGE_COLOURS[index % IMAGE_COLOURS.length] }}>
       <FoodCardIllustration name={item.itemName} />
-      <span className="pk-result-price">{priceLabel(item.price)}</span>
+      <span className="pk-result-price">{getItemDisplayPrice(item)}</span>
       {item.highlight && <span className={`pk-result-highlight pk-result-highlight-${item.highlight.kind}`}>{item.highlight.text}</span>}
     </div>
   );

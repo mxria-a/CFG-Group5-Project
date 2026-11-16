@@ -10,6 +10,7 @@ import { StoreContext } from "../Context/shop-context";
 import { fetchCoords } from "../utils/fetchCoords";
 import { getDistance } from "../utils/distanceCalculator";
 import { getDishRefinementOptions, matchesDishRefinement } from "../utils/foodRefinements";
+import { attachMenuStartingPrices, getItemComparablePrice } from "../utils/menuDisplayPrice";
 import "./FoodComparisonPage.css";
 import "./RestaurantFilter.css";
 import "./CompactCravings.css";
@@ -79,7 +80,7 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
   const [veganOnly, setVeganOnly] = useState(false);
   const [notification, setNotification] = useState({ open: false, message: "", severity: "success" });
   const [noticeLeaving, setNoticeLeaving] = useState(false);
-  const { addToBasket, addDemoCustomLine } = useContext(StoreContext);
+  const { addToBasket, addQuotedCustomLine } = useContext(StoreContext);
 
   // Keep the complete nearby menu so a new food search does not require going home.
   // Only the postcode changes which dishes are nearby; selecting a category does not refetch.
@@ -111,7 +112,10 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
             })
             .filter((item) => item.distance <= MAX_DISTANCE_KM);
         }
-        if (active) setMenuItems(nearby);
+        // Get the actual lowest size price for pizzas before showing their cards.
+        // The same enriched items feed results, recommendations, and comparisons.
+        const pricedNearby = await attachMenuStartingPrices(nearby);
+        if (active) setMenuItems(pricedNearby);
       } catch (error) {
         console.error("Could not load search results:", error);
         if (active) setErrorMessage("We couldn't load dishes right now. Please try again.");
@@ -210,7 +214,7 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
     const filtered = veganOnly ? refinedItems.filter((item) => isVegan(item.isVegan)) : refinedItems;
     const sorted = [...filtered];
     switch (sortBy) {
-      case "cheapest": sorted.sort((a, b) => metric(a.price) - metric(b.price)); break;
+      case "cheapest": sorted.sort((a, b) => metric(getItemComparablePrice(a)) - metric(getItemComparablePrice(b))); break;
       case "fastest": sorted.sort((a, b) => metric(a.deliveryTime) - metric(b.deliveryTime)); break;
       case "nearest": sorted.sort((a, b) => metric(a.distance) - metric(b.distance)); break;
       case "rated": sorted.sort((a, b) => (isNumeric(b.avRating) ? Number(b.avRating) : -Infinity) - (isNumeric(a.avRating) ? Number(a.avRating) : -Infinity)); break;
@@ -218,12 +222,12 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
     }
 
     // All highlights are calculated from the actual loaded dishes, never hard-coded examples.
-    const lowest = Math.min(...filtered.filter((item) => isNumeric(item.price)).map((item) => Number(item.price)));
+    const lowest = Math.min(...filtered.map(getItemComparablePrice).filter(isNumeric).map(Number));
     const fastest = Math.min(...filtered.filter((item) => isNumeric(item.deliveryTime)).map((item) => Number(item.deliveryTime)));
     const highest = Math.max(...filtered.filter((item) => isNumeric(item.avRating)).map((item) => Number(item.avRating)));
     return sorted.map((item) => {
       let highlight = null;
-      if (isNumeric(item.price) && Number(item.price) === lowest) highlight = { kind: "cheapest", text: "Cheapest" };
+      if (isNumeric(getItemComparablePrice(item)) && getItemComparablePrice(item) === lowest) highlight = { kind: "cheapest", text: "Cheapest" };
       else if (isNumeric(item.deliveryTime) && Number(item.deliveryTime) === fastest) highlight = { kind: "fastest", text: "Fastest" };
       else if (isNumeric(item.avRating) && Number(item.avRating) === highest) highlight = { kind: "rated", text: "Top rated" };
       return { ...item, highlight };
@@ -282,14 +286,18 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
     setDetailItem(null);
     setCustomiseItem(item);
   };
-  const saveCustomisation = (item, choices) => {
-    if (!choices.removed.length && !choices.extras.length) {
-      addToBasket(item.itemID, choices.quantity);
+  const saveCustomisation = (item, quote) => {
+    const hasCustomisation = Boolean(quote.size || quote.removals?.length || quote.extras?.length);
+    if (hasCustomisation) {
+      if (!addQuotedCustomLine(item, quote)) {
+        notify("We couldn't add that customisation. Please try again.", "warning");
+        return;
+      }
     } else {
-      addDemoCustomLine(item, choices);
+      addToBasket(item.itemID, quote.quantity);
     }
     setCustomiseItem(null);
-    notify(`Added ${choices.quantity} × ${item.itemName} to your basket${choices.removed.length || choices.extras.length ? " (demo customisations)" : ""}.`);
+    notify(`Added ${quote.quantity} × ${item.itemName} to your basket${hasCustomisation ? " (customised)" : ""}.`);
   };
   const selectFirstThree = () => {
     dismissNotice();
@@ -469,7 +477,7 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
           ) : visibleItems.length === 0 ? (
             <div className="pk-results-empty">
               <h2>No dishes found</h2>
-              <p>{veganOnly ? "No vegan options match this search. Try switching off the vegan filter." : activeRefinement ? `We couldn't find any ${activeRefinement.toLowerCase()} ${pluralCategory(activeCategory).toLowerCase()} in the available menu for this search.` : restaurantFilter ? `No other ${pluralCategory(restaurantFilter.category).toLowerCase()} are listed for ${restaurantFilter.item.restaurantName} in the available demo menu.` : "We couldn't find matching dishes nearby. Try another food category or search term above."}</p>
+              <p>{veganOnly ? "No vegan options match this search. Try switching off the vegan filter." : activeRefinement ? `We couldn't find any ${activeRefinement.toLowerCase()} ${pluralCategory(activeCategory).toLowerCase()} in the available menu for this search.` : restaurantFilter ? `No other ${pluralCategory(restaurantFilter.category).toLowerCase()} are listed for ${restaurantFilter.item.restaurantName} in the available menu.` : "We couldn't find matching dishes nearby. Try another food category or search term above."}</p>
               <button type="button" className="pk-results-empty-btn" onClick={veganOnly ? () => setVeganOnly(false) : activeRefinement ? () => setActiveRefinement("") : restaurantFilter ? () => setRestaurantFilter(null) : () => { setSearchExpanded(true); window.requestAnimationFrame?.(() => searchInputRef.current?.focus()); }}>
                 {veganOnly ? "Show all dishes" : activeRefinement ? `Show all ${pluralCategory(activeCategory).toLowerCase()}` : restaurantFilter ? "See all results" : "Try another search"}
               </button>
@@ -493,13 +501,14 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
           similarItems={getSimilarDishRecommendations(detailItem, menuItems).items}
           similarSource={getSimilarDishRecommendations(detailItem, menuItems).source}
           onViewSimilar={setDetailItem}
-          onBrowseSimilar={() => {
+          onBrowseSimilar={restaurantFilter ? () => {
             setDetailItem(null);
-            if (restaurantFilter) setRestaurantFilter(null);
+            setRestaurantFilter(null);
             setView("selection");
             window.scrollTo?.({ top: 0, behavior: "smooth" });
-          }}
-          onViewAllSimilar={() => openRestaurantMenu(detailItem)}
+          } : undefined}
+          onViewAllSimilar={restaurantFilter && Number(restaurantFilter.item.restaurantID) === Number(detailItem.restaurantID) && restaurantFilter.category === getDishCategory(detailItem)
+            ? undefined : () => openRestaurantMenu(detailItem)}
           onCustomise={openCustomisation}
           onClose={() => setDetailItem(null)}
           onAddToBasket={(item) => addToBasket(item.itemID)}

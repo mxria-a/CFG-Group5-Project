@@ -1,3 +1,4 @@
+import { createQuotedCustomLine } from "../utils/quotedCustomLine";
 import { createContext, useState, useEffect } from "react";
 
 export const StoreContext = createContext(null);
@@ -68,6 +69,17 @@ export const StoreContextProvider = ({ children }) => {
       },
     }));
   };
+  // Customisations are priced and validated by the live quote API.
+  // Keep them out of checkout until the order endpoint supports them.
+  const addQuotedCustomLine = (item, quote) => {
+    const line = createQuotedCustomLine(item, quote);
+    if (!line) return false;
+    setDemoCustomLines((prev) => ({
+      ...prev,
+      [line.key]: { ...line, quantity: (prev[line.key]?.quantity || 0) + line.quantity },
+    }));
+    return true;
+  };
   const changeDemoCustomQuantity = (key, change) => setDemoCustomLines((prev) => {
     if (!prev[key]) return prev;
     const quantity = prev[key].quantity + change;
@@ -107,6 +119,7 @@ export const StoreContextProvider = ({ children }) => {
     demoCustomLines,
     addToBasket,
     addDemoCustomLine,
+    addQuotedCustomLine,
     changeDemoCustomQuantity,
     removeDemoCustomLine,
     removeFromBasket,

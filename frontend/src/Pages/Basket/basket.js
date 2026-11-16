@@ -119,8 +119,9 @@ const Basket = () => {
           <div key={line.key} className="basket-items-name basket-items-item pk-demo-basket-line">
             <div className="basket-thumb-emoji" role="img" aria-label="Dish illustration">🍽️</div>
             <div className="basket-item-name-cell">
-              <p className="basket-item-name">{line.itemName} <span className="pk-demo-basket-tag">Demo customisation</span></p>
+              <p className="basket-item-name">{line.itemName} <span className="pk-demo-basket-tag">Customised</span></p>
               <p className="basket-item-restaurant">{line.restaurantName}</p>
+              {line.size && <p className="pk-demo-basket-choices">Size: {line.size.name}</p>}
               {line.removed.length > 0 && <p className="pk-demo-basket-choices">No {line.removed.join(", no ").toLowerCase()}</p>}
               {line.extras.length > 0 && <p className="pk-demo-basket-choices">Extras: {line.extras.map((extra) => extra.name).join(", ")}</p>}
             </div>
@@ -136,8 +137,8 @@ const Basket = () => {
         ))}
       </div>
       {demoLines.length > 0 && <div className="pk-demo-basket-warning" role="note">
-        <strong>Demo customisations in your basket</strong>
-        <p>These extras and ingredient changes are examples, not confirmed restaurant options. Checkout for customised items is disabled until the backend supports these selections and their prices. Remove the demo lines to checkout ordinary items.</p>
+        <strong>Customised dishes in your basket</strong>
+        <p>Your selected sizes, extras and removals are included in the prices shown. Checkout for customised dishes isn't available yet. Remove these items to check out standard dishes.</p>
       </div>}
 
       <div className="basket-bottom">

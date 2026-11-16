@@ -161,7 +161,7 @@ const CheckoutPage = () => {
             <>
               {hasDemoCustomisations && (
                 <div className="checkout-limit-banner" role="alert">
-                  Customisation options in this preview are examples only, so they cannot be submitted to a restaurant yet. Please <Link to="/basket">return to your basket</Link> and remove the demo customisation lines to checkout ordinary items.
+                  Checkout for customised dishes isn't available yet. Please <Link to="/basket">return to your basket</Link> and remove customised items to continue with standard dishes.
                 </div>
               )}
               {tooManyItemTypes && (
@@ -187,7 +187,7 @@ const CheckoutPage = () => {
                 onChange={handleFieldChange}
               />
 
-              <h3 className="step-heading">Payment (demo only)</h3>
+              <h3 className="step-heading">Payment (preview — no charge)</h3>
               <div className="payment-options">
                 {PAYMENT_OPTIONS.map((option) => (
                   <div
@@ -210,7 +210,7 @@ const CheckoutPage = () => {
               <div className="order-checklist">
                 <div className={`checklist-item ${!tooManyItemTypes && !hasDemoCustomisations ? "done" : "pending"}`}>
                   <span className="checklist-icon">{!tooManyItemTypes && !hasDemoCustomisations ? "✓" : "!"}</span>
-                  {hasDemoCustomisations ? "Demo customisations cannot be checked out yet" : !tooManyItemTypes ? "Order is ready" : "Only one dish type per order, for now"}
+                  {hasDemoCustomisations ? "Customised orders are not supported yet" : !tooManyItemTypes ? "Order is ready" : "Only one dish type per order, for now"}
                 </div>
               </div>
 

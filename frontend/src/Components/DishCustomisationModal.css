@@ -16,9 +16,7 @@
 .pk-customise-restaurant { font-size:12px; font-weight:700; color:#FFC93C; margin:0 0 5px; }
 .pk-customise-dish h3 { font:800 23px/1.14 var(--pk-display-font,system-ui); margin:0 0 7px; }
 .pk-customise-dish p { margin:0; color:#D5BCC3; font-size:13px; }
-.pk-customise-demo-disclaimer { background:#35232A; border:1px solid #77515C; border-left:3px solid #FFC93C; padding:13px 15px; border-radius:11px; font-size:12px; line-height:1.55; }
-.pk-customise-demo-disclaimer strong { color:#FFC93C; }
-.pk-customise-demo-disclaimer p { margin:5px 0 0; color:#E3CFD2; }
+.pk-customise-dish p.pk-customise-from-price { color:#FFC93C; font-weight:800; font-size:15px; font-variant-numeric:tabular-nums; }
 .pk-customise-section { padding:22px 0; border-bottom:1px solid #50343E; }
 .pk-customise-section h3 { font:800 20px var(--pk-display-font,system-ui); margin:0 0 5px; }
 .pk-customise-hint { font-size:12px; color:#CDB7C0; margin:0 0 15px; }
@@ -45,3 +43,30 @@
 .pk-customise-submit:disabled { opacity:.5; cursor:not-allowed; }
 @media(max-width:600px) { .pk-customise-backdrop { padding:8px; } .pk-customise-dialog { max-height:calc(100dvh - 16px); } .pk-customise-header { padding:20px 17px; } .pk-customise-body { padding:18px 17px 5px; } .pk-customise-dish { gap:13px; } .pk-customise-art { width:80px; height:78px; } .pk-customise-art .pk-food-art { width:80px; height:73px; } .pk-customise-dish h3 { font-size:20px; } .pk-customise-footer { padding:13px 17px; gap:10px; flex-direction:column; align-items:stretch; } .pk-customise-submit { width:100%; } }
 @media(prefers-reduced-motion:reduce) { .pk-customise-backdrop { backdrop-filter:none; } }
+
+/* Size choices match the approved Make it yours design. */
+.pk-customise-size-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:9px; }
+.pk-customise-size { display:flex; flex-direction:column; align-items:flex-start; gap:6px; position:relative; background:#312027; border:1.5px solid #67414C; border-radius:12px; padding:16px 14px; min-height:104px; cursor:pointer; }
+.pk-customise-size:hover { border-color:#E7A0A1; }
+.pk-customise-size.is-selected { border-color:#FFC93C; box-shadow:0 0 0 1px #FFC93C inset; background:#41302A; }
+.pk-customise-size input { position:absolute; right:13px; top:13px; width:17px; height:17px; margin:0; accent-color:#FFC93C; }
+.pk-customise-size strong { font-size:17px; padding-right:18px; }
+.pk-customise-size >span { font-size:15px; font-weight:800; color:#FFC93C; }
+.pk-customise-size small { color:#D2BFC1; font-size:11px; }
+.pk-customise-feedback { padding:18px 0; color:#E5D0D3; font-size:14px; }
+.pk-customise-feedback p { margin:0 0 12px; }
+.pk-customise-retry { padding:9px 16px; color:#24171A; background:#FFC93C; border:0; border-radius:8px; font-weight:800; }
+/* The button keeps a stable width even when the total changes. */
+.pk-customise-footer { flex-wrap:wrap; }
+.pk-customise-footer >span { flex:0 0 158px; min-width:0; white-space:nowrap; font-variant-numeric:tabular-nums; }
+.pk-customise-submit { flex:1 1 0; min-width:0; width:100%; white-space:nowrap; font-variant-numeric:tabular-nums; }
+.pk-customise-quote-error { color:#FFD8B1; flex:0 0 100%; margin:0; font-size:12px; }
+@media(max-width:600px) {
+  .pk-customise-footer >span { flex:0 0 100%; }
+  .pk-customise-submit { flex:0 0 100%; }
+}
+@media(max-width:420px) {
+  .pk-customise-size { padding:13px 9px; min-height:90px; }
+  .pk-customise-size strong { font-size:15px; }
+  .pk-customise-size small { display:none; }
+}

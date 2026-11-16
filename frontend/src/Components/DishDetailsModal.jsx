@@ -3,12 +3,12 @@ import { createPortal } from "react-dom";
 import FoodCardIllustration from "./FoodCardIllustration";
 import RestaurantLogo from "./RestaurantLogo";
 import { getDishCategory, pluralCategory } from "../utils/menuDiscovery";
+import { getItemDisplayPrice } from "../utils/menuDisplayPrice";
 import "./DishDetailsModal.css";
 
 const available = (value) => value !== undefined && value !== null && String(value).trim() !== "";
 const isNumber = (value) => available(value) && Number.isFinite(Number(value));
 const textValue = (value) => Array.isArray(value) ? value.filter(available).join(", ") : String(value || "");
-const formatPrice = (value) => isNumber(value) ? `£${Number(value).toFixed(2)}` : "Price unavailable";
 const veganStatus = (value) => {
   if (!available(value)) return null;
   const normalized = String(value).toLowerCase();
@@ -58,6 +58,7 @@ export default function DishDetailsModal({ item, onClose, onAddToBasket, onCusto
   }, [item]);
 
   useEffect(() => { setAdded(false); setLimitReached(false); }, [item]);
+
   if (!item) return null;
 
   const handleCompare = () => {
@@ -89,7 +90,7 @@ export default function DishDetailsModal({ item, onClose, onAddToBasket, onCusto
         <div className="pk-detail-content">
           <p id="pk-detail-subtitle" className="pk-detail-restaurant">{item.restaurantName || "Restaurant"}</p>
           <h2 id="pk-detail-title">{item.itemName}</h2>
-          <p className="pk-detail-price">{formatPrice(item.price)}</p>
+          <p className="pk-detail-price">{getItemDisplayPrice(item)}</p>
           {description && <p className="pk-detail-description">{description}</p>}
           <div className="pk-detail-facts" aria-label="Dish information">
             {isNumber(item.deliveryTime) && <span><span aria-hidden="true">◷</span> {item.deliveryTime} mins delivery</span>}
@@ -121,12 +122,12 @@ export default function DishDetailsModal({ item, onClose, onAddToBasket, onCusto
                   {similarItems.map((similar) => (
                     <button type="button" key={similar.itemID} className="pk-detail-similar-card" onClick={() => onViewSimilar?.(similar)} aria-label={`View details for ${similar.itemName}`}>
                       <span className="pk-detail-similar-art"><FoodCardIllustration name={similar.itemName} /></span>
-                      <span className="pk-detail-similar-meta"><strong>{similar.itemName}</strong><span className="pk-detail-similar-restaurant-name"><RestaurantLogo name={similar.restaurantName} />{similar.restaurantName || "Restaurant"}</span><small>{similar.price != null && Number.isFinite(Number(similar.price)) ? `£${Number(similar.price).toFixed(2)}` : "Price unavailable"}</small><em>View details ↗</em></span>
+                      <span className="pk-detail-similar-meta"><strong>{similar.itemName}</strong><span className="pk-detail-similar-restaurant-name"><RestaurantLogo name={similar.restaurantName} />{similar.restaurantName || "Restaurant"}</span><small>{similar.price != null && Number.isFinite(Number(similar.price)) ? getItemDisplayPrice(similar) : "Price unavailable"}</small><em>View details ↗</em></span>
                     </button>
                   ))}
                 </div>
                 {similarSource === "other" && onBrowseSimilar && (
-                  <button type="button" className="pk-detail-similar-browse pk-detail-similar-browse-after" onClick={onBrowseSimilar}>Explore other results →</button>
+                  <button type="button" className="pk-detail-similar-browse pk-detail-similar-browse-after" onClick={onBrowseSimilar}>{`← See all ${pluralCategory(getDishCategory(item)).toLowerCase()} near you`}</button>
                 )}
               </>
             ) : (
@@ -135,7 +136,7 @@ export default function DishDetailsModal({ item, onClose, onAddToBasket, onCusto
                 <div>
                   <strong>No other matching dishes from this restaurant yet.</strong>
                   <p>We couldn't find another similar dish from {item.restaurantName || "this restaurant"} in the available menu.</p>
-                  {onBrowseSimilar && <button type="button" className="pk-detail-similar-browse" onClick={onBrowseSimilar}>Explore other results →</button>}
+                  {onBrowseSimilar && <button type="button" className="pk-detail-similar-browse" onClick={onBrowseSimilar}>{`← See all ${pluralCategory(getDishCategory(item)).toLowerCase()} near you`}</button>}
                 </div>
               </div>
             )}
@@ -150,7 +151,8 @@ export default function DishDetailsModal({ item, onClose, onAddToBasket, onCusto
           {added && <p className="pk-detail-added-note" role="status">✓ Added to your basket! You can add another if you'd like.</p>}
           <div className="pk-detail-actions">
             <button type="button" className={`pk-detail-compare${selected ? " is-selected" : ""}`} onClick={handleCompare} aria-pressed={selected}>
-              {selected ? "✓ Remove from compare" : "+ Add to compare"}
+              <span aria-hidden="true">{selected ? "✓" : "+"}</span>
+              <span>{selected ? "Remove from compare" : "Add to compare"}</span>
             </button>
             <button type="button" className="pk-detail-basket" onClick={handleBasket}>{onCustomise ? "Customise & add to basket" : "Add to basket"} <span aria-hidden="true">↗</span></button>
           </div>

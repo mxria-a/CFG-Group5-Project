@@ -43,8 +43,8 @@
 .pk-detail-inline-note, .pk-detail-added-note { margin: 18px 0 0; padding: 11px 13px; border-radius: 10px; font: 700 12px/1.5 var(--pk-body-font, system-ui); }
 .pk-detail-inline-note { background: #42252C; border-left: 3px solid #FF625F; color: #FFF3E6; }
 .pk-detail-added-note { background: #234C3C; border-left: 3px solid #84D99B; color: #FFF3E6; }
-.pk-detail-actions { display: grid; grid-template-columns: minmax(0, .82fr) minmax(0, 1.4fr); gap: 10px; margin-top: 24px; }
-.pk-detail-actions button { min-height: 48px; padding: 12px 8px; border-radius: 11px; font: 800 12.5px/1.2 var(--pk-body-font, system-ui); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; }
+.pk-detail-actions { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.4fr); gap: 10px; margin-top: 24px; }
+.pk-detail-actions button { min-width: 0; min-height: 48px; padding: 12px 18px; border-radius: 11px; font: 800 12.5px/1.3 var(--pk-body-font, system-ui); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: normal; text-align: center; }
 .pk-detail-compare:not(.is-selected) {
   border: 1.5px solid rgba(255, 156, 160, .68);
   background-color: rgba(185, 51, 63, .68);
@@ -125,3 +125,14 @@
 .pk-detail-similar-restaurant-name .pk-restaurant-logo img { width: 16px; height: 16px; }
 .pk-detail-similar-restaurant-name .pk-restaurant-logo-initials { font-size: 8px; }
 .pk-detail-similar-browse-after { margin-top: 8px; }
+
+/* Selected and unselected compare labels must occupy a single, stable button row. */
+.pk-detail-actions { grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); }
+.pk-detail-actions button { white-space: nowrap; padding-inline: 9px; font-size: 11.5px; letter-spacing: -0.015em; }
+.pk-detail-compare > span { flex: 0 0 auto; }
+@media (min-width: 681px) and (max-width: 850px) {
+  .pk-detail-actions { grid-template-columns: 1fr; }
+}
+@media (max-width: 500px) {
+  .pk-detail-actions { grid-template-columns: 1fr; }
+}

@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import FoodCardIllustration from "./FoodCardIllustration";
 import RestaurantLogo from "./RestaurantLogo";
+import { getItemComparablePrice, getItemDisplayPrice } from "../utils/menuDisplayPrice";
 import { StoreContext } from "../Context/shop-context";
 import "./ComparisonTable.css";
 
@@ -8,7 +9,6 @@ const PALETTE = ["#C93F45", "#2F6B4F", "#7A4A8C"];
 
 const hasValue = (value) => value !== null && value !== undefined && String(value).trim() !== "";
 const hasNumber = (value) => hasValue(value) && Number.isFinite(Number(value));
-const formattedPrice = (price) => hasNumber(price) ? `£${Number(price).toFixed(2)}` : "Not available";
 const formattedMinutes = (minutes) => hasNumber(minutes) ? `${Number(minutes)} mins` : "Not available";
 const formattedRating = (rating) => hasNumber(rating) ? Number(rating).toFixed(1) : "Not available";
 const formattedMiles = (distance) => hasNumber(distance) ? `${(Number(distance) * 0.621371).toFixed(1)} mi` : "Not available";
@@ -29,11 +29,11 @@ const ingredientList = (value) => {
 };
 
 const getWinners = (items, field, direction = "min") => {
-  const withValues = items.filter((item) => hasNumber(item[field]));
+  const withValues = items.filter((item) => hasNumber(field === "price" ? getItemComparablePrice(item) : item[field]));
   if (withValues.length < 2) return [];
-  const numbers = withValues.map((item) => Number(item[field]));
+  const numbers = withValues.map((item) => Number(field === "price" ? getItemComparablePrice(item) : item[field]));
   const target = direction === "max" ? Math.max(...numbers) : Math.min(...numbers);
-  return withValues.filter((item) => Number(item[field]) === target).map((item) => item.itemID);
+  return withValues.filter((item) => Number(field === "price" ? getItemComparablePrice(item) : item[field]) === target).map((item) => item.itemID);
 };
 
 function FactTile({ label, value, highlighted = false, highlightLabel, icon, fullWidth = false }) {
@@ -102,7 +102,7 @@ const ComparisonTable = ({ items = [], onSelectWinner, onCustomiseDish }) => {
   };
 
   const highlightSummary = [
-    { field: "price", text: "Lowest dish price", icon: "◇" },
+    { field: "price", text: "Lowest starting price", icon: "◇" },
     { field: "delivery", text: "Fastest delivery", icon: "◷" },
     { field: "rating", text: "Top rated", icon: "☆" },
   ];
@@ -146,7 +146,7 @@ const ComparisonTable = ({ items = [], onSelectWinner, onCustomiseDish }) => {
             })}
           </div>
           <p className="pk-showdown-explainer">
-            Based on available dish prices, estimated delivery times and ratings. No overall winner — that's your call.
+            Based on available starting prices, estimated delivery times and ratings. No overall winner — that's your call.
           </p>
         </div>
       </header>
@@ -169,7 +169,7 @@ const ComparisonTable = ({ items = [], onSelectWinner, onCustomiseDish }) => {
               <div className="pk-showdown-body">
                 <h2>{item.itemName || "Unnamed dish"}</h2>
                 <div className="pk-showdown-facts">
-                  <FactTile label="Dish price" icon="◇" value={formattedPrice(item.price)} highlighted={winners.price.includes(item.itemID)} highlightLabel={winners.price.length > 1 ? "Joint lowest dish price" : "Lowest dish price"} />
+                  <FactTile label="Starting price" icon="◇" value={getItemDisplayPrice(item)} highlighted={winners.price.includes(item.itemID)} highlightLabel={winners.price.length > 1 ? "Joint lowest dish price" : "Lowest starting price"} />
                   <FactTile label="Delivery" icon="◷" value={formattedMinutes(item.deliveryTime)} highlighted={winners.delivery.includes(item.itemID)} highlightLabel={winners.delivery.length > 1 ? "Joint fastest" : "Fastest"} />
                   <FactTile label="Rating" icon="☆" value={formattedRating(item.avRating)} highlighted={winners.rating.includes(item.itemID)} highlightLabel={winners.rating.length > 1 ? "Joint top rated" : "Top rated"} />
                   <FactTile label="Distance" icon="⌖" value={formattedMiles(item.distance)} />
@@ -204,7 +204,7 @@ const ComparisonTable = ({ items = [], onSelectWinner, onCustomiseDish }) => {
         })}
       </div>
       <p className="pk-showdown-pricing-note">
-        <span aria-hidden="true">ⓘ</span> Dish prices shown exclude any delivery, service or other fees.
+        <span aria-hidden="true">ⓘ</span> Starting prices shown exclude extras, delivery, service and other fees.
       </p>
       <p className="pk-showdown-allergen-note">
         Allergen and ingredient details are reported by restaurants where available. Missing information does not mean a dish is allergen-free. Always confirm directly with the restaurant before ordering.
