@@ -19,8 +19,8 @@ export function createQuotedCustomLine(item, quote) {
   ]);
   return {
     key, itemID: Number(item.itemID), itemName: String(item.itemName),
-    restaurantName: String(item.restaurantName || "Restaurant"), image: item.image,
-    size, removed: removals.map((option) => option.name).sort(), extras,
+    restaurantName: String(item.restaurantName || "Restaurant"), restaurantID: item.restaurantID, image: item.image,
+    size, removed: removals.map((option) => option.name).sort(), removalOptions: removals, extras,
     unitPrice, quantity,
   };
 }

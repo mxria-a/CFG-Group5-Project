@@ -14,7 +14,7 @@ function selectionKey(itemId, sizeId, removalIds, extraIds, quantity) {
   ]);
 }
 
-export default function DishCustomisationModal({ item, onClose, onBack, onAddToBasket, backLabel = "Back to dish details" }) {
+export default function DishCustomisationModal({ item, onClose, onBack, onAddToBasket, backLabel = "Back to dish details", initialSelection = null, submitLabel = "Add" }) {
   const [catalogue, setCatalogue] = useState(null);
   const [loadState, setLoadState] = useState("loading");
   const [loadError, setLoadError] = useState("");
@@ -27,6 +27,8 @@ export default function DishCustomisationModal({ item, onClose, onBack, onAddToB
   const [adding, setAdding] = useState(false);
   const dialogRef = useRef(null);
   const closeRef = useRef(null);
+  // Initial choices are captured when the dialog opens; changing them is handled by the local state.
+  const initialSelectionRef = useRef(initialSelection);
   const closeCallback = useRef(onClose);
   closeCallback.current = onClose;
   const itemId = item?.itemID;
@@ -40,7 +42,7 @@ export default function DishCustomisationModal({ item, onClose, onBack, onAddToB
     setSizeId(null);
     setRemovalIds([]);
     setExtraIds([]);
-    setQuantity(1);
+    setQuantity(Math.max(1, Math.min(10, Number(initialSelectionRef.current?.quantity) || 1)));
     setQuoteState({ key: "", value: null, error: "" });
     fetch(`${API_BASE}/items/${encodeURIComponent(itemId)}/customisation-options`, { signal: controller.signal })
       .then(async (response) => {
@@ -51,7 +53,16 @@ export default function DishCustomisationModal({ item, onClose, onBack, onAddToB
       .then((result) => {
         setCatalogue(result);
         const defaultSize = getLowestPricedSize(result.sizes);
-        setSizeId(defaultSize ? Number(defaultSize.id) : null);
+        const requestedSize = result.sizes?.find((size) => Number(size.id) === Number(initialSelectionRef.current?.size?.id));
+        setSizeId(requestedSize ? Number(requestedSize.id) : defaultSize ? Number(defaultSize.id) : null);
+        const requestedRemovals = result.removals?.filter((option) =>
+          (initialSelectionRef.current?.removalOptions || []).some((selected) => Number(selected.id) === Number(option.id)) ||
+          (initialSelectionRef.current?.removed || []).some((name) => String(name).toLowerCase() === String(option.name).toLowerCase())
+        ) || [];
+        setRemovalIds(requestedRemovals.map((option) => Number(option.id)));
+        setExtraIds((result.extras || []).filter((option) =>
+          (initialSelectionRef.current?.extras || []).some((selected) => Number(selected.id) === Number(option.id))
+        ).map((option) => Number(option.id)));
         setLoadState("ready");
       })
       .catch((error) => {
@@ -114,6 +125,9 @@ export default function DishCustomisationModal({ item, onClose, onBack, onAddToB
   const selectedSize = catalogue?.sizes?.find((size) => Number(size.id) === sizeId);
   const selectedExtras = catalogue?.extras?.filter((extra) => extraIds.includes(Number(extra.id))) || [];
   const selectedRemovals = catalogue?.removals?.filter((removal) => removalIds.includes(Number(removal.id))) || [];
+  const description = (value) => Array.isArray(value) ? value.join(", ") : String(value ?? "").trim();
+  const ingredients = description(catalogue?.item?.ingredients || item.ingredients) || "Ingredients haven't been provided for this dish.";
+  const allergens = description(catalogue?.item?.allergens || item.allergens) || "Allergen information hasn't been provided for this dish.";
   const submit = () => {
     if (!quote || adding) return;
     setAdding(true);
@@ -129,7 +143,7 @@ export default function DishCustomisationModal({ item, onClose, onBack, onAddToB
       <section className="pk-customise-dialog" role="dialog" aria-modal="true" aria-labelledby="pk-customise-title" ref={dialogRef}>
         <header className="pk-customise-header">
           <div>
-            <button type="button" className="pk-customise-back" onClick={onBack}>← {backLabel}</button>
+            {onBack && <button type="button" className="pk-customise-back" onClick={onBack}>← {backLabel}</button>}
             <h2 id="pk-customise-title">Make it yours</h2>
           </div>
           <button type="button" ref={closeRef} className="pk-customise-close" aria-label="Close customisation" onClick={onClose}>×</button>
@@ -143,6 +157,10 @@ export default function DishCustomisationModal({ item, onClose, onBack, onAddToB
               <p className="pk-customise-from-price">{loadState === "loading" ? "Checking price…" : formatStartingPrice(catalogue?.item?.basePrice ?? item.price, catalogue?.sizes)}</p>
             </div>
           </div>
+          <section className="pk-customise-ingredients" aria-label="Dish ingredients and allergens">
+            <div><h3>What's in it?</h3><p>{ingredients}</p></div>
+            <div className="pk-customise-allergens"><h3>Reported allergens</h3><p>{allergens}</p><small>Please confirm allergens with the restaurant before ordering, especially if you have an allergy.</small></div>
+          </section>
           {loadState === "loading" && <p className="pk-customise-feedback" role="status">Loading your options…</p>}
           {loadState === "error" && <div className="pk-customise-feedback" role="alert">
             <p>{loadError}</p>
@@ -195,12 +213,12 @@ export default function DishCustomisationModal({ item, onClose, onBack, onAddToB
               Your picks: {[selectedSize && `${selectedSize.name} size`, ...selectedRemovals.map((choice) => `No ${choice.name.toLowerCase()}`), ...selectedExtras.map((choice) => choice.name)].filter(Boolean).join(" · ")}
             </p> : null}
           </>}
-          <p className="pk-customise-allergy-note">Removing an ingredient does not guarantee a dish is safe for allergies. Always confirm allergens with the restaurant.</p>
+          <p className="pk-customise-allergy-note">Removing an ingredient does not guarantee a dish is safe for allergies.</p>
         </div>
         <footer className="pk-customise-footer">
           <span aria-live="polite">{quote ? `${quantity} × ${pounds(quote.unitPrice)}` : loadState === "error" ? "Price unavailable" : "Calculating price…"}</span>
           <button className="pk-customise-submit" type="button" disabled={!quoteReady || adding} onClick={submit}>
-            {quote ? `Add ${quantity} to basket · ${pounds(quote.totalPrice)}` : loadState === "error" ? "Price unavailable" : "Updating price…"}
+            {quote ? `${submitLabel} ${quantity} ${submitLabel === "Save" ? "item" : "to basket"} · ${pounds(quote.totalPrice)}` : loadState === "error" ? "Price unavailable" : "Updating price…"}
           </button>
           {quoteState.error && loadState === "ready" && <p className="pk-customise-quote-error" role="alert">{quoteState.error}</p>}
         </footer>

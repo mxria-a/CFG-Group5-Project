@@ -136,3 +136,35 @@
 @media (max-width: 500px) {
   .pk-detail-actions { grid-template-columns: 1fr; }
 }
+
+/* Keep the original two-column dish details layout, with the action row
+   always available while the details above it scroll. */
+.pk-detail-content {
+  display:flex;
+  flex-direction:column;
+  min-height:0;
+  overflow:hidden;
+  padding:0;
+}
+.pk-detail-content-scroll {
+  flex:1 1 auto;
+  min-height:0;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  padding:40px 33px 13px;
+  scrollbar-color:#79535c transparent;
+}
+.pk-detail-actions {
+  flex:0 0 auto;
+  margin:0;
+  padding:13px 33px 22px;
+  background:#29191e;
+  border-top:1px solid #654049;
+  z-index:2;
+}
+@media(max-width:680px) {
+  .pk-detail-dialog { grid-template-rows:auto minmax(0,1fr); overflow:hidden; }
+  .pk-detail-illustration { min-height:150px; }
+  .pk-detail-content-scroll { padding:21px 21px 12px; }
+  .pk-detail-actions { padding:12px 21px calc(15px + env(safe-area-inset-bottom)); }
+}

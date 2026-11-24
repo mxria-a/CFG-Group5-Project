@@ -1,6 +1,7 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useContext, useMemo, useState } from "react";
 import FoodCardIllustration from "./FoodCardIllustration";
 import RestaurantLogo from "./RestaurantLogo";
+import ButtonChevron from "./ButtonChevron";
 import { getItemComparablePrice, getItemDisplayPrice } from "../utils/menuDisplayPrice";
 import { StoreContext } from "../Context/shop-context";
 import "./ComparisonTable.css";
@@ -78,9 +79,8 @@ function IngredientSection({ label, values, itemID, expandable = false, expanded
 }
 
 const ComparisonTable = ({ items = [], onSelectWinner, onCustomiseDish }) => {
-  const { addToBasket } = useContext(StoreContext);
+  const { addToBasket, showBasketToast } = useContext(StoreContext);
   const [expandedIngredients, setExpandedIngredients] = useState({});
-  const [basketNotice, setBasketNotice] = useState(null);
 
   const winners = useMemo(() => ({
     price: getWinners(items, "price"),
@@ -88,17 +88,17 @@ const ComparisonTable = ({ items = [], onSelectWinner, onCustomiseDish }) => {
     rating: getWinners(items, "avRating", "max"),
   }), [items]);
 
-  useEffect(() => {
-    if (!basketNotice) return undefined;
-    const timer = window.setTimeout(() => setBasketNotice(null), 4200);
-    return () => window.clearTimeout(timer);
-  }, [basketNotice]);
-
   const chooseDish = (item) => {
     if (onCustomiseDish) { onCustomiseDish(item); return; }
     addToBasket(item.itemID);
     if (onSelectWinner) onSelectWinner(item);
-    setBasketNotice({ name: item.itemName, time: Date.now() });
+    showBasketToast?.(item, 1, getItemComparablePrice(item));
+  };
+
+  const addAllToBasket = () => {
+    if (!items.length) return;
+    items.forEach((item) => addToBasket(item.itemID));
+    showBasketToast?.({ itemName: items.length === 1 ? items[0].itemName : "selected dishes" }, items.length);
   };
 
   const highlightSummary = [
@@ -115,7 +115,10 @@ const ComparisonTable = ({ items = [], onSelectWinner, onCustomiseDish }) => {
     <section className="pk-showdown" aria-labelledby="pk-showdown-heading">
       <header className="pk-showdown-heading-area">
         <h1 id="pk-showdown-heading">The showdown</h1>
-        <p>{items.length} dishes side by side · Your picks, your decision</p>
+        <div className="pk-showdown-heading-row">
+          <p>{items.length} dishes side by side · Your picks, your decision</p>
+          <button type="button" className="pk-showdown-add-all" onClick={addAllToBasket}>+ Add all to basket</button>
+        </div>
         <div className="pk-showdown-insights" role="region" aria-label="At a glance">
           <h2 className="pk-showdown-insights-heading">
             At a glance <span>· The standouts from your picks</span>
@@ -196,7 +199,7 @@ const ComparisonTable = ({ items = [], onSelectWinner, onCustomiseDish }) => {
                   aria-label={onCustomiseDish ? `Customise ${item.itemName} and add to basket` : `Choose ${item.itemName} and add to basket`}
                   data-testid={`add-to-cart-${item.itemID}`}
                 >
-                  {onCustomiseDish ? "Customise & add to basket" : "Choose & add to basket"} <span aria-hidden="true">↗</span>
+                  {onCustomiseDish ? "Customise & add to basket" : "Choose & add to basket"} <ButtonChevron />
                 </button>
               </div>
             </article>
@@ -209,13 +212,6 @@ const ComparisonTable = ({ items = [], onSelectWinner, onCustomiseDish }) => {
       <p className="pk-showdown-allergen-note">
         Allergen and ingredient details are reported by restaurants where available. Missing information does not mean a dish is allergen-free. Always confirm directly with the restaurant before ordering.
       </p>
-      {basketNotice && (
-        <div className="pk-showdown-toast" role="status" key={basketNotice.time}>
-          <span className="pk-showdown-toast-icon" aria-hidden="true">✓</span>
-          <span><strong>Added to basket!</strong><small>{basketNotice.name} is in your basket.</small></span>
-          <button type="button" aria-label="Dismiss basket message" onClick={() => setBasketNotice(null)}>×</button>
-        </div>
-      )}
     </section>
   );
 };

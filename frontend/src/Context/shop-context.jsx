@@ -1,12 +1,38 @@
 import { createQuotedCustomLine } from "../utils/quotedCustomLine";
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useCallback } from "react";
 
 export const StoreContext = createContext(null);
 
+const COMPARISON_KEY = "pickier-comparison-picks";
+
+function restoreComparisonPicks() {
+  try {
+    const saved = JSON.parse(window.sessionStorage.getItem(COMPARISON_KEY));
+    if (!Array.isArray(saved)) return [];
+    return saved.filter((item) => item && item.itemID !== undefined).slice(0, 3);
+  } catch {
+    return [];
+  }
+}
+
 export const StoreContextProvider = ({ children }) => {
+  // Keep comparison picks available while visiting Basket, Checkout and other pages.
+  const [comparisonItems, setComparisonItems] = useState(restoreComparisonPicks);
+  useEffect(() => {
+    try {
+      window.sessionStorage.setItem(COMPARISON_KEY, JSON.stringify(comparisonItems));
+    } catch {
+      // Comparison still works when session storage is unavailable.
+    }
+  }, [comparisonItems]);
   const [basketItems, setBasketItems] = useState({});
   const [demoCustomLines, setDemoCustomLines] = useState({});
   const [foodList, setFoodList] = useState([]);
+  const [basketToast, setBasketToast] = useState(null);
+  const showBasketToast = (item, quantity = 1, price = null) => {
+    setBasketToast({ id: Date.now(), name: item?.itemName || "Your selection", quantity, price });
+  };
+  const clearBasketToast = useCallback(() => setBasketToast(null), []);
 
   useEffect(() => {
     const fetchFood = async () => {
@@ -47,8 +73,7 @@ export const StoreContextProvider = ({ children }) => {
     });
   };
 
-  // The demo line items stay separate from the ordinary backend-compatible basket.
-  // Checkout cannot submit these until supported restaurant options and prices exist.
+  // Customised lines remain separate from the legacy single-item checkout format.
   const addDemoCustomLine = (item, { removed = [], extras = [], quantity = 1 }) => {
     const count = Math.max(1, Math.min(10, Number(quantity) || 1));
     const basePrice = Number(item.price);
@@ -78,6 +103,18 @@ export const StoreContextProvider = ({ children }) => {
       ...prev,
       [line.key]: { ...line, quantity: (prev[line.key]?.quantity || 0) + line.quantity },
     }));
+    return true;
+  };
+  // Replacing a customisation is atomic, even if the new choices match another line.
+  const replaceQuotedCustomLine = (oldKey, item, quote) => {
+    const line = createQuotedCustomLine(item, quote);
+    if (!line) return false;
+    setDemoCustomLines((prev) => {
+      const next = { ...prev };
+      delete next[oldKey];
+      next[line.key] = { ...line, quantity: (next[line.key]?.quantity || 0) + line.quantity };
+      return next;
+    });
     return true;
   };
   const changeDemoCustomQuantity = (key, change) => setDemoCustomLines((prev) => {
@@ -114,12 +151,18 @@ export const StoreContextProvider = ({ children }) => {
 
   // pass down the state and functions via context
   const contextValue = {
+    comparisonItems,
+    setComparisonItems,
     foodList,
+    basketToast,
+    showBasketToast,
+    clearBasketToast,
     basketItems,
     demoCustomLines,
     addToBasket,
     addDemoCustomLine,
     addQuotedCustomLine,
+    replaceQuotedCustomLine,
     changeDemoCustomQuantity,
     removeDemoCustomLine,
     removeFromBasket,

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import FoodCardIllustration from "./FoodCardIllustration";
 import RestaurantLogo from "./RestaurantLogo";
+import ButtonChevron from "./ButtonChevron";
 import { getDishCategory, pluralCategory } from "../utils/menuDiscovery";
 import { getItemDisplayPrice } from "../utils/menuDisplayPrice";
 import "./DishDetailsModal.css";
@@ -20,6 +21,7 @@ const veganStatus = (value) => {
 /** Details shown here are taken directly from the selected backend item. */
 export default function DishDetailsModal({ item, onClose, onAddToBasket, onCustomise, similarItems = [], similarSource = "same", onViewSimilar, onBrowseSimilar, onViewAllSimilar, onToggleCompare, selected, selectedCount, maxCompare = 3 }) {
   const dialogRef = useRef(null);
+  const scrollRef = useRef(null);
   const closeRef = useRef(null);
   const onCloseRef = useRef(onClose);
   const [added, setAdded] = useState(false);
@@ -57,7 +59,11 @@ export default function DishDetailsModal({ item, onClose, onAddToBasket, onCusto
     };
   }, [item]);
 
-  useEffect(() => { setAdded(false); setLimitReached(false); }, [item]);
+  useEffect(() => {
+    setAdded(false);
+    setLimitReached(false);
+    if (scrollRef.current) scrollRef.current.scrollTop = 0;
+  }, [item]);
 
   if (!item) return null;
 
@@ -88,6 +94,7 @@ export default function DishDetailsModal({ item, onClose, onAddToBasket, onCusto
           <span className="pk-detail-art-caption">Pickier illustration · not a product photo</span>
         </div>
         <div className="pk-detail-content">
+          <div className="pk-detail-content-scroll" ref={scrollRef}>
           <p id="pk-detail-subtitle" className="pk-detail-restaurant">{item.restaurantName || "Restaurant"}</p>
           <h2 id="pk-detail-title">{item.itemName}</h2>
           <p className="pk-detail-price">{getItemDisplayPrice(item)}</p>
@@ -122,7 +129,7 @@ export default function DishDetailsModal({ item, onClose, onAddToBasket, onCusto
                   {similarItems.map((similar) => (
                     <button type="button" key={similar.itemID} className="pk-detail-similar-card" onClick={() => onViewSimilar?.(similar)} aria-label={`View details for ${similar.itemName}`}>
                       <span className="pk-detail-similar-art"><FoodCardIllustration name={similar.itemName} /></span>
-                      <span className="pk-detail-similar-meta"><strong>{similar.itemName}</strong><span className="pk-detail-similar-restaurant-name"><RestaurantLogo name={similar.restaurantName} />{similar.restaurantName || "Restaurant"}</span><small>{similar.price != null && Number.isFinite(Number(similar.price)) ? getItemDisplayPrice(similar) : "Price unavailable"}</small><em>View details ↗</em></span>
+                      <span className="pk-detail-similar-meta"><strong>{similar.itemName}</strong><span className="pk-detail-similar-restaurant-name"><RestaurantLogo name={similar.restaurantName} />{similar.restaurantName || "Restaurant"}</span><small>{similar.price != null && Number.isFinite(Number(similar.price)) ? getItemDisplayPrice(similar) : "Price unavailable"}</small><em>View details <ButtonChevron /></em></span>
                     </button>
                   ))}
                 </div>
@@ -149,12 +156,13 @@ export default function DishDetailsModal({ item, onClose, onAddToBasket, onCusto
           )}
           {limitReached && <p className="pk-detail-inline-note" role="alert">Full plate! 🍽️ You've already picked {maxCompare} dishes. Remove one to make room for this one.</p>}
           {added && <p className="pk-detail-added-note" role="status">✓ Added to your basket! You can add another if you'd like.</p>}
+          </div>
           <div className="pk-detail-actions">
             <button type="button" className={`pk-detail-compare${selected ? " is-selected" : ""}`} onClick={handleCompare} aria-pressed={selected}>
               <span aria-hidden="true">{selected ? "✓" : "+"}</span>
               <span>{selected ? "Remove from compare" : "Add to compare"}</span>
             </button>
-            <button type="button" className="pk-detail-basket" onClick={handleBasket}>{onCustomise ? "Customise & add to basket" : "Add to basket"} <span aria-hidden="true">↗</span></button>
+            <button type="button" className="pk-detail-basket" onClick={handleBasket}>{onCustomise ? "Customise & add to basket" : "Add to basket"} <ButtonChevron /></button>
           </div>
         </div>
       </section>

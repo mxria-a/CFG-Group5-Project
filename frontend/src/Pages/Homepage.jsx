@@ -1,6 +1,9 @@
-import { useEffect, useId, useRef, useState } from "react";
+import { useContext, useEffect, useId, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
+import { StoreContext } from "../Context/shop-context";
 import BurgerIllustration from "../Components/BurgerIllustration";
 import FoodComparisonPage from "./FoodComparisonPage";
+import { clearLastSearch, getLastSearch, saveLastSearch } from "../utils/searchSession";
 import "./Homepage.css";
 
 // The options and the postcode-to-results behaviour are carried over from the original homepage.
@@ -189,9 +192,13 @@ function DemoCard({ restaurant, dish, price, minutes, accent, badge }) {
 }
 
 export default function Home() {
-  const [item, setItem] = useState("");
-  const [postcode, setPostcode] = useState("");
-  const [hasSearched, setHasSearched] = useState(false);
+  const location = useLocation();
+  const { setComparisonItems } = useContext(StoreContext);
+  const showdownRequested = new URLSearchParams(location.search).get("showdown") === "1";
+  const [lastSearch] = useState(getLastSearch);
+  const [item, setItem] = useState(lastSearch?.item || "");
+  const [postcode, setPostcode] = useState(lastSearch?.postcode || "");
+  const [hasSearched, setHasSearched] = useState(Boolean(lastSearch));
   const [showError, setShowError] = useState(false);
 
   const performSearch = (event) => {
@@ -201,10 +208,13 @@ export default function Home() {
       return;
     }
     setShowError(false);
+    saveLastSearch({ item, postcode });
     setHasSearched(true);
   };
 
   const resetSearch = () => {
+    setComparisonItems([]);
+    clearLastSearch();
     setHasSearched(false);
     setItem("");
     setPostcode("");
@@ -216,6 +226,7 @@ export default function Home() {
       {hasSearched ? (
         <section className="pk-search-route" aria-label="Food search results">
           <FoodComparisonPage
+            showdownRequested={showdownRequested}
             searchQuery={item}
             postcode={postcode.trim()}
             onBackToSearch={resetSearch}

@@ -1,4 +1,5 @@
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ItemList from "../Components/ItemList";
 import FoodCardIllustration from "../Components/FoodCardIllustration";
 import DishDetailsModal from "../Components/DishDetailsModal";
@@ -10,6 +11,7 @@ import { StoreContext } from "../Context/shop-context";
 import { fetchCoords } from "../utils/fetchCoords";
 import { getDistance } from "../utils/distanceCalculator";
 import { getDishRefinementOptions, matchesDishRefinement } from "../utils/foodRefinements";
+import { saveLastSearch } from "../utils/searchSession";
 import { attachMenuStartingPrices, getItemComparablePrice } from "../utils/menuDisplayPrice";
 import "./FoodComparisonPage.css";
 import "./RestaurantFilter.css";
@@ -56,7 +58,8 @@ const metric = (value) => (isNumeric(value) ? Number(value) : Infinity);
 const isVegan = (value) => value === true || value === 1 || value === "1" || String(value).toLowerCase() === "true";
 const titleCase = (value) => String(value).trim().replace(/\b\w/g, (letter) => letter.toUpperCase());
 
-function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
+function FoodComparisonPage({ searchQuery, postcode, onBackToSearch, showdownRequested = false }) {
+  const navigate = useNavigate();
   const [menuItems, setMenuItems] = useState([]);
   const [activeQuery, setActiveQuery] = useState(String(searchQuery || "").trim());
   const [activePostcode, setActivePostcode] = useState(String(postcode || "").trim().toUpperCase());
@@ -69,7 +72,6 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
   const [postcodeChecking, setPostcodeChecking] = useState(false);
   const searchInputRef = useRef(null);
   const [restaurantFilter, setRestaurantFilter] = useState(null);
-  const [selectedItems, setSelectedItems] = useState([]);
   const [detailItem, setDetailItem] = useState(null);
   const [customiseItem, setCustomiseItem] = useState(null);
   const [customiseOrigin, setCustomiseOrigin] = useState("details");
@@ -80,7 +82,21 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
   const [veganOnly, setVeganOnly] = useState(false);
   const [notification, setNotification] = useState({ open: false, message: "", severity: "success" });
   const [noticeLeaving, setNoticeLeaving] = useState(false);
-  const { addToBasket, addQuotedCustomLine } = useContext(StoreContext);
+  const { addToBasket, addQuotedCustomLine, showBasketToast, comparisonItems: selectedItems, setComparisonItems: setSelectedItems } = useContext(StoreContext);
+
+  useEffect(() => {
+    if (showdownRequested && selectedItems.length < 2) {
+      navigate("/", { replace: true });
+      setView("selection");
+    } else {
+      setView(showdownRequested ? "comparison" : "selection");
+    }
+  }, [showdownRequested, selectedItems.length, navigate]);
+
+  // Home returns to the latest results, even after browsing the basket.
+  useEffect(() => {
+    saveLastSearch({ item: activeQuery, postcode: activePostcode });
+  }, [activeQuery, activePostcode]);
 
   // Keep the complete nearby menu so a new food search does not require going home.
   // Only the postcode changes which dishes are nearby; selecting a category does not refetch.
@@ -274,11 +290,17 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
     }
     dismissNotice();
     setView("comparison");
+    navigate("/?showdown=1");
     window.scrollTo?.({ top: 0, behavior: "smooth" });
   };
   const handleAddToBasket = () => {
     selectedItems.forEach((item) => addToBasket(item.itemID));
-    notify(`${selectedItems.length} dish${selectedItems.length === 1 ? "" : "es"} added to your basket.`);
+    if (selectedItems.length === 1) {
+      const item = selectedItems[0];
+      showBasketToast(item, 1, getItemComparablePrice(item));
+    } else if (selectedItems.length > 1) {
+      showBasketToast({ itemName: "selected dishes" }, selectedItems.length);
+    }
     setSelectedItems([]);
   };
   const openCustomisation = (item, origin = "details") => {
@@ -297,7 +319,7 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
       addToBasket(item.itemID, quote.quantity);
     }
     setCustomiseItem(null);
-    notify(`Added ${quote.quantity} × ${item.itemName} to your basket${hasCustomisation ? " (customised)" : ""}.`);
+    showBasketToast(item, quote.quantity, quote.totalPrice);
   };
   const selectFirstThree = () => {
     dismissNotice();
@@ -316,7 +338,7 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
     setSearchDraft(category);
     setDetailItem(null);
     setVeganOnly(false);
-    setSortBy("best");
+    // Keep the visitor’s selected sort when viewing more from a restaurant.
     setView("selection");
     window.scrollTo?.({ top: 0, behavior: "smooth" });
   };
@@ -489,7 +511,7 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
       ) : (
         <div className="pk-results-legacy-comparison">
           <div className="pk-results-legacy-inner">
-            <button type="button" className="pk-results-comparison-back" onClick={() => setView("selection")}>← Change my picks</button>
+            <button type="button" className="pk-results-comparison-back" onClick={() => { setView("selection"); navigate("/"); }}>← Change my picks</button>
             <ComparisonTable items={selectedItems} onCustomiseDish={(item) => openCustomisation(item, "showdown")} />
           </div>
         </div>
@@ -511,7 +533,10 @@ function FoodComparisonPage({ searchQuery, postcode, onBackToSearch }) {
             ? undefined : () => openRestaurantMenu(detailItem)}
           onCustomise={openCustomisation}
           onClose={() => setDetailItem(null)}
-          onAddToBasket={(item) => addToBasket(item.itemID)}
+          onAddToBasket={(item) => {
+            addToBasket(item.itemID);
+            showBasketToast(item, 1, getItemComparablePrice(item));
+          }}
           onToggleCompare={handleToggle}
           selected={selectedItems.some((item) => item.itemID === detailItem.itemID)}
           selectedCount={selectedItems.length}

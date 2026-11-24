@@ -1,6 +1,7 @@
 import React from "react";
 import FoodCardIllustration from "./FoodCardIllustration";
 import RestaurantLogo from "./RestaurantLogo";
+import ButtonChevron from "./ButtonChevron";
 import { getItemDisplayPrice } from "../utils/menuDisplayPrice";
 import "./ItemList.css";
 
@@ -55,7 +56,7 @@ export default function ItemList({ items = [], selectedItems = [], onToggle, onV
                 className="pk-result-view-details"
                 onClick={() => onViewDetails?.(item)}
               >
-                View details <span aria-hidden="true">↗</span>
+                View details <ButtonChevron />
               </button>
               <button
                 type="button"

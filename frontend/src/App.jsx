@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { BrowserRouter, Routes, Route, Link, NavLink } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Link, NavLink, useLocation } from "react-router-dom";
 import { Box } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import pickierTheme from "./pickierTheme";
@@ -9,6 +9,7 @@ import { StoreContextProvider, StoreContext } from "./Context/shop-context";
 import TeamIntro from "./Components/TeamIntro";
 import CustomerProfile from "./Pages/CustomerProfile/customerProfile";
 import Footer from "./Components/Footer";
+import BasketAddedToast from "./Components/BasketAddedToast";
 import Basket from "./Pages/Basket/basket";
 import CheckoutPage from "./Pages/CheckoutPage";
 import TermsOfService from "./Components/TermsOfService";
@@ -24,6 +25,23 @@ function NavBasketCount() {
   return <span className="nav-basket-count">{count}</span>;
 }
 
+function ShowdownNav() {
+  const { comparisonItems } = useContext(StoreContext);
+  const location = useLocation();
+  const count = comparisonItems.length;
+  if (count < 2) return null;
+  const isShowdown = location.pathname === "/" && new URLSearchParams(location.search).get("showdown") === "1";
+  return <NavLink to="/?showdown=1" className={isShowdown ? "active" : undefined} aria-label={`Showdown, ${count} dishes`}>
+    Showdown <span className="nav-showdown-count">({count})</span>
+  </NavLink>;
+}
+
+function HomeNav() {
+  const location = useLocation();
+  const isShowdown = new URLSearchParams(location.search).get("showdown") === "1";
+  return <NavLink to="/" className={({ isActive }) => isActive && !isShowdown ? "active" : undefined} end>Home</NavLink>;
+}
+
 function App() {
   return (
     <ThemeProvider theme={pickierTheme}>
@@ -35,7 +53,8 @@ function App() {
                 <span className="nav-logo">pickier<span className="nav-logo-dot">.</span></span>
               </Link>
               <div className="nav-links">
-                <NavLink to="/" className={navLinkClass} end>Home</NavLink>
+                <HomeNav />
+                <ShowdownNav />
                 <NavLink to="/about-us" className={navLinkClass}>About</NavLink>
                 <NavLink to="/profile" className={navLinkClass}>Account</NavLink>
                 <NavLink to="/basket" className={navLinkClass}>Basket <NavBasketCount /></NavLink>
@@ -53,6 +72,7 @@ function App() {
               </Routes>
             </Box>
             <Footer />
+            <BasketAddedToast />
           </Box>
         </BrowserRouter>
       </StoreContextProvider>

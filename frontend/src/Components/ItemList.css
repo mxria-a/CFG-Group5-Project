@@ -114,3 +114,5 @@
   .pk-results-page .pk-result-picture { padding-top: 56px; }
   .pk-results-page .pk-result-picture .pk-food-art { height: min(120px, 100%); }
 }
+
+.pk-action-chevron { display:inline-block; width:15px; height:15px; flex:0 0 auto; vertical-align:middle; }

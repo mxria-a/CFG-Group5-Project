@@ -70,3 +70,10 @@
   .pk-customise-size strong { font-size:15px; }
   .pk-customise-size small { display:none; }
 }
+
+/* Dish information shown above customisation choices, matching the approved preview. */
+.pk-customise-ingredients { margin:4px 0 25px; padding:0 0 22px; border-bottom:1px solid #67434e; }
+.pk-customise-ingredients h3 { font:800 20px var(--pk-display-font,system-ui); margin:0 0 9px; color:var(--pk-cream); }
+.pk-customise-ingredients p { color:#e6d1d8; margin:0; font-size:14px; line-height:1.7; overflow-wrap:anywhere; }
+.pk-customise-allergens { border-top:1px solid #67434e; margin-top:20px; padding-top:20px; }
+.pk-customise-allergens small { display:block; color:#baa4ad; font-size:12px; line-height:1.6; margin-top:6px; }
